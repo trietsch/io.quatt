@@ -1,0 +1,28 @@
+{
+  "id": "io.quatt",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Quatt"
+  },
+  "description": {
+    "en": "Adds support for reading Quatt CIC data"
+  },
+  "category": [
+    "energy"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Robin Trietsch",
+    "email": "robin.trietsch+homey@gmail.com"
+  }
+}
