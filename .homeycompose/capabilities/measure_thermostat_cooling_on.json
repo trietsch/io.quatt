@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Thermostat cooling on",
+    "nl": "Thermostaat verkoeling aan"
+  },
+  "description": "otFtCoolingEnabled: A boolean value indicating if the cooling is enabled.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/wifi.svg"
+}

@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Central Heating",
+    "nl": "Centrale Verwarming"
+  },
+  "description": "otFbChModeActive: A boolean value indicating if the central heating mode is active.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/wifi.svg"
+}

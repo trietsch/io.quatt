@@ -24,6 +24,489 @@
   },
   "author": {
     "name": "Robin Trietsch",
-    "email": "robin.trietsch+homey@gmail.com"
+    "email": "homey@trietsch.dev"
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "Quatt",
+        "nl": "Quatt"
+      },
+      "class": "heater",
+      "capabilities": [
+        "measure_boiler_central_heating_mode",
+        "measure_boiler_cic_central_heating_on",
+        "measure_boiler_cic_central_heating_onoff_boiler",
+        "measure_boiler_domestic_hot_water_on",
+        "measure_boiler_flame_on",
+        "measure_boiler_temperature_incoming_water",
+        "measure_boiler_temperature_outgoing_water",
+        "measure_flowmeter_water_flow_speed",
+        "measure_flowmeter_water_supply_temperature",
+        "measure_heatpump_limited_by_cop",
+        "measure_heatpump_silent_mode",
+        "measure_heatpump_temperature_incoming_water",
+        "measure_heatpump_temperature_outgoing_water",
+        "measure_heatpump_temperature_outside",
+        "measure_heatpump_working_mode",
+        "measure_quality_control_supervisory_control_mode",
+        "measure_thermostat_cooling_on",
+        "measure_thermostat_domestic_hot_water_on",
+        "measure_thermostat_heating_on",
+        "measure_thermostat_room_temperature",
+        "measure_thermostat_setpoint_room_temperature",
+        "measure_thermostat_setpoint_water_supply_temperature"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/quatt_heatpump/assets/images/small.png",
+        "large": "/drivers/quatt_heatpump/assets/images/large.png",
+        "xlarge": "/drivers/quatt_heatpump/assets/images/xlarge.png"
+      },
+      "id": "quatt_heatpump"
+    }
+  ],
+  "capabilities": {
+    "measure_boiler_central_heating_mode": {
+      "type": "boolean",
+      "title": {
+        "en": "Central Heating",
+        "nl": "Centrale Verwarming"
+      },
+      "description": "otFbChModeActive: A boolean value indicating if the central heating mode is active.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_boiler_cic_central_heating_on": {
+      "type": "boolean",
+      "title": {
+        "en": "Central Heating On",
+        "nl": "Centrale Verwarming Aan"
+      },
+      "description": "otTbCH: A boolean value representing CiC’s command to switch the boiler to heating mode.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_boiler_cic_central_heating_onoff_boiler": {
+      "type": "boolean",
+      "title": {
+        "en": "OnOff Boiler On",
+        "nl": "AanUit Ketel Aan"
+      },
+      "description": "oTtbTurnOnOffBoilerOn: A boolean value representing CiC’s command to switch an on-off boiler on. This property is only valid for systems with on-off boilers.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_boiler_domestic_hot_water_on": {
+      "type": "boolean",
+      "title": {
+        "en": "Hot Water Active",
+        "nl": "Warm Water Actief"
+      },
+      "description": "otFbDhwActive: A boolean value indicating if the domestic hot water (tap water?) mode is active.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_boiler_flame_on": {
+      "type": "boolean",
+      "title": {
+        "en": "Boiler Flame On",
+        "nl": "Boiler Vlam Aan"
+      },
+      "description": "otFbFlameOn: A boolean value indicating if the boiler's flame is on.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_boiler_temperature_incoming_water": {
+      "type": "number",
+      "title": {
+        "en": "Boiler Incoming water temperature",
+        "nl": "Boiler water toevoer temperatuur"
+      },
+      "description": "otFbSupplyInletTemperature: The temperature of the water going into the boiler (in degrees Celsius).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
+    },
+    "measure_boiler_temperature_outgoing_water": {
+      "type": "number",
+      "title": {
+        "en": "Boiler outgoing water temperature",
+        "nl": "Boiler water afvoer temperatuur"
+      },
+      "description": "otFbSupplyOutletTemperature: The temperature of the water coming out of the boiler (in degrees Celsius).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
+    },
+    "measure_flowmeter_water_flow_speed": {
+      "type": "number",
+      "title": {
+        "en": "Water flow speed",
+        "nl": "Water doorvoersnelheid"
+      },
+      "description": "flowRate: The current flow rate of the water in the heating circuit (in liters per hour).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "L/h",
+        "nl": "L/u"
+      },
+      "decimals": 2,
+      "step": 0.01
+    },
+    "measure_flowmeter_water_supply_temperature": {
+      "type": "number",
+      "title": {
+        "en": "Boiler water supply temperature",
+        "nl": "Ketel water toevoer temperatuur"
+      },
+      "description": "waterSupplyTemperature: The current temperature of the water supplied to the boiler (in degrees Celsius).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
+    },
+    "measure_heatpump_limited_by_cop": {
+      "type": "boolean",
+      "title": {
+        "en": "Limited by COP",
+        "nl": "Beperkt door COP"
+      },
+      "description": "limitedByCop: A boolean value indicating if the heatpump is limited by the COP (Coefficient of performance) based on energy pricing, current ambient temperature and heat pump outlet temperature. (i.e. probably when it's < 1).",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_heatpump_silent_mode": {
+      "type": "boolean",
+      "title": {
+        "en": "Silent mode",
+        "nl": "Stille modus"
+      },
+      "description": "silentModeStatus: whether the heatpump is operating in silent mode",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_heatpump_temperature_incoming_water": {
+      "type": "number",
+      "title": {
+        "en": "Heatpump incoming water temperature",
+        "nl": "Warmtepomp water toevoer temperatuur"
+      },
+      "description": "temperatureWaterIn: The current temperature of the water going into the heatpump (in degrees Celsius).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
+    },
+    "measure_heatpump_temperature_outgoing_water": {
+      "type": "number",
+      "title": {
+        "en": "Heatpump outgoing water temperature",
+        "nl": "Warmtepomp water afvoer temperatuur"
+      },
+      "description": "temperatureWaterOut: The current temperature of the water coming out of the heatpump (in degrees Celsius).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
+    },
+    "measure_heatpump_temperature_outside": {
+      "type": "number",
+      "title": {
+        "en": "Outside temperature",
+        "nl": "Buitentemperatuur"
+      },
+      "description": "temperatureOutside: The current ambient temperature outside the heatpump (in degrees Celsius).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
+    },
+    "measure_heatpump_working_mode": {
+      "type": "enum",
+      "title": {
+        "en": "Heatpump working mode",
+        "nl": "Warmtepomp Modus"
+      },
+      "description": "getMainWorkingMode: The current working mode of the heatpump as a numerical value. 0 - standby mode, 2 - Heating mode",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/temp.svg",
+      "values": [
+        {
+          "id": 0,
+          "title": {
+            "en": "STANDBY",
+            "nl": "STANDBY"
+          }
+        },
+        {
+          "id": 2,
+          "title": {
+            "en": "HEATING",
+            "nl": "VERWARMEN"
+          }
+        }
+      ]
+    },
+    "measure_quality_control_supervisory_control_mode": {
+      "type": "enum",
+      "title": {
+        "en": "Supervisory Control Mode",
+        "nl": "Controle Modus"
+      },
+      "description": "supervisoryControlMode: The current supervisory control mode of the heatpump as a numerical value.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/temp.svg",
+      "values": [
+        {
+          "id": 0,
+          "title": {
+            "en": "Standby",
+            "nl": "Standby"
+          }
+        },
+        {
+          "id": 1,
+          "title": {
+            "en": "Standby - heating",
+            "nl": "Standby - verwarmen"
+          }
+        },
+        {
+          "id": 2,
+          "title": {
+            "en": "Heating - heatpump only",
+            "nl": "Heating - alleen warmtepomp"
+          }
+        },
+        {
+          "id": 3,
+          "title": {
+            "en": "Heating - heatpump + boiler",
+            "nl": "Verwarmen - warmtepomp + CV"
+          }
+        },
+        {
+          "id": 4,
+          "title": {
+            "en": "Heating - boiler only",
+            "nl": "Verwarmen - alleen CV"
+          }
+        },
+        {
+          "id": 96,
+          "title": {
+            "en": "Anti-freeze protection - boiler on",
+            "nl": "Vorstbeveiliging - CV aan"
+          }
+        },
+        {
+          "id": 97,
+          "title": {
+            "en": "Anti-freeze protection - boiler pre-pump",
+            "nl": "Vorstbeveiliging - CV voorpompen"
+          }
+        },
+        {
+          "id": 98,
+          "title": {
+            "en": "Anti-freeze protection - water circulation",
+            "nl": "Vorstbeveiliging - water circulatie"
+          }
+        },
+        {
+          "id": 99,
+          "title": {
+            "en": "Fault - circulation pump on",
+            "nl": "Error - circulation pump on"
+          }
+        },
+        {
+          "id": 100,
+          "title": {
+            "en": "Commissioning modes",
+            "nl": "Inbedrijfstellings modi"
+          }
+        }
+      ]
+    },
+    "measure_thermostat_cooling_on": {
+      "type": "boolean",
+      "title": {
+        "en": "Thermostat cooling on",
+        "nl": "Thermostaat verkoeling aan"
+      },
+      "description": "otFtCoolingEnabled: A boolean value indicating if the cooling is enabled.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_thermostat_domestic_hot_water_on": {
+      "type": "boolean",
+      "title": {
+        "en": "Thermostat Hot Water On",
+        "nl": "Thermostaat warm water aan"
+      },
+      "description": "otFtDhwEnabled: A boolean value indicating if the domestic hot water is enabled.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_thermostat_heating_on": {
+      "type": "boolean",
+      "title": {
+        "en": "Thermostat Heating On",
+        "nl": "Thermostaat verwarming aan"
+      },
+      "description": "otFtChEnabled: A boolean value representing command from thermostat to switch on heating.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/wifi.svg"
+    },
+    "measure_thermostat_room_temperature": {
+      "type": "number",
+      "title": {
+        "en": "Current room temperature",
+        "nl": "Huidige kamer temperatuur"
+      },
+      "description": "otFtRoomTemperature: The current temperature of the room (in degrees Celsius).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
+    },
+    "measure_thermostat_setpoint_room_temperature": {
+      "type": "number",
+      "title": {
+        "en": "Room temperature setpoint",
+        "nl": "Ingestelde kamer temperatuure"
+      },
+      "description": "otFtRoomSetpoint: The current setpoint temperature for the room (in degrees Celsius).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
+    },
+    "measure_thermostat_setpoint_water_supply_temperature": {
+      "type": "number",
+      "title": {
+        "en": "Water supply temperature setpoint",
+        "nl": "Ingestelde watertoevoer temperatuur"
+      },
+      "description": "otFtControlSetpoint: The current setpoint for water supply temperature from the thermostat (in degrees Celsius).",
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
+    }
+  },
+  "discovery": {
+    "detect-cic": {
+      "type": "mac",
+      "mac": {
+        "manufacturer": [
+          [
+            0,
+            17,
+            5
+          ],
+          [
+            4,
+            209,
+            104
+          ],
+          [
+            28,
+            80,
+            30
+          ],
+          [
+            236,
+            239,
+            23
+          ],
+          [
+            252,
+            75,
+            188
+          ]
+        ]
+      }
+    }
   }
 }

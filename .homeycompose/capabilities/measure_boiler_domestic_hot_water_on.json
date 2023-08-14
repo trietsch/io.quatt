@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Hot Water Active",
+    "nl": "Warm Water Actief"
+  },
+  "description": "otFbDhwActive: A boolean value indicating if the domestic hot water (tap water?) mode is active.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/wifi.svg"
+}

@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Boiler Incoming water temperature",
+    "nl": "Boiler water toevoer temperatuur"
+  },
+  "description": "otFbSupplyInletTemperature: The temperature of the water going into the boiler (in degrees Celsius).",
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "units": {
+    "en": "°C",
+    "nl": "°C"
+  },
+  "decimals": 2,
+  "step": 0.01
+}

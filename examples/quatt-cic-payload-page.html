@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<!-- saved from url=(0026)http://192.168.1.204:8080/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Amazing HTML and JS by @PanMan 😇 -->
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CIC live stats / feed info</title>
+    
+    <link href="https://assets-global.website-files.com/61c051a291f24f93d47cdaf7/61d35084c1e1194087a119df_PNG%20%2326926A%20Favicon.png" rel="shortcut icon" type="image/x-icon">
+
+    <link href="quatt-cic-payload-page_files/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  </head>
+  <body class="doc-content">
+    <div class="container">
+      <script>
+        const simpleTable = (data) => {
+          // create a table
+          let table = document.createElement("table");
+          table.classList.add("table", "table-striped");
+          // iterate over the properties of the JSON object
+          let prevMainKey = "";
+          for (let obj of data) {
+            if (obj.value === undefined) {
+              // console.log("skipping", obj);
+              continue;
+            }
+            if (obj.mainkey !== prevMainKey) {
+              let row = table.insertRow();
+              let cell1 = row.insertCell();
+              cell1.innerHTML = `<h4>${obj.mainkey}</h4>`;
+              cell1.colSpan = 2;
+              prevMainKey = obj.mainkey;
+            }
+
+            let row = table.insertRow();
+            let cell1 = row.insertCell();
+            let cell2 = row.insertCell();
+            cell1.innerHTML = obj.key;
+            cell2.innerHTML = obj.value;
+          }
+          // add the table to the HTML document
+          document.getElementById("stats").replaceChildren(table);
+        };
+
+        const makeFlat = (data) => {
+          const keys = Object.entries(data).flatMap(([key, value]) =>
+            typeof value === "object" && value !== null
+              ? Object.entries(value).map(([innerKey, innerValue]) => ({
+                  mainkey: key,
+                  key: `${key}.${innerKey}`,
+                  value: innerValue,
+                }))
+              : {}
+          );
+          return keys;
+        };
+
+        const getData = () => {
+          fetch("/beta/feed/data.json")
+            .then((response) => response.json())
+            .then((data) => {
+              const keys = makeFlat(data);
+              //   console.log("keys", keys);
+              simpleTable(keys);
+            })
+            .catch((error) => {
+              console.log("Error: " + error);
+            });
+        };
+        getData();
+        setInterval(getData, 1000);
+      </script>
+
+      <h1 class="c5" id="h.1q7x9q1q1q7x">
+        <span class="c6">JSON Feed</span>
+      </h1>
+      <p>
+        The CIC runs a webserver (this page is an output of it!). Next to this
+        index page there is only one URL:
+        <a href="http://192.168.1.204:8080/beta/feed/data.json">/beta/feed/data.json</a> which returns a
+        dynamic JSON with the stats of the CIC, heatpump(s) and cv-ketel. The
+        performance data can be requested from any CiC connected to the same
+        network and can be integrated into a home automation system (eg Home
+        Assistant). Only GET requests are accepted, CIC settings cannot be
+        changed with this URL. The JSON feed is updated every second, requesting
+        more often will not result in faster updates of the data.
+      </p>
+      <h2>Live feed:</h2>
+      <div id="stats"><table class="table table-striped"><tbody><tr><td colspan="2"><h4>time</h4></td></tr><tr><td>time.ts</td><td>1690973179543</td></tr><tr><td>time.tsHuman</td><td>2023-08-02T10:46:19.544Z</td></tr><tr><td colspan="2"><h4>hp1</h4></td></tr><tr><td>hp1.modbusSlaveId</td><td>1</td></tr><tr><td>hp1.getMainWorkingMode</td><td>0</td></tr><tr><td>hp1.temperatureOutside</td><td>20.46</td></tr><tr><td>hp1.temperatureWaterIn</td><td>19.93</td></tr><tr><td>hp1.temperatureWaterOut</td><td>21.2</td></tr><tr><td>hp1.silentModeStatus</td><td>false</td></tr><tr><td>hp1.limitedByCop</td><td>false</td></tr><tr><td colspan="2"><h4>boiler</h4></td></tr><tr><td>boiler.otFbChModeActive</td><td>false</td></tr><tr><td>boiler.otFbDhwActive</td><td>false</td></tr><tr><td>boiler.otFbFlameOn</td><td>false</td></tr><tr><td>boiler.otFbSupplyInletTemperature</td><td>51.398438</td></tr><tr><td>boiler.otFbSupplyOutletTemperature</td><td>49.597656</td></tr><tr><td>boiler.otTbCH</td><td>false</td></tr><tr><td>boiler.oTtbTurnOnOffBoilerOn</td><td>false</td></tr><tr><td colspan="2"><h4>flowMeter</h4></td></tr><tr><td>flowMeter.waterSupplyTemperature</td><td>21.9616792079604</td></tr><tr><td>flowMeter.flowRate</td><td>0</td></tr><tr><td colspan="2"><h4>thermostat</h4></td></tr><tr><td>thermostat.otFtChEnabled</td><td>false</td></tr><tr><td>thermostat.otFtDhwEnabled</td><td>true</td></tr><tr><td>thermostat.otFtCoolingEnabled</td><td>false</td></tr><tr><td>thermostat.otFtControlSetpoint</td><td>0</td></tr><tr><td>thermostat.otFtRoomSetpoint</td><td>20</td></tr><tr><td>thermostat.otFtRoomTemperature</td><td>22.21875</td></tr><tr><td colspan="2"><h4>qc</h4></td></tr><tr><td>qc.supervisoryControlMode</td><td>0</td></tr><tr><td>qc.stickyPumpProtectionEnabled</td><td>false</td></tr><tr><td colspan="2"><h4>system</h4></td></tr><tr><td>system.hostName</td><td>omitted</td></tr></tbody></table></div>
+
+      <h3 class="c9" id="h.70x0duimo1v"><span class="c6">Structure</span></h3>
+      <p class="c10">
+        <span class="c2">The feed is structured as a JSON object, with the following
+          properties:</span>
+      </p>
+
+      <ul>
+        <li>
+          time:
+          <ul>
+            <li>
+              ts: The timestamp of the JSON feed in Unix time (milliseconds
+              since 1970-01-01T00:00:00Z).
+            </li>
+            <li>
+              tsHuman: The timestamp of the JSON feed in human-readable format
+              (ISO 8601).
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          hp1 / hp2: Information about the heatpump unit.
+          <ul>
+            <li>
+              getMainWorkingMode: The current working mode of the heatpump as a
+              numerical value. 0 - standby mode, 2 - Heating mode
+            </li>
+            <li>
+              temperatureOutside: The current ambient temperature outside the
+              heatpump (in degrees Celsius).
+            </li>
+            <li>
+              temperatureWaterIn: The current temperature of the water going
+              into the heatpump (in degrees Celsius).
+            </li>
+            <li>
+              temperatureWaterOut: The current temperature of the water coming
+              out of the heatpump (in degrees Celsius).
+            </li>
+            <li>
+              limitedByCop: A boolean value indicating if the heatpump is
+              limited by the COP based on energy pricing, current ambient
+              temperature and heat pump outlet temperature.
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          boiler: Information about the boiler (cv ketel) - all boiler
+          properties are only valid for systems with OpenTherm boiler only,
+          unless specified otherwise.
+          <ul>
+            <li>
+              otFbChModeActive: A boolean value indicating if the central
+              heating mode is active.
+            </li>
+            <li>
+              otFbDhwActive: A boolean value indicating if the domestic hot
+              water mode is active.
+            </li>
+            <li>
+              otFbFlameOn: A boolean value indicating if the boiler's flame is
+              on.
+            </li>
+            <li>
+              otFbSupplyInletTemperature: The temperature of the water going
+              into the boiler (in degrees Celsius).
+            </li>
+            <li>
+              otFbSupplyOutletTemperature: The temperature of the water coming
+              out of the boiler (in degrees Celsius).
+            </li>
+            <li>
+              otTbCH: A boolean value representing CiC’s command to switch the
+              boiler to heating mode.
+            </li>
+            <li>
+              oTtbTurnOnOffBoilerOn: A boolean value representing CiC’s command
+              to switch an on-off boiler on.. This property is only valid for
+              systems with on-off boilers.
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          flowMeter: Information about the flow meter.
+          <ul>
+            <li>
+              waterSupplyTemperature: The current temperature of the water
+              supplied by the boiler (in degrees Celsius).
+            </li>
+            <li>
+              flowRate: The current flow rate of the water in the heating
+              circuit (in liters per hour).
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          thermostat: Information about the thermostat.
+          <ul>
+            <li>
+              otFtChEnabled: A boolean value representing command from
+              thermostat to switch on heating.
+            </li>
+            <li>
+              otFtDhwEnabled: A boolean value indicating if the domestic hot
+              water is enabled.
+            </li>
+            <li>
+              otFtCoolingEnabled: A boolean value indicating if the cooling is
+              enabled.
+            </li>
+            <li>
+              otFtControlSetpoint: The current setpoint for water supply
+              temperature from the thermostat (in degrees Celsius).
+            </li>
+            <li>
+              otFtRoomSetpoint: The current setpoint temperature for the room
+              (in degrees Celsius).
+            </li>
+            <li>
+              otFtRoomTemperature: The current temperature of the room (in
+              degrees Celsius).
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          qc: Quality control information.
+          <ul>
+            <li>
+              supervisoryControlMode: The current supervisory control mode of
+              the heatpump as a numerical value.
+              <table class="table table-sm">
+                <thead>
+                  <tr><td>Description</td>
+                  <td>supervisoryControlMode</td>
+                </tr></thead>
+                <tbody><tr>
+                  <td>Standby</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Standby - heating</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td>Heating - heatpump only</td>
+                  <td>2</td>
+                </tr>
+                <tr>
+                  <td>Heating - heatpump + boiler</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td>Heating - boiler only</td>
+                  <td>4</td>
+                </tr>
+                <tr>
+                  <td>Anti-freeze protection - boiler on</td>
+                  <td>96</td>
+                </tr>
+                <tr>
+                  <td>Anti-freeze protection - boiler pre-pump</td>
+                  <td>97</td>
+                </tr>
+                <tr>
+                  <td>Anti-freeze protection - water circulation</td>
+                  <td>98</td>
+                </tr>
+                <tr>
+                  <td>Fault - circulation pump on</td>
+                  <td>99</td>
+                </tr>
+                <tr>
+                  <td>Commissioning modes</td>
+                  <td>&gt;= 100</td>
+                </tr>
+              </tbody></table>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          system: Information about the system hosting the heatpump.
+          <ul>
+            <li>hostname: The hostname of the system hosting the heatpump.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  
+
+</body></html>

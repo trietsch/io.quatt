@@ -1,0 +1,84 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Supervisory Control Mode",
+    "nl": "Controle Modus"
+  },
+  "description": "supervisoryControlMode: The current supervisory control mode of the heatpump as a numerical value.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/temp.svg",
+  "values": [
+    {
+      "id": 0,
+      "title": {
+        "en": "Standby",
+        "nl": "Standby"
+      }
+    },
+    {
+      "id": 1,
+      "title": {
+        "en": "Standby - heating",
+        "nl": "Standby - verwarmen"
+      }
+    },
+    {
+      "id": 2,
+      "title": {
+        "en": "Heating - heatpump only",
+        "nl": "Heating - alleen warmtepomp"
+      }
+    },
+    {
+      "id": 3,
+      "title": {
+        "en": "Heating - heatpump + boiler",
+        "nl": "Verwarmen - warmtepomp + CV"
+      }
+    },
+    {
+      "id": 4,
+      "title": {
+        "en": "Heating - boiler only",
+        "nl": "Verwarmen - alleen CV"
+      }
+    },
+    {
+      "id": 96,
+      "title": {
+        "en": "Anti-freeze protection - boiler on",
+        "nl": "Vorstbeveiliging - CV aan"
+      }
+    },
+    {
+      "id": 97,
+      "title": {
+        "en": "Anti-freeze protection - boiler pre-pump",
+        "nl": "Vorstbeveiliging - CV voorpompen"
+      }
+    },
+    {
+      "id": 98,
+      "title": {
+        "en": "Anti-freeze protection - water circulation",
+        "nl": "Vorstbeveiliging - water circulatie"
+      }
+    },
+    {
+      "id": 99,
+      "title": {
+        "en": "Fault - circulation pump on",
+        "nl": "Error - circulation pump on"
+      }
+    },
+    {
+      "id": 100,
+      "title": {
+        "en": "Commissioning modes",
+        "nl": "Inbedrijfstellings modi"
+      }
+    }
+  ]
+}

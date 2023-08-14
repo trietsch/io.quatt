@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "OnOff Boiler On",
+    "nl": "AanUit Ketel Aan"
+  },
+  "description": "oTtbTurnOnOffBoilerOn: A boolean value representing CiC’s command to switch an on-off boiler on. This property is only valid for systems with on-off boilers.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/wifi.svg"
+}

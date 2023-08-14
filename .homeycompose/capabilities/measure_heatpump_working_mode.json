@@ -1,0 +1,28 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Heatpump working mode",
+    "nl": "Warmtepomp Modus"
+  },
+  "description": "getMainWorkingMode: The current working mode of the heatpump as a numerical value. 0 - standby mode, 2 - Heating mode",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/temp.svg",
+  "values": [
+    {
+      "id": 0,
+      "title": {
+        "en": "STANDBY",
+        "nl": "STANDBY"
+      }
+    },
+    {
+      "id": 2,
+      "title": {
+        "en": "HEATING",
+        "nl": "VERWARMEN"
+      }
+    }
+  ]
+}

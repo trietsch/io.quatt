@@ -1,0 +1,44 @@
+{
+  "time": {
+    "ts": 1690102825453,
+    "tsHuman": "2023-07-23T09:00:25.454Z"
+  },
+  "hp1": {
+    "modbusSlaveId": 1,
+    "getMainWorkingMode": 0,
+    "temperatureOutside": 17.08,
+    "temperatureWaterIn": 17.08,
+    "temperatureWaterOut": 17.49,
+    "silentModeStatus": false,
+    "limitedByCop": false
+  },
+  "hp2": null,
+  "boiler": {
+    "otFbChModeActive": false,
+    "otFbDhwActive": false,
+    "otFbFlameOn": false,
+    "otFbSupplyInletTemperature": 54.796875,
+    "otFbSupplyOutletTemperature": 53.5,
+    "otTbCH": false,
+    "oTtbTurnOnOffBoilerOn": false
+  },
+  "flowMeter": {
+    "waterSupplyTemperature": 21.85532041240413,
+    "flowRate": 0
+  },
+  "thermostat": {
+    "otFtChEnabled": false,
+    "otFtDhwEnabled": true,
+    "otFtCoolingEnabled": false,
+    "otFtControlSetpoint": 0,
+    "otFtRoomSetpoint": 20,
+    "otFtRoomTemperature": 22.316406
+  },
+  "qc": {
+    "supervisoryControlMode": 0,
+    "stickyPumpProtectionEnabled": false
+  },
+  "system": {
+    "hostName": "<omitted>"
+  }
+}

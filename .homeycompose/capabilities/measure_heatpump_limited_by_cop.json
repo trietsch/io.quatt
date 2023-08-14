@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Limited by COP",
+    "nl": "Beperkt door COP"
+  },
+  "description": "limitedByCop: A boolean value indicating if the heatpump is limited by the COP (Coefficient of performance) based on energy pricing, current ambient temperature and heat pump outlet temperature. (i.e. probably when it's < 1).",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/wifi.svg"
+}

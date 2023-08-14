@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Outside temperature",
+    "nl": "Buitentemperatuur"
+  },
+  "description": "temperatureOutside: The current ambient temperature outside the heatpump (in degrees Celsius).",
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "units": {
+    "en": "°C",
+    "nl": "°C"
+  },
+  "decimals": 2,
+  "step": 0.01
+}

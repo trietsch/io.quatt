@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Water flow speed",
+    "nl": "Water doorvoersnelheid"
+  },
+  "description": "flowRate: The current flow rate of the water in the heating circuit (in liters per hour).",
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "units": {
+    "en": "L/h",
+    "nl": "L/u"
+  },
+  "decimals": 2,
+  "step": 0.01
+}

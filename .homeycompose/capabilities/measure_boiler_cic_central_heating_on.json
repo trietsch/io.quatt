@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Central Heating On",
+    "nl": "Centrale Verwarming Aan"
+  },
+  "description": "otTbCH: A boolean value representing CiC’s command to switch the boiler to heating mode.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/wifi.svg"
+}

@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Boiler Flame On",
+    "nl": "Boiler Vlam Aan"
+  },
+  "description": "otFbFlameOn: A boolean value indicating if the boiler's flame is on.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/wifi.svg"
+}

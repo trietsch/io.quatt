@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Current room temperature",
+    "nl": "Huidige kamer temperatuur"
+  },
+  "description": "otFtRoomTemperature: The current temperature of the room (in degrees Celsius).",
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "units": {
+    "en": "°C",
+    "nl": "°C"
+  },
+  "decimals": 2,
+  "step": 0.01
+}

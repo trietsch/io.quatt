@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Silent mode",
+    "nl": "Stille modus"
+  },
+  "description": "silentModeStatus: whether the heatpump is operating in silent mode",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/wifi.svg"
+}
