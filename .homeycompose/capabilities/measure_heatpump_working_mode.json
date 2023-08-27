@@ -11,14 +11,14 @@
   "icon": "assets/icons/temp.svg",
   "values": [
     {
-      "id": 0,
+      "id": "0",
       "title": {
         "en": "STANDBY",
         "nl": "STANDBY"
       }
     },
     {
-      "id": 2,
+      "id": "2",
       "title": {
         "en": "HEATING",
         "nl": "VERWARMEN"

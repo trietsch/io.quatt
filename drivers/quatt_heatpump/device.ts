@@ -1,6 +1,6 @@
 import Homey from 'homey';
-import axios from "axios";
-import {CicStats} from "./cic-stats";
+import axios from 'axios';
+import {CicStats} from './cic-stats';
 
 class QuattHeatpump extends Homey.Device {
 
@@ -11,7 +11,6 @@ class QuattHeatpump extends Homey.Device {
         this.log('QuattHeatpump has been initialized');
         await this.setCapabilityValues();
     }
-
 
     /**
      * onAdded is called when the user adds the device, called just after pairing.
@@ -37,7 +36,7 @@ class QuattHeatpump extends Homey.Device {
         newSettings: { [key: string]: boolean | string | number | undefined | null };
         changedKeys: string[];
     }): Promise<string | void> {
-        this.log("QuattHeatpump settings where changed");
+        this.log('QuattHeatpump settings where changed');
     }
 
     /**
@@ -58,7 +57,7 @@ class QuattHeatpump extends Homey.Device {
 
     async fetchQuattData(): Promise<CicStats> {
         try {
-            const response = await axios.get("http://192.168.1.204:8080/beta/feed/data.json");
+            const response = await axios.get('http://192.168.1.204:8080/beta/feed/data.json');
             return response.data as CicStats;
         } catch (error) {
             this.log(error);
@@ -71,9 +70,11 @@ class QuattHeatpump extends Homey.Device {
 
         try {
             const settings = this.getSettings();
-            let deviceInfo = await this.fetchQuattData();
+            const deviceInfo = await this.fetchQuattData();
 
             this.homey.app.log(`[Device] ${this.getName()} - deviceInfo =>`, deviceInfo.system.hostName);
+            this.homey.app.log(`[Device] ${this.getName()} - settings =>`, settings);
+            this.homey.app.log(`[Device] ${this.getName()} - deviceInfo =>`, JSON.stringify(deviceInfo));
 
             // // Check for existence
             // const pump0 = await this.getComponent('PUMP', components, '0');
@@ -238,7 +239,6 @@ class QuattHeatpump extends Homey.Device {
     //         }
     //     }
     // }
-
 
 }
 

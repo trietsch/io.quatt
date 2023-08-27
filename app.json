@@ -33,6 +33,7 @@
         "nl": "Quatt"
       },
       "class": "heater",
+      "discovery": "detect-cic",
       "capabilities": [
         "measure_boiler_central_heating_mode",
         "measure_boiler_cic_central_heating_on",
@@ -68,6 +69,19 @@
         "large": "/drivers/quatt_heatpump/assets/images/large.png",
         "xlarge": "/drivers/quatt_heatpump/assets/images/xlarge.png"
       },
+      "pair": [
+        {
+          "id": "list_my_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ],
       "id": "quatt_heatpump"
     }
   ],
@@ -288,14 +302,14 @@
       "icon": "assets/icons/temp.svg",
       "values": [
         {
-          "id": 0,
+          "id": "0",
           "title": {
             "en": "STANDBY",
             "nl": "STANDBY"
           }
         },
         {
-          "id": 2,
+          "id": "2",
           "title": {
             "en": "HEATING",
             "nl": "VERWARMEN"
@@ -316,70 +330,70 @@
       "icon": "assets/icons/temp.svg",
       "values": [
         {
-          "id": 0,
+          "id": "0",
           "title": {
             "en": "Standby",
             "nl": "Standby"
           }
         },
         {
-          "id": 1,
+          "id": "1",
           "title": {
             "en": "Standby - heating",
             "nl": "Standby - verwarmen"
           }
         },
         {
-          "id": 2,
+          "id": "2",
           "title": {
             "en": "Heating - heatpump only",
             "nl": "Heating - alleen warmtepomp"
           }
         },
         {
-          "id": 3,
+          "id": "3",
           "title": {
             "en": "Heating - heatpump + boiler",
             "nl": "Verwarmen - warmtepomp + CV"
           }
         },
         {
-          "id": 4,
+          "id": "4",
           "title": {
             "en": "Heating - boiler only",
             "nl": "Verwarmen - alleen CV"
           }
         },
         {
-          "id": 96,
+          "id": "96",
           "title": {
             "en": "Anti-freeze protection - boiler on",
             "nl": "Vorstbeveiliging - CV aan"
           }
         },
         {
-          "id": 97,
+          "id": "97",
           "title": {
             "en": "Anti-freeze protection - boiler pre-pump",
             "nl": "Vorstbeveiliging - CV voorpompen"
           }
         },
         {
-          "id": 98,
+          "id": "98",
           "title": {
             "en": "Anti-freeze protection - water circulation",
             "nl": "Vorstbeveiliging - water circulatie"
           }
         },
         {
-          "id": 99,
+          "id": "99",
           "title": {
             "en": "Fault - circulation pump on",
             "nl": "Error - circulation pump on"
           }
         },
         {
-          "id": 100,
+          "id": "100",
           "title": {
             "en": "Commissioning modes",
             "nl": "Inbedrijfstellings modi"
