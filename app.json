@@ -44,12 +44,18 @@
         "measure_boiler_temperature_outgoing_water",
         "measure_flowmeter_water_flow_speed",
         "measure_flowmeter_water_supply_temperature",
-        "measure_heatpump_limited_by_cop",
-        "measure_heatpump_silent_mode",
-        "measure_heatpump_temperature_incoming_water",
-        "measure_heatpump_temperature_outgoing_water",
-        "measure_heatpump_temperature_outside",
-        "measure_heatpump_working_mode",
+        "measure_heatpump_limited_by_cop.heatpump1",
+        "measure_heatpump_silent_mode.heatpump1",
+        "measure_heatpump_temperature_incoming_water.heatpump1",
+        "measure_heatpump_temperature_outgoing_water.heatpump1",
+        "measure_heatpump_temperature_outside.heatpump1",
+        "measure_heatpump_working_mode.heatpump1",
+        "measure_heatpump_limited_by_cop.heatpump2",
+        "measure_heatpump_silent_mode.heatpump2",
+        "measure_heatpump_temperature_incoming_water.heatpump2",
+        "measure_heatpump_temperature_outgoing_water.heatpump2",
+        "measure_heatpump_temperature_outside.heatpump2",
+        "measure_heatpump_working_mode.heatpump2",
         "measure_quality_control_supervisory_control_mode",
         "measure_thermostat_cooling_on",
         "measure_thermostat_domestic_hot_water_on",
@@ -58,6 +64,80 @@
         "measure_thermostat_setpoint_room_temperature",
         "measure_thermostat_setpoint_water_supply_temperature"
       ],
+      "capabilitiesOptions": {
+        "measure_heatpump_limited_by_cop.heatpump1": {
+          "title": {
+            "en": "Pump 1: Limited by COP",
+            "nl": "Pomp 1: Beperkt door COP"
+          }
+        },
+        "measure_heatpump_silent_mode.heatpump1": {
+          "title": {
+            "en": "Pump 1: Silent mode",
+            "nl": "Pomp 1: Stille modus"
+          }
+        },
+        "measure_heatpump_temperature_incoming_water.heatpump1": {
+          "title": {
+            "en": "Pump 1: Heatpump incoming water temperature",
+            "nl": "Pomp 1: Warmtepomp water toevoer temperatuur"
+          }
+        },
+        "measure_heatpump_temperature_outgoing_water.heatpump1": {
+          "title": {
+            "en": "Pump 1: Heatpump outgoing water temperature",
+            "nl": "Pomp 1: Warmtepomp water afvoer temperatuur"
+          }
+        },
+        "measure_heatpump_temperature_outside.heatpump1": {
+          "title": {
+            "en": "Pump 1: Outside temperature",
+            "nl": "Pomp 1: Buitentemperatuur"
+          }
+        },
+        "measure_heatpump_working_mode.heatpump1": {
+          "title": {
+            "en": "Pump 1: Heatpump working mode",
+            "nl": "Pomp 1: Warmtepomp Modus"
+          }
+        },
+        "measure_heatpump_limited_by_cop.heatpump2": {
+          "title": {
+            "en": "Pump 2: Limited by COP",
+            "nl": "Pomp 2: Beperkt door COP"
+          }
+        },
+        "measure_heatpump_silent_mode.heatpump2": {
+          "title": {
+            "en": "Pump 2: Silent mode",
+            "nl": "Pomp 2: Stille modus"
+          }
+        },
+        "measure_heatpump_temperature_incoming_water.heatpump2": {
+          "title": {
+            "en": "Pump 2: Heatpump incoming water temperature",
+            "nl": "Pomp 2: Warmtepomp water toevoer temperatuur"
+          }
+        },
+        "measure_heatpump_temperature_outgoing_water.heatpump2": {
+          "title": {
+            "en": "Pump 2: Heatpump outgoing water temperature",
+            "nl": "Pomp 2: Warmtepomp water afvoer temperatuur"
+          }
+        },
+        "measure_heatpump_temperature_outside.heatpump2": {
+          "title": {
+            "en": "Pump 2: Outside temperature",
+            "nl": "Pomp 2: Buitentemperatuur"
+          }
+        },
+        "measure_heatpump_working_mode.heatpump2": {
+          "title": {
+            "en": "Pump 2: Heatpump working mode",
+            "nl": "Pomp 2: Warmtepomp Modus"
+          }
+        }
+      },
       "platforms": [
         "local"
       ],

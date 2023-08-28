@@ -9,12 +9,12 @@ export interface CicStats {
     system: CicSystem;
 }
 
-interface CicTime {
+export interface CicTime {
     ts: bigint;
     tsHuman: string;
 }
 
-interface CicHeatpump {
+export interface CicHeatpump {
     modbusSlaveId: number;
     getMainWorkingMode: number;
     temperatureOutside: number;
@@ -24,7 +24,7 @@ interface CicHeatpump {
     limitedByCop: boolean;
 }
 
-interface CicBoiler {
+export interface CicBoiler {
     otFbChModeActive: boolean;
     otFbDhwActive: boolean;
     otFbFlameOn: boolean;
@@ -34,12 +34,12 @@ interface CicBoiler {
     oTtbTurnOnOffBoilerOn: boolean;
 }
 
-interface CicFlowMeter {
+export interface CicFlowMeter {
     waterSupplyTemperature: number;
     flowRate: number;
 }
 
-interface CicThermostat {
+export interface CicThermostat {
     otFtChEnabled: boolean;
     otFtDhwEnabled: boolean;
     otFtCoolingEnabled: boolean;
@@ -48,11 +48,11 @@ interface CicThermostat {
     otFtRoomTemperature: number;
 }
 
-interface CicQualityControl {
+export interface CicQualityControl {
     supervisoryControlMode: number;
     stickyPumpProtectionEnabled: boolean;
 }
 
-interface CicSystem {
+export interface CicSystem {
     hostName: string;
 }

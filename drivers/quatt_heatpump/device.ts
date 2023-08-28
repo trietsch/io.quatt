@@ -1,15 +1,20 @@
-import Homey from 'homey';
-import axios from 'axios';
-import {CicStats} from './cic-stats';
+import Homey, {DiscoveryResultMAC} from 'homey';
+import {QuattClient} from "../../lib/quatt";
+import {CicHeatpump} from "../../lib/quatt/cic-stats";
 
 class QuattHeatpump extends Homey.Device {
+    private quattClient!: QuattClient;
+    private onPollInterval!: NodeJS.Timer;
 
     /**
      * onInit is called when the device is initialized.
      */
     async onInit() {
         this.log('QuattHeatpump has been initialized');
+
+        this.quattClient = new QuattClient(this.getStoreValue("address"));
         await this.setCapabilityValues();
+        await this.setCapabilityValuesInterval(10);
     }
 
     /**
@@ -19,50 +24,8 @@ class QuattHeatpump extends Homey.Device {
         this.log('QuattHeatpump has been added');
     }
 
-    /**
-     * onSettings is called when the user updates the device's settings.
-     * @param {object} event the onSettings event data
-     * @param {object} event.oldSettings The old settings object
-     * @param {object} event.newSettings The new settings object
-     * @param {string[]} event.changedKeys An array of keys changed since the previous version
-     * @returns {Promise<string|void>} return a custom message that will be displayed
-     */
-    async onSettings({
-                         oldSettings,
-                         newSettings,
-                         changedKeys,
-                     }: {
-        oldSettings: { [key: string]: boolean | string | number | undefined | null };
-        newSettings: { [key: string]: boolean | string | number | undefined | null };
-        changedKeys: string[];
-    }): Promise<string | void> {
-        this.log('QuattHeatpump settings where changed');
-    }
-
-    /**
-     * onRenamed is called when the user updates the device's name.
-     * This method can be used this to synchronise the name to the device.
-     * @param {string} name The new name
-     */
-    async onRenamed(name: string) {
-        this.log('QuattHeatpump was renamed');
-    }
-
-    /**
-     * onDeleted is called when the user deleted the device.
-     */
-    async onDeleted() {
-        this.log('QuattHeatpump has been deleted');
-    }
-
-    async fetchQuattData(): Promise<CicStats> {
-        try {
-            const response = await axios.get('http://192.168.1.204:8080/beta/feed/data.json');
-            return response.data as CicStats;
-        } catch (error) {
-            this.log(error);
-            throw (error);
-        }
+    onDiscoveryAddressChanged(discoveryResult: DiscoveryResultMAC) {
+        this.quattClient.setDeviceAddress(discoveryResult.address);
     }
 
     async setCapabilityValues() {
@@ -70,141 +33,62 @@ class QuattHeatpump extends Homey.Device {
 
         try {
             const settings = this.getSettings();
-            const deviceInfo = await this.fetchQuattData();
+            const cicStats = await this.quattClient.getCicStats();
 
-            this.homey.app.log(`[Device] ${this.getName()} - deviceInfo =>`, deviceInfo.system.hostName);
-            this.homey.app.log(`[Device] ${this.getName()} - settings =>`, settings);
-            this.homey.app.log(`[Device] ${this.getName()} - deviceInfo =>`, JSON.stringify(deviceInfo));
+            await this.setCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature);
 
-            // // Check for existence
-            // const pump0 = await this.getComponent('PUMP', components, '0');
-            // const pump1 = await this.getComponent('PUMP', components, '1');
-            // const pump2 = await this.getComponent('PUMP', components, '2');
-            // const blower0 = await this.getComponent('BLOWER', components, '0');
-            // const blower1 = await this.getComponent('BLOWER', components, '1');
-            // const blower2 = await this.getComponent('BLOWER', components, '2');
-            // const circulationPump = await this.getComponent('CIRCULATION_PUMP', components);
-            // const heater = await this.getComponent('HEATER', components);
-            // const ozone = await this.getComponent('OZONE', components);
-            //
-            // if (check) {
-            //     if (pump0) await this.addCapability('action_pump_state');
-            //     if (pump1) await this.addCapability('action_pump_state.1');
-            //     if (pump2) await this.addCapability('action_pump_state.2');
-            //     if (blower0) await this.addCapability('action_blower_state');
-            //     if (blower1) await this.addCapability('action_blower_state.1');
-            //     if (blower2) await this.addCapability('action_blower_state.2');
-            // }
-            //
-            // // ------------ Get values --------------
-            // const light = await this.getComponentValue('LIGHT', components);
-            // const tempRangeHigh = (tempRange === 'HIGH');
-            // const tempRangeLow = (tempRange === 'LOW');
-            // const heaterReady = (heaterMode === 'READY');
-            // const runModeReady = (runMode === 'Ready'); // deprecated
-            //
-            // if (tempRangeHigh) {
-            //     this.setCapabilityOptions('target_temperature', {
-            //         min: toCelsius(setupParams.highRangeLow),
-            //         max: toCelsius(setupParams.highRangeHigh)
-            //     });
-            // } else if (tempRangeLow) {
-            //     this.setCapabilityOptions('target_temperature', {
-            //         min: toCelsius(setupParams.lowRangeLow),
-            //         max: toCelsius(setupParams.lowRangeHigh)
-            //     });
-            // }
-            //
-            // if (pump0) {
-            //     const pump0_val = pump0.value === 'HIGH';
-            //     await this.setValue('action_pump_state', pump0_val, check);
-            // }
-            // if (pump1) {
-            //     const pump1_val = pump1.value === 'HIGH';
-            //     await this.setValue('action_pump_state.1', pump1_val, check);
-            // }
-            // if (pump2) {
-            //     const pump2_val = pump2.value === 'HIGH';
-            //     await this.setValue('action_pump_state.2', pump2_val, check);
-            // }
-            // if (blower0) {
-            //     const blower0_val = blower0.value === 'HIGH';
-            //     await this.setValue('action_blower_state', blower0_val, check);
-            // }
-            // if (blower1) {
-            //     const blower1_val = blower1.value === 'HIGH';
-            //     await this.setValue('action_blower_state.1', blower1_val, check);
-            // }
-            // if (blower2) {
-            //     const blower2_val = blower2.value === 'HIGH';
-            //     await this.setValue('action_blower_state.2', blower2_val, check);
-            // }
-            // if (heater) {
-            //     await this.setValue('measure_heater', heater.value, check);
-            // }
-            //
-            // if (circulationPump) {
-            //     await this.setValue('measure_circulation_pump', circulationPump.value, check);
-            // }
-            //
-            // if (ozone) {
-            //     await this.setValue('measure_ozone', ozone.value, check);
-            // }
-            //
-            // await this.setValue('action_update_data', false, check);
-            // await this.setValue('locked', panelLock, check);
-            // await this.setValue('action_light_state', light, check);
-            // await this.setValue('action_heater_mode', heaterReady, check);
-            // await this.setValue('action_temp_range', tempRangeHigh, check);
-            // await this.setValue('measure_temperature_range', tempRange, check);
-            // await this.setValue('measure_heater_mode', heaterMode, check);
-            // await this.setValue('measure_online', online, check);
-            // await this.setValue('measure_runmode', runModeReady, check);
-            //
-            // if (currentTemp) await this.setValue('measure_temperature', toCelsius(currentTemp), check, 10, settings.round_temp);
-            // // If desiredTemp is available, compare it to targetDesiredTemp. There should be 0.4 difference for valid value.
-            // // Use also desiredTemp when targetDesiredTemp is at highRangeHigh or lowRangeLow, when tempRange was changed.
-            // // Fallback to targetDesiredTemp and helps desireTemp is not available or update is delayed in the device API.
-            // // Values neet to be Number for the strict comparison.
-            // targetDesiredTemp = Number(targetDesiredTemp);
-            // desiredTemp = Number(desiredTemp);
-            // if (desiredTemp && ((targetDesiredTemp === desiredTemp + 0.4) || targetDesiredTemp === setupParams.highRangeHigh || targetDesiredTemp == setupParams.lowRangeLow)) {
-            //     await this.setValue('target_temperature', toCelsius(desiredTemp), check, 10, settings.round_temp);
-            // } else {
-            //     await this.setValue('target_temperature', toCelsius(targetDesiredTemp - 0.4), check, 10, settings.round_temp);
-            // }
-            //
-            // // Set Spa clock if spa is online and clock_sync is enabled.
-            // // - timeNotSet: true if time is not set in the spa
-            // // - military: true if 24h clock is used in the spa
-            // // - settings.clock_24: true if 24h clock is set by user in Homey
-            // // - time difference between spa and Homey is more than 5 minutes
-            // const timeNow = new Date();
-            // const myTZ = this.homey.clock.getTimezone();
-            // const myTime = timeNow.toLocaleString('en-US', {
-            //     hour: '2-digit',
-            //     minute: '2-digit',
-            //     hour12: false,
-            //     timeZone: myTZ
-            // });
-            // const myDate = timeNow.toLocaleString('en-US', {
-            //     day: '2-digit',
-            //     month: '2-digit',
-            //     year: 'numeric',
-            //     timeZone: myTZ
-            // });
-            // const myTimeMinutes = Number(myTime.split(':')[0]) * 60 + Number(myTime.split(':')[1]);
-            // const spaTimeMinutes = (hour * 60) + minute;
-            //
-            // if ((online && settings.clock_sync) && (timeNotSet || military !== settings.clock_24 || (Math.abs(spaTimeMinutes - myTimeMinutes) > 5))) {
-            //     this.homey.app.log(`[Device] ${this.getName()} - setClock ${myDate} ${myTime} ${myTZ} clock_24=${settings.clock_24}`);
-            //     await this._controlMySpaClient.setTime(myDate, myTime, settings.clock_24);
-            // } else {
-            //     this.homey.app.log(`[Device] ${this.getName()} - setClock - clock sync disabled or clock is in sync.`);
-            // }
+            await this.setCapabilityValue('measure_boiler_central_heating_mode', cicStats.boiler.otFbChModeActive)
+            await this.setCapabilityValue('measure_boiler_cic_central_heating_on', cicStats.boiler.otTbCH)
+            await this.setCapabilityValue('measure_boiler_cic_central_heating_onoff_boiler', cicStats.boiler.oTtbTurnOnOffBoilerOn)
+            await this.setCapabilityValue('measure_boiler_domestic_hot_water_on', cicStats.boiler.otFbDhwActive)
+            await this.setCapabilityValue('measure_boiler_flame_on', cicStats.boiler.otFbFlameOn)
+            await this.setCapabilityValue('measure_boiler_temperature_incoming_water', cicStats.boiler.otFbSupplyInletTemperature)
+            await this.setCapabilityValue('measure_boiler_temperature_outgoing_water', cicStats.boiler.otFbSupplyOutletTemperature)
+            await this.setCapabilityValue('measure_flowmeter_water_flow_speed', cicStats.flowMeter.flowRate)
+            await this.setCapabilityValue('measure_flowmeter_water_supply_temperature', cicStats.flowMeter.waterSupplyTemperature)
+
+            await this.setHeatPumpValues('heatpump1', cicStats.hp1)
+
+            if (cicStats.hp2) {
+                await this.setHeatPumpValues('heatpump2', cicStats.hp2)
+            }
+
+            await this.setCapabilityValue('measure_quality_control_supervisory_control_mode', cicStats.qc.supervisoryControlMode.toString());
+            await this.setCapabilityValue('measure_thermostat_cooling_on', cicStats.thermostat.otFtCoolingEnabled)
+            await this.setCapabilityValue('measure_thermostat_domestic_hot_water_on', cicStats.thermostat.otFtDhwEnabled)
+            await this.setCapabilityValue('measure_thermostat_heating_on', cicStats.thermostat.otFtChEnabled)
+            await this.setCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature)
+            await this.setCapabilityValue('measure_thermostat_setpoint_room_temperature', cicStats.thermostat.otFtRoomSetpoint)
+            await this.setCapabilityValue('measure_thermostat_setpoint_water_supply_temperature', cicStats.thermostat.otFtControlSetpoint)
         } catch (error) {
             this.homey.app.error(error);
         }
+    }
+
+    async setHeatPumpValues(name: string, hp: CicHeatpump) {
+        await this.setCapabilityValue(`measure_heatpump_limited_by_cop.${name}`, hp.limitedByCop)
+        await this.setCapabilityValue(`measure_heatpump_silent_mode.${name}`, hp.silentModeStatus)
+        await this.setCapabilityValue(`measure_heatpump_temperature_incoming_water.${name}`, hp.temperatureWaterIn)
+        await this.setCapabilityValue(`measure_heatpump_temperature_outgoing_water.${name}`, hp.temperatureWaterOut)
+        await this.setCapabilityValue(`measure_heatpump_temperature_outside.${name}`, hp.temperatureOutside)
+        await this.setCapabilityValue(`measure_heatpump_working_mode.${name}`, hp.getMainWorkingMode.toString())
+    }
+
+    async setCapabilityValuesInterval(update_interval_seconds: number) {
+        try {
+            const refreshInterval = 1000 * update_interval_seconds;
+
+            this.homey.app.log(`[Device] ${this.getName()} - onPollInterval =>`, refreshInterval);
+            this.onPollInterval = setInterval(this.setCapabilityValues.bind(this), refreshInterval);
+        } catch (error: unknown) {
+            await this.setUnavailable(JSON.stringify(error));
+            this.homey.app.log(error);
+        }
+    }
+
+    async clearIntervals() {
+        this.homey.app.log(`[Device] ${this.getName()} - clearIntervals`);
+        await clearInterval(this.onPollInterval);
     }
 
     // async setValue(key: string, value: string, firstRun = false, delay = 10, roundNumber = false) {

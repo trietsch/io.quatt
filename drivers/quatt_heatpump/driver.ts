@@ -10,7 +10,6 @@ class QuattHeatpumpDriver extends Homey.Driver {
         //   const settings = this.homey.getSettings();
         //
         //   this.homey.app.log('[Device] - init =>', this.homey.getName());
-        //   this.homey.app.setDevices(this);
         //
         //   this.homey.app.setDebugLogging(settings.debug);
         //
@@ -46,8 +45,7 @@ class QuattHeatpumpDriver extends Homey.Driver {
     }
 
     /**
-     * onPairListDevices is called when a user is adding a device and the 'list_devices' view is called.
-     * This should return an array with the data of devices that are available for pairing.
+     * TODO should also be able to select a device if the mac address is not in the known prefixes
      */
     async onPairListDevices() {
         const discoveryStrategy = this.getDiscoveryStrategy();
@@ -56,20 +54,18 @@ class QuattHeatpumpDriver extends Homey.Driver {
 
         this.homey.app.log('discoveryResults', discoveryResults);
 
-        const devices = Object.values(discoveryResults).map(discoveryResult => {
-            return {
-                name: "Quatt Heatpump",
-                data: {
-                    id: discoveryResult.id,
-                },
-                // TODO make sure that we can deal with changing IP addresses
-                store: {
-                    address: discoveryResult.address,
-                },
-            };
-        });
-
-        return devices;
+        return Object.values(discoveryResults)
+            .map(discoveryResult => {
+                return {
+                    name: "Quatt Heatpump",
+                    data: {
+                        id: discoveryResult.id,
+                    },
+                    store: {
+                        address: discoveryResult.address,
+                    },
+                };
+            });
     }
 
 }

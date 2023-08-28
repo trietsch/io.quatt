@@ -1,0 +1,37 @@
+{
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "General settings",
+        "nl": "Algemene instellingen"
+      },
+      "children": [
+        {
+          "id": "update_interval",
+          "type": "number",
+          "label": {
+            "en": "Update interval",
+            "nl": "Update interval"
+          },
+          "min": 10,
+          "max": 3600,
+          "units": {
+            "en": "seconds",
+            "nl": "seconden"
+          },
+          "value": 600
+        },
+        {
+          "id": "round_temp",
+          "type": "checkbox",
+          "label": {
+            "en": "Round temperature",
+            "nl": "Temperatuur afronden"
+          },
+          "value": false
+        }
+      ]
+    }
+  ]
+}
