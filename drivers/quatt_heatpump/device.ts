@@ -65,6 +65,7 @@ class QuattHeatpump extends Homey.Device {
         }
     }
 
+    // TODO dynamically add the capabilities to the device if heatpump 2 exists. Otherwise default to the standard names.
     async setHeatPumpValues(name: string, hp: CicHeatpump) {
         await this.setCapabilityValue(`measure_heatpump_limited_by_cop.${name}`, hp.limitedByCop)
         await this.setCapabilityValue(`measure_heatpump_silent_mode.${name}`, hp.silentModeStatus)
