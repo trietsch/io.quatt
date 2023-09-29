@@ -47,10 +47,11 @@ class QuattHeatpump extends Homey.Device {
             await this.setCapabilityValue('measure_flowmeter_water_flow_speed', cicStats.flowMeter.flowRate)
             await this.setCapabilityValue('measure_flowmeter_water_supply_temperature', cicStats.flowMeter.waterSupplyTemperature)
 
-            await this.setHeatPumpValues('heatpump1', cicStats.hp1)
-
-            if (cicStats.hp2) {
-                await this.setHeatPumpValues('heatpump2', cicStats.hp2)
+            if (!cicStats.hp2) {
+                await this.setHeatPumpValues(cicStats.hp1);
+            } else {
+                await this.setHeatPumpValues(cicStats.hp1, 'heatpump1');
+                await this.setHeatPumpValues(cicStats.hp2, 'heatpump2');
             }
 
             await this.setCapabilityValue('measure_quality_control_supervisory_control_mode', cicStats.qc.supervisoryControlMode.toString());
@@ -65,14 +66,18 @@ class QuattHeatpump extends Homey.Device {
         }
     }
 
-    // TODO dynamically add the capabilities to the device if heatpump 2 exists. Otherwise default to the standard names.
-    async setHeatPumpValues(name: string, hp: CicHeatpump) {
-        await this.setCapabilityValue(`measure_heatpump_limited_by_cop.${name}`, hp.limitedByCop)
-        await this.setCapabilityValue(`measure_heatpump_silent_mode.${name}`, hp.silentModeStatus)
-        await this.setCapabilityValue(`measure_heatpump_temperature_incoming_water.${name}`, hp.temperatureWaterIn)
-        await this.setCapabilityValue(`measure_heatpump_temperature_outgoing_water.${name}`, hp.temperatureWaterOut)
-        await this.setCapabilityValue(`measure_heatpump_temperature_outside.${name}`, hp.temperatureOutside)
-        await this.setCapabilityValue(`measure_heatpump_working_mode.${name}`, hp.getMainWorkingMode.toString())
+    async setHeatPumpValues(hp: CicHeatpump, name?: string) {
+        let suffix = ""
+        if (name) {
+            suffix = `.${name}`;
+        }
+
+        await this.setCapabilityValue(`measure_heatpump_limited_by_cop${suffix}`, hp.limitedByCop);
+        await this.setCapabilityValue(`measure_heatpump_silent_mode${suffix}`, hp.silentModeStatus)
+        await this.setCapabilityValue(`measure_heatpump_temperature_incoming_water${suffix}`, hp.temperatureWaterIn)
+        await this.setCapabilityValue(`measure_heatpump_temperature_outgoing_water${suffix}`, hp.temperatureWaterOut)
+        await this.setCapabilityValue(`measure_heatpump_temperature_outside${suffix}`, hp.temperatureOutside)
+        await this.setCapabilityValue(`measure_heatpump_working_mode${suffix}`, hp.getMainWorkingMode.toString())
     }
 
     async setCapabilityValuesInterval(update_interval_seconds: number) {
