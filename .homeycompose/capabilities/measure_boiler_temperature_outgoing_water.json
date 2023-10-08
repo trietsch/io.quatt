@@ -6,6 +6,7 @@
   },
   "description": "otFbSupplyOutletTemperature: The temperature of the water coming out of the boiler (in degrees Celsius).",
   "uiComponent": "sensor",
+  "icon": "assets/icons/boiler-outgoing-water-temperature.svg",
   "getable": true,
   "setable": false,
   "units": {

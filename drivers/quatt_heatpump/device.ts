@@ -6,6 +6,30 @@ class QuattHeatpump extends Homey.Device {
     private quattClient!: QuattClient;
     private onPollInterval!: NodeJS.Timer;
 
+    private capabilitiesAdded = false;
+    private singleHeatpumpCapabilities = [
+        "measure_heatpump_limited_by_cop",
+        "measure_heatpump_silent_mode",
+        "measure_heatpump_temperature_incoming_water",
+        "measure_heatpump_temperature_outgoing_water",
+        "measure_heatpump_temperature_outside",
+        "measure_heatpump_working_mode",
+    ];
+    private multipleHeatpumpCapabilities = [
+        "measure_heatpump_limited_by_cop.heatpump1",
+        "measure_heatpump_silent_mode.heatpump1",
+        "measure_heatpump_temperature_incoming_water.heatpump1",
+        "measure_heatpump_temperature_outgoing_water.heatpump1",
+        "measure_heatpump_temperature_outside.heatpump1",
+        "measure_heatpump_working_mode.heatpump1",
+        "measure_heatpump_limited_by_cop.heatpump2",
+        "measure_heatpump_silent_mode.heatpump2",
+        "measure_heatpump_temperature_incoming_water.heatpump2",
+        "measure_heatpump_temperature_outgoing_water.heatpump2",
+        "measure_heatpump_temperature_outside.heatpump2",
+        "measure_heatpump_working_mode.heatpump2",
+    ];
+
     /**
      * onInit is called when the device is initialized.
      */
@@ -24,15 +48,10 @@ class QuattHeatpump extends Homey.Device {
         this.log('QuattHeatpump has been added');
     }
 
-    onDiscoveryAddressChanged(discoveryResult: DiscoveryResultMAC) {
-        this.quattClient.setDeviceAddress(discoveryResult.address);
-    }
-
     async setCapabilityValues() {
-        this.homey.app.log(`[Device] ${this.getName()} - setCapabilityValues`);
+        this.log('Updating capability values');
 
         try {
-            const settings = this.getSettings();
             const cicStats = await this.quattClient.getCicStats();
 
             await this.setCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature);
@@ -48,8 +67,10 @@ class QuattHeatpump extends Homey.Device {
             await this.setCapabilityValue('measure_flowmeter_water_supply_temperature', cicStats.flowMeter.waterSupplyTemperature)
 
             if (!cicStats.hp2) {
+                await this.addCapabilities(this.singleHeatpumpCapabilities);
                 await this.setHeatPumpValues(cicStats.hp1);
             } else {
+                await this.addCapabilities(this.multipleHeatpumpCapabilities);
                 await this.setHeatPumpValues(cicStats.hp1, 'heatpump1');
                 await this.setHeatPumpValues(cicStats.hp2, 'heatpump2');
             }
@@ -80,56 +101,35 @@ class QuattHeatpump extends Homey.Device {
         await this.setCapabilityValue(`measure_heatpump_working_mode${suffix}`, hp.getMainWorkingMode.toString())
     }
 
+    async addCapabilities(capabilities: string[]) {
+        if (!this.capabilitiesAdded) {
+            for (const capability of capabilities) {
+                await this.addCapabilityIfNotPresent(capability)
+            }
+        }
+    }
+
+    async addCapabilityIfNotPresent(capability: string) {
+        if (!this.hasCapability(capability)) {
+            await this.addCapability(capability);
+        }
+    }
+
     async setCapabilityValuesInterval(update_interval_seconds: number) {
         try {
             const refreshInterval = 1000 * update_interval_seconds;
 
-            this.homey.app.log(`[Device] ${this.getName()} - onPollInterval =>`, refreshInterval);
+            this.log(`[Device] ${this.getName()} - onPollInterval =>`, refreshInterval);
             this.onPollInterval = setInterval(this.setCapabilityValues.bind(this), refreshInterval);
         } catch (error: unknown) {
             await this.setUnavailable(JSON.stringify(error));
-            this.homey.app.log(error);
+            this.log(error);
         }
     }
 
     async clearIntervals() {
-        this.homey.app.log(`[Device] ${this.getName()} - clearIntervals`);
         await clearInterval(this.onPollInterval);
     }
-
-    // async setValue(key: string, value: string, firstRun = false, delay = 10, roundNumber = false) {
-    //     this.homey.app.log(`[Device] ${this.getName()} - setValue => ${key} => `, value);
-    //
-    //     if (this.hasCapability(key)) {
-    //         const newKey = key.replace('.', '_');
-    //         const oldVal = await this.getCapabilityValue(key);
-    //         const newVal = roundNumber ? Math.round(value) : value;
-    //
-    //         this.homey.app.log(`[Device] ${this.getName()} - setValue - oldValue => ${key} => `, oldVal, newVal);
-    //
-    //         if (delay) {
-    //             await sleep(delay);
-    //         }
-    //
-    //         await this.setCapabilityValue(key, newVal);
-    //
-    //         if (typeof newVal === 'boolean' && oldVal !== newVal && !firstRun) {
-    //             const triggers = this.homey.manifest.flow.triggers;
-    //             const triggerExists = triggers.find((trigger) => trigger.id === `${newKey}_changed`);
-    //
-    //             if (triggerExists) {
-    //                 await this.homey.flow
-    //                     .getDeviceTriggerCard(`${newKey}_changed`)
-    //                     .trigger(this)
-    //                     .catch(this.error)
-    //                     .then(this.homey.app.log(`[Device] ${this.getName()} - setValue ${newKey}_changed - Triggered: "${newKey} | ${newVal}"`));
-    //             }
-    //         } else if (oldVal !== newVal && !firstRun) {
-    //             this.homey.app.log(`[Device] ${this.getName()} - setValue ${newKey}_changed - Triggered: "${newKey} | ${newVal}"`);
-    //         }
-    //     }
-    // }
-
 }
 
 module.exports = QuattHeatpump;

@@ -6,6 +6,7 @@
   },
   "description": "flowRate: The current flow rate of the water in the heating circuit (in liters per hour).",
   "uiComponent": "sensor",
+  "icon": "assets/icons/flow-speed.svg",
   "getable": true,
   "setable": false,
   "units": {

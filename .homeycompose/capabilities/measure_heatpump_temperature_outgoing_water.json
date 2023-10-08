@@ -6,6 +6,7 @@
   },
   "description": "temperatureWaterOut: The current temperature of the water coming out of the heatpump (in degrees Celsius).",
   "uiComponent": "sensor",
+  "icon": "assets/icons/heatpump-outgoing-water-temperature.svg",
   "getable": true,
   "setable": false,
   "units": {

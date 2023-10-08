@@ -6,6 +6,7 @@
   },
   "description": "waterSupplyTemperature: The current temperature of the water supplied to the boiler (in degrees Celsius).",
   "uiComponent": "sensor",
+  "icon": "assets/icons/flow-temperature.svg",
   "getable": true,
   "setable": false,
   "units": {

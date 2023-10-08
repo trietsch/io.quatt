@@ -33,7 +33,6 @@
         "nl": "Quatt"
       },
       "class": "heater",
-      "discovery": "detect-cic",
       "capabilities": [
         "measure_boiler_central_heating_mode",
         "measure_boiler_cic_central_heating_on",
@@ -44,18 +43,6 @@
         "measure_boiler_temperature_outgoing_water",
         "measure_flowmeter_water_flow_speed",
         "measure_flowmeter_water_supply_temperature",
-        "measure_heatpump_limited_by_cop.heatpump1",
-        "measure_heatpump_silent_mode.heatpump1",
-        "measure_heatpump_temperature_incoming_water.heatpump1",
-        "measure_heatpump_temperature_outgoing_water.heatpump1",
-        "measure_heatpump_temperature_outside.heatpump1",
-        "measure_heatpump_working_mode.heatpump1",
-        "measure_heatpump_limited_by_cop.heatpump2",
-        "measure_heatpump_silent_mode.heatpump2",
-        "measure_heatpump_temperature_incoming_water.heatpump2",
-        "measure_heatpump_temperature_outgoing_water.heatpump2",
-        "measure_heatpump_temperature_outside.heatpump2",
-        "measure_heatpump_working_mode.heatpump2",
         "measure_quality_control_supervisory_control_mode",
         "measure_thermostat_cooling_on",
         "measure_thermostat_domestic_hot_water_on",
@@ -169,26 +156,26 @@
     "measure_boiler_central_heating_mode": {
       "type": "boolean",
       "title": {
-        "en": "Central Heating",
-        "nl": "Centrale Verwarming"
+        "en": "CV Mode Active",
+        "nl": "CV Modus Actief"
       },
       "description": "otFbChModeActive: A boolean value indicating if the central heating mode is active.",
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/central-heating-enabled.svg"
     },
     "measure_boiler_cic_central_heating_on": {
       "type": "boolean",
       "title": {
-        "en": "Central Heating On",
-        "nl": "Centrale Verwarming Aan"
+        "en": "CV Currently Heating",
+        "nl": "CV Aan Het Verwarmen"
       },
       "description": "otTbCH: A boolean value representing CiC’s command to switch the boiler to heating mode.",
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/central-heating-currently-heating.svg"
     },
     "measure_boiler_cic_central_heating_onoff_boiler": {
       "type": "boolean",
@@ -200,7 +187,7 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/on-off-boiler.svg"
     },
     "measure_boiler_domestic_hot_water_on": {
       "type": "boolean",
@@ -208,11 +195,11 @@
         "en": "Hot Water Active",
         "nl": "Warm Water Actief"
       },
-      "description": "otFbDhwActive: A boolean value indicating if the domestic hot water (tap water?) mode is active.",
+      "description": "otFbDhwActive: A boolean value indicating if the domestic hot water (tap water) mode is active.",
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/hot-water.svg"
     },
     "measure_boiler_flame_on": {
       "type": "boolean",
@@ -224,7 +211,7 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/boiler-flame.svg"
     },
     "measure_boiler_temperature_incoming_water": {
       "type": "number",
@@ -234,6 +221,7 @@
       },
       "description": "otFbSupplyInletTemperature: The temperature of the water going into the boiler (in degrees Celsius).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/boiler-incoming-water-temperature.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -251,6 +239,7 @@
       },
       "description": "otFbSupplyOutletTemperature: The temperature of the water coming out of the boiler (in degrees Celsius).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/boiler-outgoing-water-temperature.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -268,6 +257,7 @@
       },
       "description": "flowRate: The current flow rate of the water in the heating circuit (in liters per hour).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/flow-speed.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -285,6 +275,7 @@
       },
       "description": "waterSupplyTemperature: The current temperature of the water supplied to the boiler (in degrees Celsius).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/flow-temperature.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -304,7 +295,7 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/bad-performance.svg"
     },
     "measure_heatpump_silent_mode": {
       "type": "boolean",
@@ -316,7 +307,7 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/silent-mode.svg"
     },
     "measure_heatpump_temperature_incoming_water": {
       "type": "number",
@@ -326,6 +317,7 @@
       },
       "description": "temperatureWaterIn: The current temperature of the water going into the heatpump (in degrees Celsius).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/heatpump-incoming-water-temperature.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -343,6 +335,7 @@
       },
       "description": "temperatureWaterOut: The current temperature of the water coming out of the heatpump (in degrees Celsius).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/heatpump-outgoing-water-temperature.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -360,6 +353,7 @@
       },
       "description": "temperatureOutside: The current ambient temperature outside the heatpump (in degrees Celsius).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/outside-temperature.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -379,7 +373,7 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/temp.svg",
+      "icon": "assets/icons/heatpump-mode.svg",
       "values": [
         {
           "id": "0",
@@ -407,7 +401,7 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/temp.svg",
+      "icon": "assets/icons/heatpump-quality-control-mode.svg",
       "values": [
         {
           "id": "0",
@@ -491,7 +485,7 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/thermostat-cooling.svg"
     },
     "measure_thermostat_domestic_hot_water_on": {
       "type": "boolean",
@@ -503,19 +497,19 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/thermostat-hot-water.svg"
     },
     "measure_thermostat_heating_on": {
       "type": "boolean",
       "title": {
-        "en": "Thermostat Heating On",
-        "nl": "Thermostaat verwarming aan"
+        "en": "Thermostat heating",
+        "nl": "Thermostaat verwarmt"
       },
       "description": "otFtChEnabled: A boolean value representing command from thermostat to switch on heating.",
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/wifi.svg"
+      "icon": "assets/icons/thermostat-heating.svg"
     },
     "measure_thermostat_room_temperature": {
       "type": "number",
@@ -525,6 +519,7 @@
       },
       "description": "otFtRoomTemperature: The current temperature of the room (in degrees Celsius).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/thermostat-room-temperature.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -542,6 +537,7 @@
       },
       "description": "otFtRoomSetpoint: The current setpoint temperature for the room (in degrees Celsius).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/thermostat-setpoint-room-temperature.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -559,6 +555,7 @@
       },
       "description": "otFtControlSetpoint: The current setpoint for water supply temperature from the thermostat (in degrees Celsius).",
       "uiComponent": "sensor",
+      "icon": "assets/icons/thermostat-setpoint-water-supply-temperature.svg",
       "getable": true,
       "setable": false,
       "units": {
@@ -567,20 +564,6 @@
       },
       "decimals": 2,
       "step": 0.01
-    }
-  },
-  "discovery": {
-    "detect-cic": {
-      "type": "mac",
-      "mac": {
-        "manufacturer": [
-          [
-            28,
-            80,
-            30
-          ]
-        ]
-      }
     }
   }
 }

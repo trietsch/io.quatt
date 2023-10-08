@@ -1,12 +1,12 @@
 {
   "type": "boolean",
   "title": {
-    "en": "Thermostat Heating On",
-    "nl": "Thermostaat verwarming aan"
+    "en": "Thermostat heating",
+    "nl": "Thermostaat verwarmt"
   },
   "description": "otFtChEnabled: A boolean value representing command from thermostat to switch on heating.",
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/wifi.svg"
+  "icon": "assets/icons/thermostat-heating.svg"
 }

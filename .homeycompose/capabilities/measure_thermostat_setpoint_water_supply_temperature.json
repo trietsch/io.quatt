@@ -6,6 +6,7 @@
   },
   "description": "otFtControlSetpoint: The current setpoint for water supply temperature from the thermostat (in degrees Celsius).",
   "uiComponent": "sensor",
+  "icon": "assets/icons/thermostat-setpoint-water-supply-temperature.svg",
   "getable": true,
   "setable": false,
   "units": {

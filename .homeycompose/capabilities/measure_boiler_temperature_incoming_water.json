@@ -6,6 +6,7 @@
   },
   "description": "otFbSupplyInletTemperature: The temperature of the water going into the boiler (in degrees Celsius).",
   "uiComponent": "sensor",
+  "icon": "assets/icons/boiler-incoming-water-temperature.svg",
   "getable": true,
   "setable": false,
   "units": {

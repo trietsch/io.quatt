@@ -6,6 +6,7 @@
   },
   "description": "otFtRoomSetpoint: The current setpoint temperature for the room (in degrees Celsius).",
   "uiComponent": "sensor",
+  "icon": "assets/icons/thermostat-setpoint-room-temperature.svg",
   "getable": true,
   "setable": false,
   "units": {

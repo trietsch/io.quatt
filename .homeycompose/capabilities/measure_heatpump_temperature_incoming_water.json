@@ -6,6 +6,7 @@
   },
   "description": "temperatureWaterIn: The current temperature of the water going into the heatpump (in degrees Celsius).",
   "uiComponent": "sensor",
+  "icon": "assets/icons/heatpump-incoming-water-temperature.svg",
   "getable": true,
   "setable": false,
   "units": {

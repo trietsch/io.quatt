@@ -8,7 +8,7 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/temp.svg",
+  "icon": "assets/icons/heatpump-mode.svg",
   "values": [
     {
       "id": "0",

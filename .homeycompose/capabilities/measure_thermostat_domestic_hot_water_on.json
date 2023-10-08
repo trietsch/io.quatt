@@ -8,5 +8,5 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/wifi.svg"
+  "icon": "assets/icons/thermostat-hot-water.svg"
 }

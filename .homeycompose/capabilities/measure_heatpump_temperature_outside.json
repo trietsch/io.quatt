@@ -6,6 +6,7 @@
   },
   "description": "temperatureOutside: The current ambient temperature outside the heatpump (in degrees Celsius).",
   "uiComponent": "sensor",
+  "icon": "assets/icons/outside-temperature.svg",
   "getable": true,
   "setable": false,
   "units": {
