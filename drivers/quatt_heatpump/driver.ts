@@ -1,6 +1,7 @@
 import Homey from 'homey';
 import axios from "axios";
 import {Socket} from "net";
+import {QuattClient} from "../../lib/quatt";
 
 class QuattHeatpumpDriver extends Homey.Driver {
 
@@ -126,9 +127,8 @@ class QuattHeatpumpDriver extends Homey.Driver {
 
     private async verifyIsQuatt(address: string) {
         try {
-            const response = await axios.get(`http://${address}:8080/beta/feed/data.json`);
-            const data = response.data;
-            return true
+            let client = new QuattClient(address);
+            return await client.getCicStats(false) != null;
         } catch (error) {
             return false
         }

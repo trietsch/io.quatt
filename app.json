@@ -7,6 +7,7 @@
   "platforms": [
     "local"
   ],
+  "brandColor": "#000000",
   "name": {
     "en": "Quatt"
   },
@@ -26,6 +27,23 @@
     "name": "Robin Trietsch",
     "email": "homey@trietsch.dev"
   },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Robin Trietsch",
+        "email": "homey@trietsch.dev"
+      }
+    ],
+    "translators": [
+      {
+        "name": "🇬🇧 Robin Trietsch"
+      },
+      {
+        "name": "🇳🇱 Robin Trietsch"
+      }
+    ]
+  },
+  "source": "https://github.com/trietsch/io.quatt",
   "drivers": [
     {
       "name": {

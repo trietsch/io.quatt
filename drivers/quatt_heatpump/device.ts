@@ -54,6 +54,11 @@ class QuattHeatpump extends Homey.Device {
         try {
             const cicStats = await this.quattClient.getCicStats();
 
+            if (!cicStats) {
+                this.log('Unable to fetch data from Quatt CIC');
+                return;
+            }
+
             await this.setCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature);
 
             await this.setCapabilityValue('measure_boiler_central_heating_mode', cicStats.boiler.otFbChModeActive)
