@@ -1,5 +1,8 @@
 {
   "0.1.0": {
     "en": "Automatic device discovery, Quatt sensor value readings"
+  },
+  "0.1.1": {
+    "en": "Updated readme and app images"
   }
 }
