@@ -6,21 +6,29 @@
   "platforms": [
     "local"
   ],
-  "brandColor": "#000000",
+  "brandColor": "#8ebf92",
   "name": {
-    "en": "Quatt"
+    "en": "Quatt",
+    "nl": "Quatt"
   },
   "description": {
-    "en": "Adds support for reading Quatt CIC data"
+    "en": "Know when your Quatt heatpump is heating your house",
+    "nl": "Weet wanneer je Quatt warmtepomp je huis verwarmt"
   },
+  "tags": [
+    "heatpump",
+    "quatt",
+    "energy",
+    "water",
+    "heating"
+  ],
   "category": [
     "energy"
   ],
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
-    "large": "/assets/images/large.png",
-    "xlarge": "/assets/images/xlarge.png"
+    "large": "/assets/images/large.png"
   },
   "author": {
     "name": "Robin Trietsch",
@@ -42,5 +50,20 @@
       }
     ]
   },
-  "source": "https://github.com/trietsch/io.quatt"
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "robintrietsch"
+      },
+      "bunq": {
+        "username": "martijnpoppen"
+      }
+    }
+  },
+  "source": "https://github.com/trietsch/io.quatt",
+  "homeyCommunityTopicId": 91446,
+  "support": "https://community.homey.app/t/app-pro-quatt/91446",
+  "bugs": {
+    "url": "https://community.homey.app/t/app-pro-quatt/91446"
+  }
 }
