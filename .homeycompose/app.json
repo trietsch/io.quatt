@@ -15,13 +15,15 @@
     "en": "Know when your Quatt heatpump is heating your house",
     "nl": "Weet wanneer je Quatt warmtepomp je huis verwarmt"
   },
-  "tags": [
-    "heatpump",
-    "quatt",
-    "energy",
-    "water",
-    "heating"
-  ],
+  "tags": {
+    "en": [
+      "heatpump",
+      "quatt",
+      "energy",
+      "water",
+      "heating"
+    ]
+  },
   "category": [
     "energy"
   ],
