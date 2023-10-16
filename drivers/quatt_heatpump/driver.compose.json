@@ -5,6 +5,7 @@
   },
   "class": "heater",
   "capabilities": [
+    "measure_power",
     "measure_boiler_central_heating_mode",
     "measure_boiler_cic_central_heating_on",
     "measure_boiler_cic_central_heating_onoff_boiler",
@@ -23,6 +24,15 @@
     "measure_thermostat_setpoint_water_supply_temperature"
   ],
   "capabilitiesOptions": {
+    "measure_power": {
+      "approximated": true
+    },
+    "measure_heatpump_thermal_power.heatpump1": {
+      "title": {
+        "en": "Pump 1: Limited by COP",
+        "nl": "Pomp 1: Beperkt door COP"
+      }
+    },
     "measure_heatpump_limited_by_cop.heatpump1": {
       "title": {
         "en": "Pump 1: Limited by COP",
@@ -57,6 +67,12 @@
       "title": {
         "en": "Pump 1: Heatpump working mode",
         "nl": "Pomp 1: Warmtepomp Modus"
+      }
+    },
+    "measure_heatpump_thermal_power.heatpump2": {
+      "title": {
+        "en": "Pump 2: Thermal power",
+        "nl": "Pomp 2: Thermisch vermogen"
       }
     },
     "measure_heatpump_limited_by_cop.heatpump2": {

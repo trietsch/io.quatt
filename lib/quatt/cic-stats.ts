@@ -1,14 +1,3 @@
-export interface CicStats {
-    time: CicTime;
-    hp1: CicHeatpump;
-    hp2?: CicHeatpump;
-    boiler: CicBoiler;
-    flowMeter: CicFlowMeter;
-    thermostat: CicThermostat;
-    qc: CicQualityControl;
-    system: CicSystem;
-}
-
 export interface CicTime {
     ts: bigint;
     tsHuman: string;
@@ -22,6 +11,8 @@ export interface CicHeatpump {
     temperatureWaterOut: number;
     silentModeStatus: boolean;
     limitedByCop: boolean;
+    powerInput: number;
+    power: number
 }
 
 export interface CicBoiler {
@@ -55,4 +46,15 @@ export interface CicQualityControl {
 
 export interface CicSystem {
     hostName: string;
+}
+
+export interface CicStats {
+    time: CicTime;
+    hp1: CicHeatpump;
+    hp2?: CicHeatpump;
+    boiler: CicBoiler;
+    flowMeter: CicFlowMeter;
+    thermostat: CicThermostat;
+    qc: CicQualityControl;
+    system: CicSystem;
 }

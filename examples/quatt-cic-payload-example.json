@@ -10,7 +10,9 @@
     "temperatureWaterIn": 17.08,
     "temperatureWaterOut": 17.49,
     "silentModeStatus": false,
-    "limitedByCop": false
+    "limitedByCop": false,
+    "powerInput": 5.150232,
+    "power": 0
   },
   "hp2": null,
   "boiler": {

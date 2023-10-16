@@ -27,3 +27,5 @@ Available sensor values:
 - Heatpump working mode
 - Thermostat Hot Water On
 - CV Mode Active
+- Power consumption
+- Thermal power output

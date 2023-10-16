@@ -2,7 +2,7 @@
   "type": "number",
   "title": {
     "en": "Room temperature setpoint",
-    "nl": "Ingestelde kamer temperatuure"
+    "nl": "Ingestelde kamer temperatuur"
   },
   "description": "otFtRoomSetpoint: The current setpoint temperature for the room (in degrees Celsius).",
   "uiComponent": "sensor",

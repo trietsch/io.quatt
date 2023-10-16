@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Thermal power",
+    "nl": "Thermisch vermogen"
+  },
+  "description": "power: The thermal power output of the heatpump (in Watts).",
+  "uiComponent": "sensor",
+  "icon": "assets/icons/thermal-power.svg",
+  "getable": true,
+  "setable": false,
+  "units": {
+    "en": "Watt",
+    "nl": "Watt"
+  },
+  "decimals": 2,
+  "step": 0.01
+}
