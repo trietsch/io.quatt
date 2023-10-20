@@ -2,9 +2,6 @@ import Homey, {FlowCardTrigger} from 'homey';
 import {QuattClient} from "../../lib/quatt";
 import {CicHeatpump} from "../../lib/quatt/cic-stats";
 
-
-
-
 class QuattHeatpump extends Homey.Device {
     private quattClient!: QuattClient;
     private onPollInterval!: NodeJS.Timer;
@@ -41,7 +38,6 @@ class QuattHeatpump extends Homey.Device {
         ['measure_thermostat_cooling_on_changed', this.defaultBooleanTriggerMapping],
         ['measure_thermostat_domestic_hot_water_on_changed', this.defaultBooleanTriggerMapping],
         ['measure_thermostat_heating_on_changed', this.defaultBooleanTriggerMapping],
-
     ]);
 
     private triggers: Map<string, FlowCardTrigger> = new Map();
