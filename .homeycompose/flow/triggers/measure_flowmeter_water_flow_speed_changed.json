@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Water flow speed changed",
+    "nl": "Water doorvoersnelheid is veranderd"
+  },
+  "hint": {
+    "en": "This card starts when the current flow rate of the water in the heating circuit has changed.",
+    "nl": "Deze kaart start wanneer de huidige doorvoersnelheid van het water in het verwarmingscircuit is veranderd."
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Limited by COP changed",
+    "nl": "Beperkt door COP is veranderd"
+  },
+  "titleFormatted": {
+    "en": "Heatpump is [[state]]",
+    "nl": "Warmtepomp wordt [[state]]"
+  },
+  "hint": {
+    "en": "This card triggers whenever value indicating that the heatpump is limited by COP changes. The heatpump might be limited by the COP (Coefficient of Performance) based on energy pricing, current ambient temperature and heat pump outlet temperature.",
+    "nl": "Deze kaart wordt gestart wanneer de waarde die aangeeft dat de warmtepomp beperkt wordt door de COP is veranderd. De warmtepomp kan beperkt worden door de COP (Coefficient of Performance) op basis van energieprijzen, de huidige omgevingstemperatuur en de uitgaande watertemperatuur van de warmtepomp."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "Limited",
+        "nl": "Beperkt"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "limited by COP",
+            "nl": "beperkt door COP"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "not limited by COP",
+            "nl": "niet beperkt door COP"
+          }
+        }
+      ]
+    }
+  ]
+}

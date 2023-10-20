@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Boiler water supply temperature changed",
+    "nl": "Boiler water toevoer temperatuur is veranderd"
+  },
+  "hint": {
+    "en": "This card starts when the current temperature of the water supplied to the boiler has changed.",
+    "nl": "Deze kaart start wanneer de huidige temperatuur van het water dat naar de boiler wordt aangevoerd is veranderd."
+  }
+}

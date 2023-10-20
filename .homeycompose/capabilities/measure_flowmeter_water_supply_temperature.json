@@ -2,7 +2,7 @@
   "type": "number",
   "title": {
     "en": "Boiler water supply temperature",
-    "nl": "Ketel water toevoer temperatuur"
+    "nl": "Boiler water toevoer temperatuur"
   },
   "description": "waterSupplyTemperature: The current temperature of the water supplied to the boiler (in degrees Celsius).",
   "uiComponent": "sensor",
