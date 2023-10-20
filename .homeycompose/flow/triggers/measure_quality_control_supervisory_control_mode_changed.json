@@ -1,0 +1,97 @@
+{
+  "title": {
+    "en": "Supervisory Control Mode changed",
+    "nl": "Controle Modus is veranderd"
+  },
+  "titleFormatted": {
+    "en": "Supervisory Control Mode is: [[state]]",
+    "nl": "Controle Modus is: [[state]]"
+  },
+  "hint": {
+    "en": "This card starts whenever the current supervisory control mode of the heatpump is changed.",
+    "nl": "Deze kaart start wanneer de huidige controle modus van de warmtepomp verandert."
+  },
+  "args": [
+    {
+      "name": "workingMode",
+      "required": true,
+      "title": {
+        "en": "Working mode",
+        "nl": "Werkmodus"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "0",
+          "title": {
+            "en": "Standby",
+            "nl": "Standby"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "Standby - heating",
+            "nl": "Standby - verwarmen"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Heating - heatpump only",
+            "nl": "Heating - alleen warmtepomp"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Heating - heatpump + boiler",
+            "nl": "Verwarmen - warmtepomp + CV"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "Heating - boiler only",
+            "nl": "Verwarmen - alleen CV"
+          }
+        },
+        {
+          "id": "96",
+          "title": {
+            "en": "Anti-freeze protection - boiler on",
+            "nl": "Vorstbeveiliging - CV aan"
+          }
+        },
+        {
+          "id": "97",
+          "title": {
+            "en": "Anti-freeze protection - boiler pre-pump",
+            "nl": "Vorstbeveiliging - CV voorpompen"
+          }
+        },
+        {
+          "id": "98",
+          "title": {
+            "en": "Anti-freeze protection - water circulation",
+            "nl": "Vorstbeveiliging - water circulatie"
+          }
+        },
+        {
+          "id": "99",
+          "title": {
+            "en": "Fault - circulation pump on",
+            "nl": "Error - circulation pump on"
+          }
+        },
+        {
+          "id": "100",
+          "title": {
+            "en": "Commissioning modes",
+            "nl": "Inbedrijfstellings modi"
+          }
+        }
+      ]
+    }
+  ]
+}

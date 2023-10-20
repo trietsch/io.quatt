@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Room temperature setpoint changed",
+    "nl": "Ingestelde kamer temperatuur is veranderd"
+  },
+  "hint": {
+    "en": "This card starts when the current setpoint temperature for the room as set by your central thermostat has changed.",
+    "nl": "Deze kaart start wanneer de ingestelde temperatuur voor de kamer zoals ingesteld door je centrale thermostaat is veranderd."
+  }
+}

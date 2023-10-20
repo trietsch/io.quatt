@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Water supply temperature setpoint changed",
+    "nl": "Ingestelde watertoevoer temperatuur is veranderd"
+  },
+  "hint": {
+    "en": "This card starts when the current setpoint for water supply temperature as set by your central thermostat has changed.",
+    "nl": "Deze kaart start wanneer de ingestelde watertoevoer temperatuur zoals ingesteld door je centrale thermostaat is veranderd."
+  }
+}

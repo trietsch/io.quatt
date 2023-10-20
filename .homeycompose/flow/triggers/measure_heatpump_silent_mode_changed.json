@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Silent mode changed",
+    "nl": "Stille modus is veranderd"
+  },
+  "titleFormatted": {
+    "en": "Silent mode is [[state]]",
+    "nl": "Stille modus is [[state]]"
+  },
+  "hint": {
+    "en": "This card starts whenever the heatpump switches from silent mode.",
+    "nl": "Deze kaart start wanneer de warmtepomp van stille modus verandert."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "Silent mode",
+        "nl": "Stille modus"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "on",
+            "nl": "aan"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "off",
+            "nl": "uit"
+          }
+        }
+      ]
+    }
+  ]
+}

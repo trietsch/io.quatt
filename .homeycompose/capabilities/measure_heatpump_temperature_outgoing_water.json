@@ -2,7 +2,7 @@
   "type": "number",
   "title": {
     "en": "Heatpump outgoing water temperature",
-    "nl": "Warmtepomp water afvoer temperatuur"
+    "nl": "Warmtepomp waterafvoer temperatuur"
   },
   "description": "temperatureWaterOut: The current temperature of the water coming out of the heatpump (in degrees Celsius).",
   "uiComponent": "sensor",

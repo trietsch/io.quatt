@@ -1,7 +1,7 @@
 {
   "type": "boolean",
   "title": {
-    "en": "Thermostat Hot Water On",
+    "en": "Thermostat hot water on",
     "nl": "Thermostaat warm water aan"
   },
   "description": "otFtDhwEnabled: A boolean value indicating if the domestic hot water is enabled.",

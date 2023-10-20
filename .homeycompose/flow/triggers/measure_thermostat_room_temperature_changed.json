@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Current room temperature changed",
+    "nl": "Huidige kamer temperatuur is veranderd"
+  },
+  "hint": {
+    "en": "This card starts when the current temperature of the room as measured by the thermostat has changed. If you have a multiroom thermostat system, this will be your central thermostat that is connected to your boiler/CV.",
+    "nl": "Deze kaart start wanneer de huidige temperatuur van de kamer zoals gemeten door de thermostaat is veranderd. Als je een multiroom systeem hebt, zal dit je centrale thermostaat zijn die verbonden is met je boiler/CV."
+  }
+}

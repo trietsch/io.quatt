@@ -8,7 +8,7 @@
     "nl": "Warmtepomp wordt [[state]]"
   },
   "hint": {
-    "en": "This card triggers whenever value indicating that the heatpump is limited by COP changes. The heatpump might be limited by the COP (Coefficient of Performance) based on energy pricing, current ambient temperature and heat pump outlet temperature.",
+    "en": "This card starts whenever value indicating that the heatpump is limited by COP changes. The heatpump might be limited by the COP (Coefficient of Performance) based on energy pricing, current ambient temperature and heat pump outlet temperature.",
     "nl": "Deze kaart wordt gestart wanneer de waarde die aangeeft dat de warmtepomp beperkt wordt door de COP is veranderd. De warmtepomp kan beperkt worden door de COP (Coefficient of Performance) op basis van energieprijzen, de huidige omgevingstemperatuur en de uitgaande watertemperatuur van de warmtepomp."
   },
   "args": [

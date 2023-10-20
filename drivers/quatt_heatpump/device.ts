@@ -36,6 +36,12 @@ class QuattHeatpump extends Homey.Device {
         ['measure_boiler_cic_central_heating_onoff_boiler_changed', this.defaultBooleanTriggerMapping],
         ['measure_boiler_domestic_hot_water_on_changed', this.defaultBooleanTriggerMapping],
         ['measure_boiler_flame_on_changed', this.defaultBooleanTriggerMapping],
+        ['measure_heatpump_working_mode_changed', new Map<string, string | boolean>([['argument', 'workingMode']])],
+        ['measure_quality_control_supervisory_control_mode_changed', new Map<string, string | boolean>([['argument', 'workingMode']])],
+        ['measure_thermostat_cooling_on_changed', this.defaultBooleanTriggerMapping],
+        ['measure_thermostat_domestic_hot_water_on_changed', this.defaultBooleanTriggerMapping],
+        ['measure_thermostat_heating_on_changed', this.defaultBooleanTriggerMapping],
+
     ]);
 
     private triggers: Map<string, FlowCardTrigger> = new Map();
@@ -119,8 +125,9 @@ class QuattHeatpump extends Homey.Device {
                     let argumentValue = args[argumentName];
                     let mappedValue = triggerMapping!.get(argumentValue);
 
+                    // If there is no mapping, use identity function, i.e. take the argument value as is
                     if (!mappedValue) {
-                        this.log(`[Trigger Run Listener] - Trigger mapping not found for ${trigger.id} and ${argumentValue}`);
+                        mappedValue = argumentValue;
                     }
 
                     this.log(`[Trigger Run Listener] Trigger mapping found for ${trigger.id} and '${argumentValue}' => ${mappedValue}. State => ${state.value}`);

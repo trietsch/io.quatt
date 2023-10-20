@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Heatpump working mode changed",
+    "nl": "Warmtepomp werkmodus is veranderd"
+  },
+  "titleFormatted": {
+    "en": "Heatpump working mode is: [[state]]",
+    "nl": "Warmtepomp werkmodus is: [[state]]"
+  },
+  "hint": {
+    "en": "This card starts whenever the current working mode of the heatpump is changed.",
+    "nl": "Deze kaart start wanneer de huidige werkmodus van de warmtepomp verandert."
+  },
+  "args": [
+    {
+      "name": "workingMode",
+      "required": true,
+      "title": {
+        "en": "Working mode",
+        "nl": "Werkmodus"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "0",
+          "title": {
+            "en": "standby",
+            "nl": "standby"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "heating",
+            "nl": "verwarmen"
+          }
+        }
+      ]
+    }
+  ]
+}

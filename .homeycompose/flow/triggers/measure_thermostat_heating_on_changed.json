@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Thermostat heating on changed",
+    "nl": "Thermostaat verwarming aan is veranderd"
+  },
+  "titleFormatted": {
+    "en": "Thermostat heating is set to [[state]]",
+    "nl": "Thermostaat verwarming aan is ingesteld op [[state]]"
+  },
+  "hint": {
+    "en": "This card starts whenever the value representing the command from thermostat to switch on heating has changed.",
+    "nl": "Deze kaart start wanneer de het commando van de thermostaat om de verwarming aan te zetten is veranderd."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "Heating",
+        "nl": "Verwarming aan"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "on",
+            "nl": "aan"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "off",
+            "nl": "uit"
+          }
+        }
+      ]
+    }
+  ]
+}

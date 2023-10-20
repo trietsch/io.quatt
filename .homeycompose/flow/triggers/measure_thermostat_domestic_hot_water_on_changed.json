@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Thermostat hot water on changed",
+    "nl": "Thermostaat warm water aan is veranderd"
+  },
+  "titleFormatted": {
+    "en": "Thermostat warm water setting is set to [[state]]",
+    "nl": "Thermostaat warm water instelling is ingesteld op [[state]]"
+  },
+  "hint": {
+    "en": "This card starts whenever the thermostat setting to enable/disable hot tap water has changed.",
+    "nl": "Deze kaart start wanneer de thermostaat instelling om warm kraanwater in- of uit te schakelen is veranderd."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "Hot water",
+        "nl": "Warm water"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "on",
+            "nl": "aan"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "off",
+            "nl": "uit"
+          }
+        }
+      ]
+    }
+  ]
+}

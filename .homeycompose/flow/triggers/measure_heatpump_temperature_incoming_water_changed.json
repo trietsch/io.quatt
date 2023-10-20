@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Heatpump incoming water temperature changed",
+    "nl": "Warmtepomp water toevoer temperatuur is veranderd"
+  },
+  "hint": {
+    "en": "This card starts when the current temperature of the water going into the heatpump has changed.",
+    "nl": "Deze kaart start wanneer de huidige temperatuur van de watertoevoer naar de warmtepomp is veranderd."
+  }
+}

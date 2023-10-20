@@ -2,7 +2,7 @@
   "type": "number",
   "title": {
     "en": "Heatpump incoming water temperature",
-    "nl": "Warmtepomp water toevoer temperatuur"
+    "nl": "Warmtepomp watertoevoer temperatuur"
   },
   "description": "temperatureWaterIn: The current temperature of the water going into the heatpump (in degrees Celsius).",
   "uiComponent": "sensor",

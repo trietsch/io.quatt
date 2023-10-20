@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Thermal power changed",
+    "nl": "Thermisch vermogen is veranderd"
+  },
+  "hint": {
+    "en": "This card starts when the thermal power output of the heatpump has changed.",
+    "nl": "Deze kaart start wanneer het thermisch vermogen van de warmtepomp is veranderd."
+  }
+}

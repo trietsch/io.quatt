@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Outside temperature changed",
+    "nl": "Buitentemperatuur is veranderd"
+  },
+  "hint": {
+    "en": "This card starts when the current ambient temperature outside the heatpump has changed.",
+    "nl": "Deze kaart start wanneer de huidige omgevingstemperatuur buiten de warmtepomp is veranderd."
+  }
+}

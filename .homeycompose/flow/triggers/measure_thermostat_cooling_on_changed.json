@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Thermostat cooling on changed",
+    "nl": "Thermostaat verkoeling is veranderd"
+  },
+  "titleFormatted": {
+    "en": "Thermostat is set to [[state]]",
+    "nl": "Thermostaat is ingesteld op [[state]]"
+  },
+  "hint": {
+    "en": "This card starts whenever the setting in the thermostat whether to enable cooling or not has changed.",
+    "nl": "Deze kaart start wanneer de instelling in de thermostaat of verkoeling aan of uit staat is veranderd."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "Cooling",
+        "nl": "Verkoeling"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "cooling",
+            "nl": "verkoelen"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "not cooling",
+            "nl": "niet verkoelen"
+          }
+        }
+      ]
+    }
+  ]
+}
