@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Hot water is (not) being used",
+    "nl": "Warm water wordt (niet) gebruikt"
+  },
+  "titleFormatted": {
+    "en": "Hot water is [[state]]",
+    "nl": "Warm water [[state]]"
+  },
+  "hint": {
+    "en": "This card starts when hot tap water is used.",
+    "nl": "Deze kaart start wanneer warm kraanwater gebruikt wordt."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "State",
+        "nl": "Status"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "being used",
+            "nl": "wordt gebruikt"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "not being used",
+            "nl": "wordt niet gebruikt"
+          }
+        }
+      ]
+    }
+  ]
+}

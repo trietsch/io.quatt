@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Boiler flame is on/off",
+    "nl": "Boiler vlam is aan/uit"
+  },
+  "titleFormatted": {
+    "en": "Boiler flame is [[state]]",
+    "nl": "Boiler vlam is [[state]]"
+  },
+  "hint": {
+    "en": "This card starts when the boiler flame switches from on -> off or vice versa.",
+    "nl": "Deze kaart start wanneer de boiler vlam van aan -> uit gaat of andersom."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "State",
+        "nl": "Status"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "true",
+          "title": {
+            "en": "on",
+            "nl": "aan"
+          }
+        },
+        {
+          "id": "false",
+          "title": {
+            "en": "off",
+            "nl": "uit"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -29,8 +29,8 @@
     },
     "measure_heatpump_thermal_power.heatpump1": {
       "title": {
-        "en": "Pump 1: Limited by COP",
-        "nl": "Pomp 1: Beperkt door COP"
+        "en": "Pump 1: Thermal power",
+        "nl": "Pomp 1: Thermisch vermogen"
       }
     },
     "measure_heatpump_limited_by_cop.heatpump1": {

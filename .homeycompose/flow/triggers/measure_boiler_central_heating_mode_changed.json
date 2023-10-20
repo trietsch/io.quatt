@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "CV is (not) heating",
+    "nl": "CV (niet) aan het verwarmen"
+  },
+  "titleFormatted": {
+    "en": "CV is [[state]]",
+    "nl": "CV [[state]]"
+  },
+  "hint": {
+    "en": "This card starts when the CV is (not) heating.",
+    "nl": "Deze kaart start wanneer de CV (niet) aan het verwarmen is."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "State",
+        "nl": "Status"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "heating",
+            "nl": "aan het verwarmen"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "not heating",
+            "nl": "niet aan het verwarmen"
+          }
+        }
+      ]
+    }
+  ]
+}

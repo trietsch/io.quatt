@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Boiler on/off mode should be ...",
+    "nl": "Boiler aan/uit modus zou ... moeten zijn"
+  },
+  "titleFormatted": {
+    "en": "Boiler on/off mode should be [[state]]",
+    "nl": "Boiler aan/uit modus zou [[state]] moeten zijn"
+  },
+  "hint": {
+    "en": "Only valid for on/off boilers (non-modulating). This card triggers when Quatt CiC's command to the boiler whether to turn on or off changes.",
+    "nl": "Alleen geldig voor aan/uit boilers (niet modulerend). Deze kaart wordt geactiveerd wanneer het commando van de Quatt CiC aan de boiler om aan of uit te gaan verandert."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "State",
+        "nl": "Status"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "on",
+            "nl": "aan"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "off",
+            "nl": "uit"
+          }
+        }
+      ]
+    }
+  ]
+}

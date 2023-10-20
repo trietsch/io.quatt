@@ -66,6 +66,94 @@
   "bugs": {
     "url": "https://community.homey.app/t/app-pro-quatt/91446"
   },
+  "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Hot water is (not) being used",
+          "nl": "Warm water wordt (niet) gebruikt"
+        },
+        "titleFormatted": {
+          "en": "Hot water is [[state]]",
+          "nl": "Warm water [[state]]"
+        },
+        "hint": {
+          "en": "This card starts when hot tap water is used.",
+          "nl": "Deze kaart start wanneer warm kraanwater gebruikt wordt."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "State",
+              "nl": "Status"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "being used",
+                  "nl": "wordt gebruikt"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "not being used",
+                  "nl": "wordt niet gebruikt"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_boiler_domestic_hot_water_on_changed"
+      },
+      {
+        "title": {
+          "en": "Boiler flame is on/off",
+          "nl": "Boiler vlam is aan/uit"
+        },
+        "titleFormatted": {
+          "en": "Boiler flame is [[state]]",
+          "nl": "Boiler vlam is [[state]]"
+        },
+        "hint": {
+          "en": "This card starts when hot tap water is used.",
+          "nl": "Deze kaart start wanneer warm kraanwater gebruikt wordt."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "State",
+              "nl": "Status"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "true",
+                "title": {
+                  "en": "on",
+                  "nl": "aan"
+                }
+              },
+              {
+                "id": "false",
+                "title": {
+                  "en": "off",
+                  "nl": "uit"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_boiler_flame_on_changed"
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {
@@ -98,8 +186,8 @@
         },
         "measure_heatpump_thermal_power.heatpump1": {
           "title": {
-            "en": "Pump 1: Limited by COP",
-            "nl": "Pomp 1: Beperkt door COP"
+            "en": "Pump 1: Thermal power",
+            "nl": "Pomp 1: Thermisch vermogen"
           }
         },
         "measure_heatpump_limited_by_cop.heatpump1": {

@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "CV should (not) be heating",
+    "nl": "CV zou (niet) moeten verwarmen"
+  },
+  "titleFormatted": {
+    "en": "CV should [[state]]",
+    "nl": "CV [[state]]"
+  },
+  "hint": {
+    "en": "This card triggers when Quatt CiC's command to the CV whether to start heating or not changes.",
+    "nl": "Deze kaart wordt gestart wanneer het commando van de Quatt CiC aan de CV om (niet) te verwarmen verandert."
+  },
+  "args": [
+    {
+      "name": "state",
+      "required": true,
+      "title": {
+        "en": "State",
+        "nl": "Status"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "on",
+          "title": {
+            "en": "be heating",
+            "nl": "zou moeten verwarmen"
+          }
+        },
+        {
+          "id": "off",
+          "title": {
+            "en": "not be heating",
+            "nl": "zou niet moeten verwarmen"
+          }
+        }
+      ]
+    }
+  ]
+}
