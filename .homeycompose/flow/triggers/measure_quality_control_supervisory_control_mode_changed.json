@@ -4,8 +4,8 @@
     "nl": "Controle Modus is veranderd"
   },
   "titleFormatted": {
-    "en": "Supervisory Control Mode is: [[state]]",
-    "nl": "Controle Modus is: [[state]]"
+    "en": "Supervisory Control Mode is: [[workingMode]]",
+    "nl": "Controle Modus is: [[workingMode]]"
   },
   "hint": {
     "en": "This card starts whenever the current supervisory control mode of the heatpump is changed.",

@@ -70,6 +70,132 @@
     "triggers": [
       {
         "title": {
+          "en": "CV is (not) heating",
+          "nl": "CV (niet) aan het verwarmen"
+        },
+        "titleFormatted": {
+          "en": "CV is [[state]]",
+          "nl": "CV [[state]]"
+        },
+        "hint": {
+          "en": "This card starts when the CV is (not) heating.",
+          "nl": "Deze kaart start wanneer de CV (niet) aan het verwarmen is."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "State",
+              "nl": "Status"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "heating",
+                  "nl": "aan het verwarmen"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "not heating",
+                  "nl": "niet aan het verwarmen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_boiler_central_heating_mode_changed"
+      },
+      {
+        "title": {
+          "en": "CV should (not) be heating",
+          "nl": "CV zou (niet) moeten verwarmen"
+        },
+        "titleFormatted": {
+          "en": "CV should [[state]]",
+          "nl": "CV [[state]]"
+        },
+        "hint": {
+          "en": "This card triggers when Quatt CiC's command to the CV whether to start heating or not changes.",
+          "nl": "Deze kaart wordt gestart wanneer het commando van de Quatt CiC aan de CV om (niet) te verwarmen verandert."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "State",
+              "nl": "Status"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "be heating",
+                  "nl": "zou moeten verwarmen"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "not be heating",
+                  "nl": "zou niet moeten verwarmen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_boiler_cic_central_heating_on_changed"
+      },
+      {
+        "title": {
+          "en": "Boiler on/off mode should be ...",
+          "nl": "Boiler aan/uit modus zou ... moeten zijn"
+        },
+        "titleFormatted": {
+          "en": "Boiler on/off mode should be [[state]]",
+          "nl": "Boiler aan/uit modus zou [[state]] moeten zijn"
+        },
+        "hint": {
+          "en": "Only valid for on/off boilers (non-modulating). This card triggers when Quatt CiC's command to the boiler whether to turn on or off changes.",
+          "nl": "Alleen geldig voor aan/uit boilers (niet modulerend). Deze kaart wordt geactiveerd wanneer het commando van de Quatt CiC aan de boiler om aan of uit te gaan verandert."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "State",
+              "nl": "Status"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "on",
+                  "nl": "aan"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "off",
+                  "nl": "uit"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_boiler_cic_central_heating_onoff_boiler_changed"
+      },
+      {
+        "title": {
           "en": "Hot water is (not) being used",
           "nl": "Warm water wordt (niet) gebruikt"
         },
@@ -120,8 +246,8 @@
           "nl": "Boiler vlam is [[state]]"
         },
         "hint": {
-          "en": "This card starts when hot tap water is used.",
-          "nl": "Deze kaart start wanneer warm kraanwater gebruikt wordt."
+          "en": "This card starts when the boiler flame switches from on -> off or vice versa.",
+          "nl": "Deze kaart start wanneer de boiler vlam van aan -> uit gaat of andersom."
         },
         "args": [
           {
@@ -151,6 +277,477 @@
           }
         ],
         "id": "measure_boiler_flame_on_changed"
+      },
+      {
+        "title": {
+          "en": "Boiler incoming water temperature changed",
+          "nl": "Boiler water toevoer temperatuur is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the temperature of the water going into the boiler has changed.",
+          "nl": "Deze kaart start wanneer de temperatuur van de water toevoer naar de boiler is veranderd."
+        },
+        "id": "measure_boiler_temperature_incoming_water_changed"
+      },
+      {
+        "title": {
+          "en": "Boiler outgoing water temperature changed",
+          "nl": "Boiler water afvoer temperatuur is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the temperature of the water coming out of the boiler has changed.",
+          "nl": "Deze kaart start wanneer de temperatuur van de water afvoer van de boiler is veranderd."
+        },
+        "id": "measure_boiler_temperature_outgoing_water_changed"
+      },
+      {
+        "title": {
+          "en": "Water flow speed changed",
+          "nl": "Water doorvoersnelheid is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the current flow rate of the water in the heating circuit has changed.",
+          "nl": "Deze kaart start wanneer de huidige doorvoersnelheid van het water in het verwarmingscircuit is veranderd."
+        },
+        "id": "measure_flowmeter_water_flow_speed_changed"
+      },
+      {
+        "title": {
+          "en": "Boiler water supply temperature changed",
+          "nl": "Boiler water toevoer temperatuur is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the current temperature of the water supplied to the boiler has changed.",
+          "nl": "Deze kaart start wanneer de huidige temperatuur van het water dat naar de boiler wordt aangevoerd is veranderd."
+        },
+        "id": "measure_flowmeter_water_supply_temperature_changed"
+      },
+      {
+        "title": {
+          "en": "Limited by COP changed",
+          "nl": "Beperkt door COP is veranderd"
+        },
+        "titleFormatted": {
+          "en": "Heatpump is [[state]]",
+          "nl": "Warmtepomp wordt [[state]]"
+        },
+        "hint": {
+          "en": "This card starts whenever value indicating that the heatpump is limited by COP changes. The heatpump might be limited by the COP (Coefficient of Performance) based on energy pricing, current ambient temperature and heat pump outlet temperature.",
+          "nl": "Deze kaart wordt gestart wanneer de waarde die aangeeft dat de warmtepomp beperkt wordt door de COP is veranderd. De warmtepomp kan beperkt worden door de COP (Coefficient of Performance) op basis van energieprijzen, de huidige omgevingstemperatuur en de uitgaande watertemperatuur van de warmtepomp."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "Limited",
+              "nl": "Beperkt"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "limited by COP",
+                  "nl": "beperkt door COP"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "not limited by COP",
+                  "nl": "niet beperkt door COP"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_heatpump_limited_by_cop_changed"
+      },
+      {
+        "title": {
+          "en": "Silent mode changed",
+          "nl": "Stille modus is veranderd"
+        },
+        "titleFormatted": {
+          "en": "Silent mode is [[state]]",
+          "nl": "Stille modus is [[state]]"
+        },
+        "hint": {
+          "en": "This card starts whenever the heatpump switches from silent mode.",
+          "nl": "Deze kaart start wanneer de warmtepomp van stille modus verandert."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "Silent mode",
+              "nl": "Stille modus"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "on",
+                  "nl": "aan"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "off",
+                  "nl": "uit"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_heatpump_silent_mode_changed"
+      },
+      {
+        "title": {
+          "en": "Heatpump incoming water temperature changed",
+          "nl": "Warmtepomp water toevoer temperatuur is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the current temperature of the water going into the heatpump has changed.",
+          "nl": "Deze kaart start wanneer de huidige temperatuur van de watertoevoer naar de warmtepomp is veranderd."
+        },
+        "id": "measure_heatpump_temperature_incoming_water_changed"
+      },
+      {
+        "title": {
+          "en": "Heatpump outgoing water temperature changed",
+          "nl": "Warmtepomp waterafvoer temperatuur is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the current temperature of the water coming out of the heatpump has changed.",
+          "nl": "Deze kaart start wanneer de huidige temperatuur van de waterafvoer van de warmtepomp is veranderd."
+        },
+        "id": "measure_heatpump_temperature_outgoing_water_changed"
+      },
+      {
+        "title": {
+          "en": "Outside temperature changed",
+          "nl": "Buitentemperatuur is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the current ambient temperature outside the heatpump has changed.",
+          "nl": "Deze kaart start wanneer de huidige omgevingstemperatuur buiten de warmtepomp is veranderd."
+        },
+        "id": "measure_heatpump_temperature_outside_changed"
+      },
+      {
+        "title": {
+          "en": "Thermal power changed",
+          "nl": "Thermisch vermogen is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the thermal power output of the heatpump has changed.",
+          "nl": "Deze kaart start wanneer het thermisch vermogen van de warmtepomp is veranderd."
+        },
+        "id": "measure_heatpump_thermal_power_changed"
+      },
+      {
+        "title": {
+          "en": "Heatpump working mode changed",
+          "nl": "Warmtepomp werkmodus is veranderd"
+        },
+        "titleFormatted": {
+          "en": "Heatpump working mode is: [[workingMode]]",
+          "nl": "Warmtepomp werkmodus is: [[workingMode]]"
+        },
+        "hint": {
+          "en": "This card starts whenever the current working mode of the heatpump is changed.",
+          "nl": "Deze kaart start wanneer de huidige werkmodus van de warmtepomp verandert."
+        },
+        "args": [
+          {
+            "name": "workingMode",
+            "required": true,
+            "title": {
+              "en": "Working mode",
+              "nl": "Werkmodus"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "0",
+                "title": {
+                  "en": "standby",
+                  "nl": "standby"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heating",
+                  "nl": "verwarmen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_heatpump_working_mode_changed"
+      },
+      {
+        "title": {
+          "en": "Supervisory Control Mode changed",
+          "nl": "Controle Modus is veranderd"
+        },
+        "titleFormatted": {
+          "en": "Supervisory Control Mode is: [[workingMode]]",
+          "nl": "Controle Modus is: [[workingMode]]"
+        },
+        "hint": {
+          "en": "This card starts whenever the current supervisory control mode of the heatpump is changed.",
+          "nl": "Deze kaart start wanneer de huidige controle modus van de warmtepomp verandert."
+        },
+        "args": [
+          {
+            "name": "workingMode",
+            "required": true,
+            "title": {
+              "en": "Working mode",
+              "nl": "Werkmodus"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "0",
+                "title": {
+                  "en": "Standby",
+                  "nl": "Standby"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "Standby - heating",
+                  "nl": "Standby - verwarmen"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "Heating - heatpump only",
+                  "nl": "Heating - alleen warmtepomp"
+                }
+              },
+              {
+                "id": "3",
+                "title": {
+                  "en": "Heating - heatpump + boiler",
+                  "nl": "Verwarmen - warmtepomp + CV"
+                }
+              },
+              {
+                "id": "4",
+                "title": {
+                  "en": "Heating - boiler only",
+                  "nl": "Verwarmen - alleen CV"
+                }
+              },
+              {
+                "id": "96",
+                "title": {
+                  "en": "Anti-freeze protection - boiler on",
+                  "nl": "Vorstbeveiliging - CV aan"
+                }
+              },
+              {
+                "id": "97",
+                "title": {
+                  "en": "Anti-freeze protection - boiler pre-pump",
+                  "nl": "Vorstbeveiliging - CV voorpompen"
+                }
+              },
+              {
+                "id": "98",
+                "title": {
+                  "en": "Anti-freeze protection - water circulation",
+                  "nl": "Vorstbeveiliging - water circulatie"
+                }
+              },
+              {
+                "id": "99",
+                "title": {
+                  "en": "Fault - circulation pump on",
+                  "nl": "Error - circulation pump on"
+                }
+              },
+              {
+                "id": "100",
+                "title": {
+                  "en": "Commissioning modes",
+                  "nl": "Inbedrijfstellings modi"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_quality_control_supervisory_control_mode_changed"
+      },
+      {
+        "title": {
+          "en": "Thermostat cooling on changed",
+          "nl": "Thermostaat verkoeling is veranderd"
+        },
+        "titleFormatted": {
+          "en": "Thermostat is set to [[state]]",
+          "nl": "Thermostaat is ingesteld op [[state]]"
+        },
+        "hint": {
+          "en": "This card starts whenever the setting in the thermostat whether to enable cooling or not has changed.",
+          "nl": "Deze kaart start wanneer de instelling in de thermostaat of verkoeling aan of uit staat is veranderd."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "Cooling",
+              "nl": "Verkoeling"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "cooling",
+                  "nl": "verkoelen"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "not cooling",
+                  "nl": "niet verkoelen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_thermostat_cooling_on_changed"
+      },
+      {
+        "title": {
+          "en": "Thermostat hot water on changed",
+          "nl": "Thermostaat warm water aan is veranderd"
+        },
+        "titleFormatted": {
+          "en": "Thermostat warm water setting is set to [[state]]",
+          "nl": "Thermostaat warm water instelling is ingesteld op [[state]]"
+        },
+        "hint": {
+          "en": "This card starts whenever the thermostat setting to enable/disable hot tap water has changed.",
+          "nl": "Deze kaart start wanneer de thermostaat instelling om warm kraanwater in- of uit te schakelen is veranderd."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "Hot water",
+              "nl": "Warm water"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "on",
+                  "nl": "aan"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "off",
+                  "nl": "uit"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_thermostat_domestic_hot_water_on_changed"
+      },
+      {
+        "title": {
+          "en": "Thermostat heating on changed",
+          "nl": "Thermostaat verwarming aan is veranderd"
+        },
+        "titleFormatted": {
+          "en": "Thermostat heating is set to [[state]]",
+          "nl": "Thermostaat verwarming aan is ingesteld op [[state]]"
+        },
+        "hint": {
+          "en": "This card starts whenever the value representing the command from thermostat to switch on heating has changed.",
+          "nl": "Deze kaart start wanneer de het commando van de thermostaat om de verwarming aan te zetten is veranderd."
+        },
+        "args": [
+          {
+            "name": "state",
+            "required": true,
+            "title": {
+              "en": "Heating",
+              "nl": "Verwarming aan"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "on",
+                "title": {
+                  "en": "on",
+                  "nl": "aan"
+                }
+              },
+              {
+                "id": "off",
+                "title": {
+                  "en": "off",
+                  "nl": "uit"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_thermostat_heating_on_changed"
+      },
+      {
+        "title": {
+          "en": "Current room temperature changed",
+          "nl": "Huidige kamer temperatuur is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the current temperature of the room as measured by the thermostat has changed. If you have a multiroom thermostat system, this will be your central thermostat that is connected to your boiler/CV.",
+          "nl": "Deze kaart start wanneer de huidige temperatuur van de kamer zoals gemeten door de thermostaat is veranderd. Als je een multiroom systeem hebt, zal dit je centrale thermostaat zijn die verbonden is met je boiler/CV."
+        },
+        "id": "measure_thermostat_room_temperature_changed"
+      },
+      {
+        "title": {
+          "en": "Room temperature setpoint changed",
+          "nl": "Ingestelde kamer temperatuur is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the current setpoint temperature for the room as set by your central thermostat has changed.",
+          "nl": "Deze kaart start wanneer de ingestelde temperatuur voor de kamer zoals ingesteld door je centrale thermostaat is veranderd."
+        },
+        "id": "measure_thermostat_setpoint_room_temperature_changed"
+      },
+      {
+        "title": {
+          "en": "Water supply temperature setpoint changed",
+          "nl": "Ingestelde watertoevoer temperatuur is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the current setpoint for water supply temperature as set by your central thermostat has changed.",
+          "nl": "Deze kaart start wanneer de ingestelde watertoevoer temperatuur zoals ingesteld door je centrale thermostaat is veranderd."
+        },
+        "id": "measure_thermostat_setpoint_water_supply_temperature_changed"
       }
     ]
   },
@@ -300,8 +897,8 @@
     "measure_boiler_central_heating_mode": {
       "type": "boolean",
       "title": {
-        "en": "CV Mode Active",
-        "nl": "CV Modus Actief"
+        "en": "CV Heating",
+        "nl": "CV aan het verwarmen"
       },
       "description": "otFbChModeActive: A boolean value indicating if the central heating mode is active.",
       "getable": true,
@@ -312,8 +909,8 @@
     "measure_boiler_cic_central_heating_on": {
       "type": "boolean",
       "title": {
-        "en": "CV Currently Heating",
-        "nl": "CV Aan Het Verwarmen"
+        "en": "CV Should Heat",
+        "nl": "CV Moet Verwarmen"
       },
       "description": "otTbCH: A boolean value representing CiC’s command to switch the boiler to heating mode.",
       "getable": true,
@@ -324,8 +921,8 @@
     "measure_boiler_cic_central_heating_onoff_boiler": {
       "type": "boolean",
       "title": {
-        "en": "OnOff Boiler On",
-        "nl": "AanUit Ketel Aan"
+        "en": "Boiler on/off mode",
+        "nl": "Ketel aan/uit modus"
       },
       "description": "oTtbTurnOnOffBoilerOn: A boolean value representing CiC’s command to switch an on-off boiler on. This property is only valid for systems with on-off boilers.",
       "getable": true,
@@ -360,7 +957,7 @@
     "measure_boiler_temperature_incoming_water": {
       "type": "number",
       "title": {
-        "en": "Boiler Incoming water temperature",
+        "en": "Boiler incoming water temperature",
         "nl": "Boiler water toevoer temperatuur"
       },
       "description": "otFbSupplyInletTemperature: The temperature of the water going into the boiler (in degrees Celsius).",
@@ -415,7 +1012,7 @@
       "type": "number",
       "title": {
         "en": "Boiler water supply temperature",
-        "nl": "Ketel water toevoer temperatuur"
+        "nl": "Boiler water toevoer temperatuur"
       },
       "description": "waterSupplyTemperature: The current temperature of the water supplied to the boiler (in degrees Celsius).",
       "uiComponent": "sensor",
@@ -457,7 +1054,7 @@
       "type": "number",
       "title": {
         "en": "Heatpump incoming water temperature",
-        "nl": "Warmtepomp water toevoer temperatuur"
+        "nl": "Warmtepomp watertoevoer temperatuur"
       },
       "description": "temperatureWaterIn: The current temperature of the water going into the heatpump (in degrees Celsius).",
       "uiComponent": "sensor",
@@ -475,7 +1072,7 @@
       "type": "number",
       "title": {
         "en": "Heatpump outgoing water temperature",
-        "nl": "Warmtepomp water afvoer temperatuur"
+        "nl": "Warmtepomp waterafvoer temperatuur"
       },
       "description": "temperatureWaterOut: The current temperature of the water coming out of the heatpump (in degrees Celsius).",
       "uiComponent": "sensor",
@@ -652,7 +1249,7 @@
     "measure_thermostat_domestic_hot_water_on": {
       "type": "boolean",
       "title": {
-        "en": "Thermostat Hot Water On",
+        "en": "Thermostat hot water on",
         "nl": "Thermostaat warm water aan"
       },
       "description": "otFtDhwEnabled: A boolean value indicating if the domestic hot water is enabled.",

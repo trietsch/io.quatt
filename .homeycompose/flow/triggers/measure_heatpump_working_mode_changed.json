@@ -4,8 +4,8 @@
     "nl": "Warmtepomp werkmodus is veranderd"
   },
   "titleFormatted": {
-    "en": "Heatpump working mode is: [[state]]",
-    "nl": "Warmtepomp werkmodus is: [[state]]"
+    "en": "Heatpump working mode is: [[workingMode]]",
+    "nl": "Warmtepomp werkmodus is: [[workingMode]]"
   },
   "hint": {
     "en": "This card starts whenever the current working mode of the heatpump is changed.",
