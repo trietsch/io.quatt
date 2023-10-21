@@ -1,0 +1,14 @@
+{
+  "title": {
+    "en": "Limited by COP",
+    "nl": "Beperkt door COP"
+  },
+  "titleFormatted": {
+    "en": "Heatpump !{{is|is not}} limited by COP",
+    "nl": "Warmtepomp !{{wordt|wordt niet}} beperkt door COP"
+  },
+  "hint": {
+    "en": "Whether the heatpump is limited by the COP. It might be limited by the COP (Coefficient of Performance) based on energy pricing, current ambient temperature and heat pump outlet temperature.",
+    "nl": "Of de warmtepomp beperkt wordt door de COP. De warmtepomp kan beperkt worden door de COP (Coefficient of Performance) op basis van energieprijzen, de huidige omgevingstemperatuur en de uitgaande watertemperatuur van de warmtepomp."
+  }
+}

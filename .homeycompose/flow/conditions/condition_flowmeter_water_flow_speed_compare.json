@@ -1,0 +1,22 @@
+{
+  "title": {
+    "en": "Water flow speed is smaller / greater than",
+    "nl": "Water doorvoersnelheid is kleiner / groter dan"
+  },
+  "titleFormatted": {
+  "en": "Water flow speed is !{{greater|smaller}} than [[speed]]",
+  "nl": "Water doorvoersnelheid is !{{groter|kleiner}} dan [[speed]]"
+},
+  "args": [
+    {
+      "name": "speed",
+      "title": {
+        "en": "Flow speed (L/h)",
+        "nl": "Doorvoersnelheid (L/h)"
+      },
+      "type": "number",
+      "min": 0,
+      "step": 0.01
+    }
+  ]
+}

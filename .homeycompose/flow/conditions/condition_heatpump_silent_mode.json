@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Silent mode",
+    "nl": "Stille modus"
+  },
+  "titleFormatted": {
+    "en": "Heatpump is !{{set to|not set to}} silent mode",
+    "nl": "Warmtepomp is !{{ingesteld|niet ingesteld}} op stille modus"
+  }
+}

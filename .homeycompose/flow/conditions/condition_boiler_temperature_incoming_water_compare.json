@@ -1,0 +1,23 @@
+{
+  "title": {
+    "en": "Boiler incoming water temperature is smaller / greater than",
+    "nl": "Boiler water toevoer temperatuur is kleiner / groter dan"
+  },
+  "titleFormatted": {
+  "en": "Boiler incoming water temperature is !{{greater|smaller}} than [[temperature]]",
+  "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+},
+  "args": [
+    {
+      "name": "temperature",
+      "title": {
+        "en": "Temperature (°C)",
+        "nl": "Temperatuur (°C)"
+      },
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "step": 0.01
+    }
+  ]
+}

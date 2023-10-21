@@ -1,0 +1,14 @@
+{
+  "title": {
+    "en": "CV is heating",
+    "nl": "CV is aan het verwarmen"
+  },
+  "titleFormatted": {
+    "en": "CV is !{{heating|not heating}}",
+    "nl": "Cv is !{{aan|niet aan}} het verwarmen"
+  },
+  "hint": {
+    "en": "Whether the CV is currently heating (actual state, not the Quatt CiC's command)",
+    "nl": "Of de CV momenteel aan het verwarmen is (actuele status, niet het commando van de Quatt CiC)"
+  }
+}

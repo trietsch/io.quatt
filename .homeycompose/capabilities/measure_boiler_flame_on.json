@@ -1,8 +1,8 @@
 {
   "type": "boolean",
   "title": {
-    "en": "Boiler Flame On",
-    "nl": "Boiler Vlam Aan"
+    "en": "Boiler flame on",
+    "nl": "Boiler vlam aan"
   },
   "description": "otFbFlameOn: A boolean value indicating if the boiler's flame is on.",
   "getable": true,

@@ -1,0 +1,22 @@
+{
+  "title": {
+    "en": "Thermal power is smaller / greater than",
+    "nl": "Thermisch vermogen is kleiner / groter dan"
+  },
+  "titleFormatted": {
+  "en": "Thermal power is !{{greater|smaller}} than [[power]]",
+  "nl": "Thermisch vermogen is !{{groter|kleiner}} dan [[power]]"
+},
+  "args": [
+    {
+      "name": "power",
+      "title": {
+        "en": "Power (Watt)",
+        "nl": "Vermogen (Watt)"
+      },
+      "type": "number",
+      "min": 0,
+      "step": 0.1
+    }
+  ]
+}

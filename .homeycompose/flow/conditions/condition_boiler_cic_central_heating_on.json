@@ -1,0 +1,14 @@
+{
+  "title": {
+    "en": "CV should be heating",
+    "nl": "CV zou moeten verwarmen"
+  },
+  "titleFormatted": {
+    "en": "CV should !{{be|not be}} heating",
+    "nl": "CV zou !{{moeten|niet moeten}} verwarmen"
+  },
+  "hint": {
+    "en": "Quatt CiC's command to the CV whether to start heating.",
+    "nl": "Het commando van de Quatt CiC aan de CV om (niet) te verwarmen"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "title": {
+    "en": "Outside temperature is smaller / greater than",
+    "nl": "Buitentemperatuur is kleiner / groter dan"
+  },
+  "titleFormatted": {
+  "en": "Outside temperature is !{{greater|smaller}} than [[temperature]]",
+  "nl": "Buitentemperatuur is !{{groter|kleiner}} dan [[temperature]]"
+},
+  "args": [
+    {
+      "name": "temperature",
+      "title": {
+        "en": "Temperature (°C)",
+        "nl": "Temperatuur (°C)"
+      },
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "step": 0.01
+    }
+  ]
+}

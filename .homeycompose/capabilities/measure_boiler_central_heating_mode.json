@@ -1,7 +1,7 @@
 {
   "type": "boolean",
   "title": {
-    "en": "CV Heating",
+    "en": "CV heating",
     "nl": "CV aan het verwarmen"
   },
   "description": "otFbChModeActive: A boolean value indicating if the central heating mode is active.",

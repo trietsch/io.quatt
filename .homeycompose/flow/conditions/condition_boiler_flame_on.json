@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Boiler flame on",
+    "nl": "Boiler vlam aan"
+  },
+  "titleFormatted": {
+    "en": "Boiler flame is !{{on|off}}",
+    "nl": "Boiler vlam is !{{aan|uit}}"
+  }
+}

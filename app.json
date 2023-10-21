@@ -86,8 +86,8 @@
             "name": "state",
             "required": true,
             "title": {
-              "en": "State",
-              "nl": "Status"
+              "en": "CV heating mode",
+              "nl": "CV verwarmingsmodus"
             },
             "type": "dropdown",
             "values": [
@@ -128,8 +128,8 @@
             "name": "state",
             "required": true,
             "title": {
-              "en": "State",
-              "nl": "Status"
+              "en": "Quatt CV heating command",
+              "nl": "Quatt CV verwarmingscommando"
             },
             "type": "dropdown",
             "values": [
@@ -170,8 +170,8 @@
             "name": "state",
             "required": true,
             "title": {
-              "en": "State",
-              "nl": "Status"
+              "en": "Boiler on/off mode",
+              "nl": "Boiler aan/uit modus"
             },
             "type": "dropdown",
             "values": [
@@ -212,8 +212,8 @@
             "name": "state",
             "required": true,
             "title": {
-              "en": "State",
-              "nl": "Status"
+              "en": "Hot water in use",
+              "nl": "Warm water in gebruik"
             },
             "type": "dropdown",
             "values": [
@@ -254,8 +254,8 @@
             "name": "state",
             "required": true,
             "title": {
-              "en": "State",
-              "nl": "Status"
+              "en": "Boiler flame",
+              "nl": "Boiler vlam"
             },
             "type": "dropdown",
             "values": [
@@ -749,6 +749,276 @@
         },
         "id": "measure_thermostat_setpoint_water_supply_temperature_changed"
       }
+    ],
+    "conditions": [
+      {
+        "title": {
+          "en": "CV is heating",
+          "nl": "CV is aan het verwarmen"
+        },
+        "titleFormatted": {
+          "en": "CV is !{{heating|not heating}}",
+          "nl": "Cv is !{{aan|niet aan}} het verwarmen"
+        },
+        "hint": {
+          "en": "Whether the CV is currently heating (actual state, not the Quatt CiC's command)",
+          "nl": "Of de CV momenteel aan het verwarmen is (actuele status, niet het commando van de Quatt CiC)"
+        },
+        "id": "condition_boiler_central_heating_mode"
+      },
+      {
+        "title": {
+          "en": "CV should be heating",
+          "nl": "CV zou moeten verwarmen"
+        },
+        "titleFormatted": {
+          "en": "CV should !{{be|not be}} heating",
+          "nl": "CV zou !{{moeten|niet moeten}} verwarmen"
+        },
+        "hint": {
+          "en": "Quatt CiC's command to the CV whether to start heating.",
+          "nl": "Het commando van de Quatt CiC aan de CV om (niet) te verwarmen"
+        },
+        "id": "condition_boiler_cic_central_heating_on"
+      },
+      {
+        "title": {
+          "en": "Boiler on/off mode setting",
+          "nl": "Boiler aan/uit modus instelling"
+        },
+        "titleFormatted": {
+          "en": "Boiler on/off setting is !{{on|off}}",
+          "nl": "Boiler aan/uit modus is !{{aan|uit}}"
+        },
+        "hint": {
+          "en": "Only valid for on/off boilers (non-modulating). This condition is for the Quatt CiC's command to turn an on/off boiler on or off.",
+          "nl": "Alleen geldig voor aan/uit boilers (niet modulerend). Deze conditie gaat over het Quatt CiC commando om een aan/uit boiler aan of uit te zetten."
+        },
+        "id": "condition_boiler_cic_central_heating_onoff_boiler"
+      },
+      {
+        "title": {
+          "en": "Hot water active (in use)",
+          "nl": "Warm water actief (in gebruik)"
+        },
+        "titleFormatted": {
+          "en": "Hot tap water is !{{being used|not being used}}",
+          "nl": "Warm kraanwater !{{wordt|wordt niet}} gebruikt"
+        },
+        "hint": {
+          "en": "Whether hot tap water is currently being used.",
+          "nl": "Of warm kraanwater momenteel gebruikt wordt."
+        },
+        "id": "condition_boiler_domestic_hot_water_on"
+      },
+      {
+        "title": {
+          "en": "Boiler flame on",
+          "nl": "Boiler vlam aan"
+        },
+        "titleFormatted": {
+          "en": "Boiler flame is !{{on|off}}",
+          "nl": "Boiler vlam is !{{aan|uit}}"
+        },
+        "id": "condition_boiler_flame_on"
+      },
+      {
+        "title": {
+          "en": "Boiler incoming water temperature is smaller / greater than",
+          "nl": "Boiler water toevoer temperatuur is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Boiler incoming water temperature is !{{greater|smaller}} than [[temperature]]",
+          "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+        },
+        "args": [
+          {
+            "name": "temperature",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_boiler_temperature_incoming_water_compare"
+      },
+      {
+        "title": {
+          "en": "Boiler outgoing water temperature is smaller / greater than",
+          "nl": "Boiler water afvoer temperatuur is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Boiler outgoing water temperature is !{{greater|smaller}} than [[temperature]]",
+          "nl": "Boiler water afvoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+        },
+        "args": [
+          {
+            "name": "temperature",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_boiler_temperature_outgoing_water_compare"
+      },
+      {
+        "title": {
+          "en": "Water flow speed is smaller / greater than",
+          "nl": "Water doorvoersnelheid is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Water flow speed is !{{greater|smaller}} than [[speed]]",
+          "nl": "Water doorvoersnelheid is !{{groter|kleiner}} dan [[speed]]"
+        },
+        "args": [
+          {
+            "name": "speed",
+            "title": {
+              "en": "Flow speed (L/h)",
+              "nl": "Doorvoersnelheid (L/h)"
+            },
+            "type": "number",
+            "min": 0,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_flowmeter_water_flow_speed_compare"
+      },
+      {
+        "title": {
+          "en": "Boiler water supply temperature is smaller / greater than",
+          "nl": "Boiler water toevoer temperatuur is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Boiler water supply temperature is !{{greater|smaller}} than [[temperature]]",
+          "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+        },
+        "hint": {
+          "en": "The temperature of the water supply to the boiler as measured by the flow meter.",
+          "nl": "De temperatuur van het water dat naar de boiler gaat, gemeten door de flow meter."
+        },
+        "args": [
+          {
+            "name": "temperature",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_flowmeter_water_supply_temperature_compare"
+      },
+      {
+        "title": {
+          "en": "Limited by COP",
+          "nl": "Beperkt door COP"
+        },
+        "titleFormatted": {
+          "en": "Heatpump !{{is|is not}} limited by COP",
+          "nl": "Warmtepomp !{{wordt|wordt niet}} beperkt door COP"
+        },
+        "hint": {
+          "en": "Whether the heatpump is limited by the COP. It might be limited by the COP (Coefficient of Performance) based on energy pricing, current ambient temperature and heat pump outlet temperature.",
+          "nl": "Of de warmtepomp beperkt wordt door de COP. De warmtepomp kan beperkt worden door de COP (Coefficient of Performance) op basis van energieprijzen, de huidige omgevingstemperatuur en de uitgaande watertemperatuur van de warmtepomp."
+        },
+        "id": "condition_heatpump_limited_by_cop"
+      },
+      {
+        "title": {
+          "en": "Silent mode",
+          "nl": "Stille modus"
+        },
+        "titleFormatted": {
+          "en": "Heatpump is !{{set to|not set to}} silent mode",
+          "nl": "Warmtepomp is !{{ingesteld|niet ingesteld}} op stille modus"
+        },
+        "id": "condition_heatpump_silent_mode"
+      },
+      {
+        "title": {
+          "en": "Heatpump incoming water temperature is smaller / greater than",
+          "nl": "Warmtepomp watertoevoer temperatuur is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Heatpump incoming water temperature is !{{greater|smaller}} than [[temperature]]",
+          "nl": "Warmtepomp watertoevoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+        },
+        "args": [
+          {
+            "name": "temperature",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_heatpump_temperature_incoming_water_compare"
+      },
+      {
+        "title": {
+          "en": "Heatpump outgoing water temperature is smaller / greater than",
+          "nl": "Warmtepomp waterafvoer temperatuur is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Heatpump outgoing water temperature is !{{greater|smaller}} than [[temperature]]",
+          "nl": "Warmtepomp waterafvoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+        },
+        "args": [
+          {
+            "name": "temperature",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_heatpump_temperature_outgoing_water_compare"
+      },
+      {
+        "title": {
+          "en": "Outside temperature is smaller / greater than",
+          "nl": "Buitentemperatuur is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Outside temperature is !{{greater|smaller}} than [[temperature]]",
+          "nl": "Buitentemperatuur is !{{groter|kleiner}} dan [[temperature]]"
+        },
+        "args": [
+          {
+            "name": "temperature",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_heatpump_temperature_outside_compare"
+      }
     ]
   },
   "drivers": [
@@ -897,7 +1167,7 @@
     "measure_boiler_central_heating_mode": {
       "type": "boolean",
       "title": {
-        "en": "CV Heating",
+        "en": "CV heating",
         "nl": "CV aan het verwarmen"
       },
       "description": "otFbChModeActive: A boolean value indicating if the central heating mode is active.",
@@ -922,7 +1192,7 @@
       "type": "boolean",
       "title": {
         "en": "Boiler on/off mode",
-        "nl": "Ketel aan/uit modus"
+        "nl": "Boiler aan/uit modus"
       },
       "description": "oTtbTurnOnOffBoilerOn: A boolean value representing CiC’s command to switch an on-off boiler on. This property is only valid for systems with on-off boilers.",
       "getable": true,
@@ -933,8 +1203,8 @@
     "measure_boiler_domestic_hot_water_on": {
       "type": "boolean",
       "title": {
-        "en": "Hot Water Active",
-        "nl": "Warm Water Actief"
+        "en": "Hot water active",
+        "nl": "Warm water actief"
       },
       "description": "otFbDhwActive: A boolean value indicating if the domestic hot water (tap water) mode is active.",
       "getable": true,
@@ -945,8 +1215,8 @@
     "measure_boiler_flame_on": {
       "type": "boolean",
       "title": {
-        "en": "Boiler Flame On",
-        "nl": "Boiler Vlam Aan"
+        "en": "Boiler flame on",
+        "nl": "Boiler vlam aan"
       },
       "description": "otFbFlameOn: A boolean value indicating if the boiler's flame is on.",
       "getable": true,

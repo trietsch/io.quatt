@@ -1,0 +1,14 @@
+{
+  "title": {
+    "en": "Hot water active (in use)",
+    "nl": "Warm water actief (in gebruik)"
+  },
+  "titleFormatted": {
+    "en": "Hot tap water is !{{being used|not being used}}",
+    "nl": "Warm kraanwater !{{wordt|wordt niet}} gebruikt"
+  },
+  "hint": {
+    "en": "Whether hot tap water is currently being used.",
+    "nl": "Of warm kraanwater momenteel gebruikt wordt."
+  }
+}

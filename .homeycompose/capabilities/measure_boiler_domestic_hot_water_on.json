@@ -1,8 +1,8 @@
 {
   "type": "boolean",
   "title": {
-    "en": "Hot Water Active",
-    "nl": "Warm Water Actief"
+    "en": "Hot water active",
+    "nl": "Warm water actief"
   },
   "description": "otFbDhwActive: A boolean value indicating if the domestic hot water (tap water) mode is active.",
   "getable": true,
