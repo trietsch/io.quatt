@@ -16,8 +16,8 @@
       "name": "state",
       "required": true,
       "title": {
-        "en": "State",
-        "nl": "Status"
+        "en": "Hot water in use",
+        "nl": "Warm water in gebruik"
       },
       "type": "dropdown",
       "values": [

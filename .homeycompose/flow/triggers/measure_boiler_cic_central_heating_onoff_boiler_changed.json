@@ -16,8 +16,8 @@
       "name": "state",
       "required": true,
       "title": {
-        "en": "State",
-        "nl": "Status"
+        "en": "Boiler on/off mode",
+        "nl": "Boiler aan/uit modus"
       },
       "type": "dropdown",
       "values": [

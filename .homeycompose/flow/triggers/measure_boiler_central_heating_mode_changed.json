@@ -16,8 +16,8 @@
       "name": "state",
       "required": true,
       "title": {
-        "en": "State",
-        "nl": "Status"
+        "en": "CV heating mode",
+        "nl": "CV verwarmingsmodus"
       },
       "type": "dropdown",
       "values": [

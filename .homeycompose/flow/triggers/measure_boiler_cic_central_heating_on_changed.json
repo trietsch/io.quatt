@@ -16,8 +16,8 @@
       "name": "state",
       "required": true,
       "title": {
-        "en": "State",
-        "nl": "Status"
+        "en": "Quatt CV heating command",
+        "nl": "Quatt CV verwarmingscommando"
       },
       "type": "dropdown",
       "values": [
