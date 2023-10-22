@@ -1,0 +1,23 @@
+{
+  "title": {
+    "en": "Room temperature setpoint is smaller / greater than",
+    "nl": "Ingestelde kamer temperatuur is kleiner / groter dan"
+  },
+  "titleFormatted": {
+  "en": "Room temperature setpoint is !{{greater|smaller}} than [[temperature]]",
+  "nl": "Ingestelde kamer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+},
+  "args": [
+    {
+      "name": "temperature",
+      "title": {
+        "en": "Temperature (°C)",
+        "nl": "Temperatuur (°C)"
+      },
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "step": 0.01
+    }
+  ]
+}

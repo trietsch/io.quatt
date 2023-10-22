@@ -1,0 +1,36 @@
+{
+  "title": {
+    "en": "Heatpump working mode is",
+    "nl": "Warmtepomp modus is"
+  },
+  "titleFormatted": {
+    "en": "Heatpump working mode is [[mode]]",
+    "nl": "Warmtepomp modus is [[mode]]"
+  },
+  "args": [
+    {
+      "name": "mode",
+      "title": {
+        "en": "Working mode",
+        "nl": "Modus"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "0",
+          "title": {
+            "en": "Standby",
+            "nl": "Standby"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Heating",
+            "nl": "Verwarmen"
+          }
+        }
+      ]
+    }
+  ]
+}

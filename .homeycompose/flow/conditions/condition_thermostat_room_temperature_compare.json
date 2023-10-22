@@ -1,0 +1,23 @@
+{
+  "title": {
+    "en": "Current room temperature is smaller / greater than",
+    "nl": "Huidige kamer temperatuur is kleiner / groter dan"
+  },
+  "titleFormatted": {
+  "en": "Current room temperature is !{{greater|smaller}} than [[temperature]]",
+  "nl": "Huidige kamer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+},
+  "args": [
+    {
+      "name": "temperature",
+      "title": {
+        "en": "Temperature (°C)",
+        "nl": "Temperatuur (°C)"
+      },
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "step": 0.01
+    }
+  ]
+}

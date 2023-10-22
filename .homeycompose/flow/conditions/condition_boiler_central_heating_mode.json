@@ -5,7 +5,7 @@
   },
   "titleFormatted": {
     "en": "CV is !{{heating|not heating}}",
-    "nl": "Cv is !{{aan|niet aan}} het verwarmen"
+    "nl": "CV is !{{aan|niet aan}} het verwarmen"
   },
   "hint": {
     "en": "Whether the CV is currently heating (actual state, not the Quatt CiC's command)",

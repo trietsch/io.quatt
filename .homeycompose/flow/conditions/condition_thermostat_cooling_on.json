@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Thermostat cooling is on",
+    "nl": "Thermostaat verkoeling is aan"
+  },
+  "titleFormatted": {
+    "en": "Thermostat cooling is !{{on|off}}",
+    "nl": "Thermostaat verkoeling is !{{aan|uit}}"
+  }
+}

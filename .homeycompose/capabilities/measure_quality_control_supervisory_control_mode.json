@@ -1,8 +1,8 @@
 {
   "type": "enum",
   "title": {
-    "en": "Supervisory Control Mode",
-    "nl": "Controle Modus"
+    "en": "Supervisory control mode",
+    "nl": "Controle modus"
   },
   "description": "supervisoryControlMode: The current supervisory control mode of the heatpump as a numerical value.",
   "getable": true,

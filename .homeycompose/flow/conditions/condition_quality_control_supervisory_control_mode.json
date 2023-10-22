@@ -1,0 +1,92 @@
+{
+  "title": {
+    "en": "Supervisory control mode is",
+    "nl": "Controle modus is"
+  },
+  "titleFormatted": {
+    "en": "Supervisory control mode is [[mode]]",
+    "nl": "Controle modus is [[mode]]"
+  },
+  "args": [
+    {
+      "name": "mode",
+      "title": {
+        "en": "Supervisory control mode",
+        "nl": "Controle modus"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "0",
+          "title": {
+            "en": "Standby",
+            "nl": "Standby"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "Standby - heating",
+            "nl": "Standby - verwarmen"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Heating - heatpump only",
+            "nl": "Heating - alleen warmtepomp"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Heating - heatpump + boiler",
+            "nl": "Verwarmen - warmtepomp + CV"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "Heating - boiler only",
+            "nl": "Verwarmen - alleen CV"
+          }
+        },
+        {
+          "id": "96",
+          "title": {
+            "en": "Anti-freeze protection - boiler on",
+            "nl": "Vorstbeveiliging - CV aan"
+          }
+        },
+        {
+          "id": "97",
+          "title": {
+            "en": "Anti-freeze protection - boiler pre-pump",
+            "nl": "Vorstbeveiliging - CV voorpompen"
+          }
+        },
+        {
+          "id": "98",
+          "title": {
+            "en": "Anti-freeze protection - water circulation",
+            "nl": "Vorstbeveiliging - water circulatie"
+          }
+        },
+        {
+          "id": "99",
+          "title": {
+            "en": "Fault - circulation pump on",
+            "nl": "Error - circulation pump on"
+          }
+        },
+        {
+          "id": "100",
+          "title": {
+            "en": "Commissioning modes",
+            "nl": "Inbedrijfstellings modi"
+          }
+        }
+      ]
+    }
+  ]
+}

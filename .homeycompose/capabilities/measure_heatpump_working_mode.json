@@ -2,7 +2,7 @@
   "type": "enum",
   "title": {
     "en": "Heatpump working mode",
-    "nl": "Warmtepomp Modus"
+    "nl": "Warmtepomp modus"
   },
   "description": "getMainWorkingMode: The current working mode of the heatpump as a numerical value. 0 - standby mode, 2 - Heating mode",
   "getable": true,

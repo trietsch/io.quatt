@@ -1,0 +1,14 @@
+{
+  "title": {
+    "en": "Thermostat hot water is on",
+    "nl": "Thermostaat warm water is aan"
+  },
+  "titleFormatted": {
+    "en": "Thermostat hot water is !{{on|off}}",
+    "nl": "Thermostaat warm water is !{{aan|uit}}"
+  },
+  "hint": {
+    "en": "Whether the CV is currently set to supply hot tap water, which is regulated by the thermostat's setting for hot water.",
+    "nl": "Of de CV momenteel warm kraanwater levert, wat geregeld wordt door de warm water instelling van de thermostaat."
+  }
+}

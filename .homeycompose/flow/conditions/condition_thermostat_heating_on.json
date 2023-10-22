@@ -1,0 +1,14 @@
+{
+  "title": {
+    "en": "Thermostat currently heating",
+    "nl": "Thermostaat verwarmt"
+  },
+  "titleFormatted": {
+    "en": "Thermostat is currently !{{heating|not heating}}",
+    "nl": "Thermostaat !{{verwarmt|verwarmt niet}}"
+  },
+  "hint": {
+    "en": "Whether the thermostat command is currently set to heat or not.",
+    "nl": "Of de thermostaat momenteel verwarmt of niet."
+  }
+}
