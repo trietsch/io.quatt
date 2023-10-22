@@ -758,7 +758,7 @@
         },
         "titleFormatted": {
           "en": "CV is !{{heating|not heating}}",
-          "nl": "Cv is !{{aan|niet aan}} het verwarmen"
+          "nl": "CV is !{{aan|niet aan}} het verwarmen"
         },
         "hint": {
           "en": "Whether the CV is currently heating (actual state, not the Quatt CiC's command)",
@@ -828,12 +828,12 @@
           "nl": "Boiler water toevoer temperatuur is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Boiler incoming water temperature is !{{greater|smaller}} than [[temperature]]",
-          "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+          "en": "Boiler incoming water temperature is !{{greater|smaller}} than [[value]]",
+          "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
         },
         "args": [
           {
-            "name": "temperature",
+            "name": "value",
             "title": {
               "en": "Temperature (°C)",
               "nl": "Temperatuur (°C)"
@@ -852,12 +852,12 @@
           "nl": "Boiler water afvoer temperatuur is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Boiler outgoing water temperature is !{{greater|smaller}} than [[temperature]]",
-          "nl": "Boiler water afvoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+          "en": "Boiler outgoing water temperature is !{{greater|smaller}} than [[value]]",
+          "nl": "Boiler water afvoer temperatuur is !{{groter|kleiner}} dan [[value]]"
         },
         "args": [
           {
-            "name": "temperature",
+            "name": "value",
             "title": {
               "en": "Temperature (°C)",
               "nl": "Temperatuur (°C)"
@@ -876,12 +876,12 @@
           "nl": "Water doorvoersnelheid is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Water flow speed is !{{greater|smaller}} than [[speed]]",
-          "nl": "Water doorvoersnelheid is !{{groter|kleiner}} dan [[speed]]"
+          "en": "Water flow speed is !{{greater|smaller}} than [[value]]",
+          "nl": "Water doorvoersnelheid is !{{groter|kleiner}} dan [[value]]"
         },
         "args": [
           {
-            "name": "speed",
+            "name": "value",
             "title": {
               "en": "Flow speed (L/h)",
               "nl": "Doorvoersnelheid (L/h)"
@@ -899,8 +899,8 @@
           "nl": "Boiler water toevoer temperatuur is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Boiler water supply temperature is !{{greater|smaller}} than [[temperature]]",
-          "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+          "en": "Boiler water supply temperature is !{{greater|smaller}} than [[value]]",
+          "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
         },
         "hint": {
           "en": "The temperature of the water supply to the boiler as measured by the flow meter.",
@@ -908,7 +908,7 @@
         },
         "args": [
           {
-            "name": "temperature",
+            "name": "value",
             "title": {
               "en": "Temperature (°C)",
               "nl": "Temperatuur (°C)"
@@ -953,12 +953,12 @@
           "nl": "Warmtepomp watertoevoer temperatuur is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Heatpump incoming water temperature is !{{greater|smaller}} than [[temperature]]",
-          "nl": "Warmtepomp watertoevoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+          "en": "Heatpump incoming water temperature is !{{greater|smaller}} than [[value]]",
+          "nl": "Warmtepomp watertoevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
         },
         "args": [
           {
-            "name": "temperature",
+            "name": "value",
             "title": {
               "en": "Temperature (°C)",
               "nl": "Temperatuur (°C)"
@@ -977,12 +977,12 @@
           "nl": "Warmtepomp waterafvoer temperatuur is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Heatpump outgoing water temperature is !{{greater|smaller}} than [[temperature]]",
-          "nl": "Warmtepomp waterafvoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+          "en": "Heatpump outgoing water temperature is !{{greater|smaller}} than [[value]]",
+          "nl": "Warmtepomp waterafvoer temperatuur is !{{groter|kleiner}} dan [[value]]"
         },
         "args": [
           {
-            "name": "temperature",
+            "name": "value",
             "title": {
               "en": "Temperature (°C)",
               "nl": "Temperatuur (°C)"
@@ -1001,12 +1001,12 @@
           "nl": "Buitentemperatuur is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Outside temperature is !{{greater|smaller}} than [[temperature]]",
-          "nl": "Buitentemperatuur is !{{groter|kleiner}} dan [[temperature]]"
+          "en": "Outside temperature is !{{greater|smaller}} than [[value]]",
+          "nl": "Buitentemperatuur is !{{groter|kleiner}} dan [[value]]"
         },
         "args": [
           {
-            "name": "temperature",
+            "name": "value",
             "title": {
               "en": "Temperature (°C)",
               "nl": "Temperatuur (°C)"
@@ -1018,6 +1018,272 @@
           }
         ],
         "id": "condition_heatpump_temperature_outside_compare"
+      },
+      {
+        "title": {
+          "en": "Thermal power is smaller / greater than",
+          "nl": "Thermisch vermogen is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Thermal power is !{{greater|smaller}} than [[value]]",
+          "nl": "Thermisch vermogen is !{{groter|kleiner}} dan [[value]]"
+        },
+        "args": [
+          {
+            "name": "value",
+            "title": {
+              "en": "Power (Watt)",
+              "nl": "Vermogen (Watt)"
+            },
+            "type": "number",
+            "min": 0,
+            "step": 0.1
+          }
+        ],
+        "id": "condition_heatpump_thermal_power_compare"
+      },
+      {
+        "title": {
+          "en": "Heatpump working mode is",
+          "nl": "Warmtepomp modus is"
+        },
+        "titleFormatted": {
+          "en": "Heatpump working mode is [[mode]]",
+          "nl": "Warmtepomp modus is [[mode]]"
+        },
+        "args": [
+          {
+            "name": "mode",
+            "title": {
+              "en": "Working mode",
+              "nl": "Modus"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "0",
+                "title": {
+                  "en": "Standby",
+                  "nl": "Standby"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "Heating",
+                  "nl": "Verwarmen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "condition_heatpump_working_mode"
+      },
+      {
+        "title": {
+          "en": "Supervisory control mode is",
+          "nl": "Controle modus is"
+        },
+        "titleFormatted": {
+          "en": "Supervisory control mode is [[mode]]",
+          "nl": "Controle modus is [[mode]]"
+        },
+        "args": [
+          {
+            "name": "mode",
+            "title": {
+              "en": "Supervisory control mode",
+              "nl": "Controle modus"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "0",
+                "title": {
+                  "en": "Standby",
+                  "nl": "Standby"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "Standby - heating",
+                  "nl": "Standby - verwarmen"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "Heating - heatpump only",
+                  "nl": "Heating - alleen warmtepomp"
+                }
+              },
+              {
+                "id": "3",
+                "title": {
+                  "en": "Heating - heatpump + boiler",
+                  "nl": "Verwarmen - warmtepomp + CV"
+                }
+              },
+              {
+                "id": "4",
+                "title": {
+                  "en": "Heating - boiler only",
+                  "nl": "Verwarmen - alleen CV"
+                }
+              },
+              {
+                "id": "96",
+                "title": {
+                  "en": "Anti-freeze protection - boiler on",
+                  "nl": "Vorstbeveiliging - CV aan"
+                }
+              },
+              {
+                "id": "97",
+                "title": {
+                  "en": "Anti-freeze protection - boiler pre-pump",
+                  "nl": "Vorstbeveiliging - CV voorpompen"
+                }
+              },
+              {
+                "id": "98",
+                "title": {
+                  "en": "Anti-freeze protection - water circulation",
+                  "nl": "Vorstbeveiliging - water circulatie"
+                }
+              },
+              {
+                "id": "99",
+                "title": {
+                  "en": "Fault - circulation pump on",
+                  "nl": "Error - circulation pump on"
+                }
+              },
+              {
+                "id": "100",
+                "title": {
+                  "en": "Commissioning modes",
+                  "nl": "Inbedrijfstellings modi"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "condition_quality_control_supervisory_control_mode"
+      },
+      {
+        "title": {
+          "en": "Thermostat cooling is on",
+          "nl": "Thermostaat verkoeling is aan"
+        },
+        "titleFormatted": {
+          "en": "Thermostat cooling is !{{on|off}}",
+          "nl": "Thermostaat verkoeling is !{{aan|uit}}"
+        },
+        "id": "condition_thermostat_cooling_on"
+      },
+      {
+        "title": {
+          "en": "Thermostat hot water is on",
+          "nl": "Thermostaat warm water is aan"
+        },
+        "titleFormatted": {
+          "en": "Thermostat hot water is !{{on|off}}",
+          "nl": "Thermostaat warm water is !{{aan|uit}}"
+        },
+        "hint": {
+          "en": "Whether the CV is currently set to supply hot tap water, which is regulated by the thermostat's setting for hot water.",
+          "nl": "Of de CV momenteel warm kraanwater levert, wat geregeld wordt door de warm water instelling van de thermostaat."
+        },
+        "id": "condition_thermostat_domestic_hot_water_on"
+      },
+      {
+        "title": {
+          "en": "Thermostat currently heating",
+          "nl": "Thermostaat verwarmt"
+        },
+        "titleFormatted": {
+          "en": "Thermostat is currently !{{heating|not heating}}",
+          "nl": "Thermostaat !{{verwarmt|verwarmt niet}}"
+        },
+        "hint": {
+          "en": "Whether the thermostat command is currently set to heat or not.",
+          "nl": "Of de thermostaat momenteel verwarmt of niet."
+        },
+        "id": "condition_thermostat_heating_on"
+      },
+      {
+        "title": {
+          "en": "Current room temperature is smaller / greater than",
+          "nl": "Huidige kamer temperatuur is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Current room temperature is !{{greater|smaller}} than [[value]]",
+          "nl": "Huidige kamer temperatuur is !{{groter|kleiner}} dan [[value]]"
+        },
+        "args": [
+          {
+            "name": "value",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_thermostat_room_temperature_compare"
+      },
+      {
+        "title": {
+          "en": "Room temperature setpoint is smaller / greater than",
+          "nl": "Ingestelde kamer temperatuur is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Room temperature setpoint is !{{greater|smaller}} than [[value]]",
+          "nl": "Ingestelde kamer temperatuur is !{{groter|kleiner}} dan [[value]]"
+        },
+        "args": [
+          {
+            "name": "value",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_thermostat_setpoint_room_temperature_compare"
+      },
+      {
+        "title": {
+          "en": "Water supply temperature setpoint is smaller / greater than",
+          "nl": "Ingestelde watertoevoer temperatuur is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Water supply temperature setpoint is !{{greater|smaller}} than [[value]]",
+          "nl": "Ingestelde watertoevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
+        },
+        "args": [
+          {
+            "name": "value",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          }
+        ],
+        "id": "condition_thermostat_setpoint_water_supply_temperature_compare"
       }
     ]
   },
@@ -1396,7 +1662,7 @@
       "type": "enum",
       "title": {
         "en": "Heatpump working mode",
-        "nl": "Warmtepomp Modus"
+        "nl": "Warmtepomp modus"
       },
       "description": "getMainWorkingMode: The current working mode of the heatpump as a numerical value. 0 - standby mode, 2 - Heating mode",
       "getable": true,
@@ -1423,8 +1689,8 @@
     "measure_quality_control_supervisory_control_mode": {
       "type": "enum",
       "title": {
-        "en": "Supervisory Control Mode",
-        "nl": "Controle Modus"
+        "en": "Supervisory control mode",
+        "nl": "Controle modus"
       },
       "description": "supervisoryControlMode: The current supervisory control mode of the heatpump as a numerical value.",
       "getable": true,

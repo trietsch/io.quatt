@@ -4,12 +4,12 @@
     "nl": "Warmtepomp waterafvoer temperatuur is kleiner / groter dan"
   },
   "titleFormatted": {
-  "en": "Heatpump outgoing water temperature is !{{greater|smaller}} than [[temperature]]",
-  "nl": "Warmtepomp waterafvoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+  "en": "Heatpump outgoing water temperature is !{{greater|smaller}} than [[value]]",
+  "nl": "Warmtepomp waterafvoer temperatuur is !{{groter|kleiner}} dan [[value]]"
 },
   "args": [
     {
-      "name": "temperature",
+      "name": "value",
       "title": {
         "en": "Temperature (°C)",
         "nl": "Temperatuur (°C)"

@@ -27,14 +27,17 @@ class QuattHeatpump extends Homey.Device {
         ['on', true],
         ['off', false]
     ]);
+    private defaultWorkingModeTriggerMapping = new Map<string, string | boolean>([
+        ['argument', 'workingMode'],
+    ]);
     private triggerMappings = new Map([
         ['measure_boiler_central_heating_mode_changed', this.defaultBooleanTriggerMapping],
         ['measure_boiler_cic_central_heating_on_changed', this.defaultBooleanTriggerMapping],
         ['measure_boiler_cic_central_heating_onoff_boiler_changed', this.defaultBooleanTriggerMapping],
         ['measure_boiler_domestic_hot_water_on_changed', this.defaultBooleanTriggerMapping],
         ['measure_boiler_flame_on_changed', this.defaultBooleanTriggerMapping],
-        ['measure_heatpump_working_mode_changed', new Map<string, string | boolean>([['argument', 'workingMode']])],
-        ['measure_quality_control_supervisory_control_mode_changed', new Map<string, string | boolean>([['argument', 'workingMode']])],
+        ['measure_heatpump_working_mode_changed', this.defaultWorkingModeTriggerMapping],
+        ['measure_quality_control_supervisory_control_mode_changed', this.defaultWorkingModeTriggerMapping],
         ['measure_thermostat_cooling_on_changed', this.defaultBooleanTriggerMapping],
         ['measure_thermostat_domestic_hot_water_on_changed', this.defaultBooleanTriggerMapping],
         ['measure_thermostat_heating_on_changed', this.defaultBooleanTriggerMapping],
@@ -49,6 +52,7 @@ class QuattHeatpump extends Homey.Device {
         this.log('Quatt Heatpump has been initialized');
         this.quattClient = new QuattClient(this.getStoreValue("address"));
         await this.registerTriggers();
+        await this.registerConditionListeners();
         await this.setCapabilityValues();
         await this.setCapabilityValuesInterval(10);
     }
@@ -133,6 +137,36 @@ class QuattHeatpump extends Homey.Device {
             }
 
             this.triggers.set(trigger.id, triggerCard);
+        }
+    }
+
+    async registerConditionListeners() {
+        for (const condition of this.homey.manifest.flow.conditions) {
+            let capabilityId = condition.id.replace('condition_', 'measure_').replace('_compare', '');
+            let conditionCard = this.homey.flow.getConditionCard(condition.id);
+
+            this.log(`[Condition] ${condition.id} => ${capabilityId}`)
+
+            conditionCard.registerRunListener(async (args, state) => {
+                let capabilityId = condition.id.replace('condition_', 'measure_').replace('_compare', '');
+                let capabilityValue = await this.getCapabilityValue(capabilityId);
+                this.log(`[Condition Listener] ${condition.id} => capability: ${capabilityId}, value: ${capabilityValue} => ${JSON.stringify(args)} => ${JSON.stringify(state)}`);
+
+                return true;
+
+                // List of values is also a number -> this approach does not work
+
+                // if (typeof capabilityValue === 'boolean') {
+                //     // On / off capabilities
+                //     return capabilityValue;
+                // } else if (typeof capabilityValue === 'number') {
+                //     // Temperature / speed / power value greater than
+                //     return capabilityValue > args['value'];
+                // } else if (typeof capabilityValue === 'string') {
+                //     // Dropdown list of values
+                //     return capabilityValue.toLowerCase() === (args['value'] as string).toLowerCase();
+                // }
+            })
         }
     }
 

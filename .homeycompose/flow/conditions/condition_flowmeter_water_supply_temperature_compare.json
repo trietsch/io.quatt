@@ -4,8 +4,8 @@
     "nl": "Boiler water toevoer temperatuur is kleiner / groter dan"
   },
   "titleFormatted": {
-    "en": "Boiler water supply temperature is !{{greater|smaller}} than [[temperature]]",
-    "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[temperature]]"
+    "en": "Boiler water supply temperature is !{{greater|smaller}} than [[value]]",
+    "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
   },
   "hint": {
     "en": "The temperature of the water supply to the boiler as measured by the flow meter.",
@@ -13,7 +13,7 @@
   },
   "args": [
     {
-      "name": "temperature",
+      "name": "value",
       "title": {
         "en": "Temperature (°C)",
         "nl": "Temperatuur (°C)"
