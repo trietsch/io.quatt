@@ -152,20 +152,18 @@ class QuattHeatpump extends Homey.Device {
                 let capabilityValue = await this.getCapabilityValue(capabilityId);
                 this.log(`[Condition Listener] ${condition.id} => capability: ${capabilityId}, value: ${capabilityValue} => ${JSON.stringify(args)} => ${JSON.stringify(state)}`);
 
-                return true;
-
-                // List of values is also a number -> this approach does not work
-
-                // if (typeof capabilityValue === 'boolean') {
-                //     // On / off capabilities
-                //     return capabilityValue;
-                // } else if (typeof capabilityValue === 'number') {
-                //     // Temperature / speed / power value greater than
-                //     return capabilityValue > args['value'];
-                // } else if (typeof capabilityValue === 'string') {
-                //     // Dropdown list of values
-                //     return capabilityValue.toLowerCase() === (args['value'] as string).toLowerCase();
-                // }
+                if (typeof capabilityValue === 'boolean') {
+                    this.log(`[Condition Listener] ${condition.id} => boolean`);
+                    // On / off capabilities
+                    return capabilityValue;
+                } else if (typeof capabilityValue === 'number') {
+                    this.log(`[Condition Listener] ${condition.id} => number`);
+                    // Temperature / speed / power value greater than
+                    return capabilityValue > args['value'];
+                } else if (typeof capabilityValue === 'string') {
+                    this.log(`[Condition Listener] ${condition.id} => string`);
+                    return capabilityValue === args['value'];
+                }
             })
         }
     }
@@ -212,9 +210,6 @@ class QuattHeatpump extends Homey.Device {
     }
 
     async safeSetCapabilityValue(capability: string, newValue: any, delay: number = 10) {
-        // "measure_boiler_domestic_hot_water_on"
-        // "measure_heatpump_limited_by_cop.heatpump1"
-
         // this.log(`[Device] ${this.getName()} - setValue => ${capability} => `, newValue);
 
         if (this.hasCapability(capability)) {
@@ -239,13 +234,7 @@ class QuattHeatpump extends Homey.Device {
                             .then(
                                 () => this.homey.app.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Triggered: "${triggerId} | ${newValue}"`),
                                 (error: unknown) => this.homey.app.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Error: "${error} | ${newValue}"`)
-                            )
-
-                        // await this.homey.flow
-                        //     .getDeviceTriggerCard(`${triggerId}_changed`)
-                        //     .trigger(this)
-                        //     .catch(this.error)
-                        //     .then(this.homey.app.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Triggered: "${triggerId} | ${newValue}"`));
+                            );
                     } else {
                         this.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Trigger not found: "${triggerId} | ${newValue}"`);
                     }

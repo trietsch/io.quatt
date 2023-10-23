@@ -4,12 +4,12 @@
     "nl": "Controle modus is"
   },
   "titleFormatted": {
-    "en": "Supervisory control mode is [[mode]]",
-    "nl": "Controle modus is [[mode]]"
+    "en": "Supervisory control mode is [[value]]",
+    "nl": "Controle modus is [[value]]"
   },
   "args": [
     {
-      "name": "mode",
+      "name": "value",
       "title": {
         "en": "Supervisory control mode",
         "nl": "Controle modus"

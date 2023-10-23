@@ -4,12 +4,12 @@
     "nl": "Warmtepomp modus is"
   },
   "titleFormatted": {
-    "en": "Heatpump working mode is [[mode]]",
-    "nl": "Warmtepomp modus is [[mode]]"
+    "en": "Heatpump working mode is [[value]]",
+    "nl": "Warmtepomp modus is [[value]]"
   },
   "args": [
     {
-      "name": "mode",
+      "name": "value",
       "title": {
         "en": "Working mode",
         "nl": "Modus"

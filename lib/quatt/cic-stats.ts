@@ -5,7 +5,7 @@ export interface CicTime {
 
 export interface CicHeatpump {
     modbusSlaveId: number;
-    getMainWorkingMode: number;
+    getMainWorkingMode: string; // string on purpose, as this makes conditions easier
     temperatureOutside: number;
     temperatureWaterIn: number;
     temperatureWaterOut: number;
@@ -40,7 +40,7 @@ export interface CicThermostat {
 }
 
 export interface CicQualityControl {
-    supervisoryControlMode: number;
+    supervisoryControlMode: string; // string on purpose, as this makes conditions easier
     stickyPumpProtectionEnabled: boolean;
 }
 
