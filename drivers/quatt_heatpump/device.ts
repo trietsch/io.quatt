@@ -7,6 +7,7 @@ class QuattHeatpump extends Homey.Device {
     private onPollInterval!: NodeJS.Timer;
 
     private capabilitiesAdded = false;
+    private multipleHeatpumps = false;
     private singleHeatpumpCapabilities = [
         "measure_heatpump_limited_by_cop",
         "measure_heatpump_thermal_power",
@@ -74,12 +75,11 @@ class QuattHeatpump extends Homey.Device {
             }
 
             if (!cicStats.hp2) {
-
-
                 await this.addCapabilities(this.singleHeatpumpCapabilities);
                 await this.setHeatPumpValues(cicStats.hp1);
                 await this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput)
             } else {
+                this.multipleHeatpumps = true;
                 await this.addCapabilities(this.multipleHeatpumpCapabilities);
                 await this.setHeatPumpValues(cicStats.hp1, 'heatpump1');
                 await this.setHeatPumpValues(cicStats.hp2, 'heatpump2');
@@ -149,21 +149,67 @@ class QuattHeatpump extends Homey.Device {
 
             conditionCard.registerRunListener(async (args, state) => {
                 let capabilityId = condition.id.replace('condition_', 'measure_').replace('_compare', '');
-                let capabilityValue = await this.getCapabilityValue(capabilityId);
-                this.log(`[Condition Listener] ${condition.id} => capability: ${capabilityId}, value: ${capabilityValue} => ${JSON.stringify(args)} => ${JSON.stringify(state)}`);
+                let capabilityValues = await Promise.all(
+                    condition.supportsMultipleHeatpumps === true && this.multipleHeatpumps ?
+                        [this.getCapabilityValue(`${capabilityId}.heatpump1`), this.getCapabilityValue(`${capabilityId}.heatpump2`)] :
+                        [this.getCapabilityValue(capabilityId)]);
 
-                if (typeof capabilityValue === 'boolean') {
-                    this.log(`[Condition Listener] ${condition.id} => boolean`);
+                this.log(`[Condition] ${condition.id} => capability: ${capabilityId}, values: ${capabilityValues} => ${JSON.stringify(args)} => ${JSON.stringify(state)}`);
+
+                if (typeof capabilityValues[0] === 'boolean') {
                     // On / off capabilities
-                    return capabilityValue;
-                } else if (typeof capabilityValue === 'number') {
-                    this.log(`[Condition Listener] ${condition.id} => number`);
+                    this.log(`[Condition Listener] ${condition.id} => boolean => values = ${capabilityValues}`);
+
+                    // TODO let people with Quatt DUO test this
+                    if (capabilityValues.length > 1) {
+                        if (args['selection'] === 'any') {
+                            return capabilityValues.some((value) => value);
+                        } else if (args['selection'] === 'all') {
+                            return capabilityValues.every((value) => value);
+                        } else if (args['selection'] === '1') {
+                            return capabilityValues[0];
+                        } else if (args['selection'] === '2') {
+                            return capabilityValues[1];
+                        }
+                    } else {
+                        return capabilityValues[0];
+                    }
+                } else if (typeof capabilityValues[0] === 'number') {
                     // Temperature / speed / power value greater than
-                    return capabilityValue > args['value'];
-                } else if (typeof capabilityValue === 'string') {
-                    this.log(`[Condition Listener] ${condition.id} => string`);
-                    return capabilityValue === args['value'];
+                    this.log(`[Condition Listener] ${condition.id} => number => values = ${capabilityValues}`);
+
+                    if (capabilityValues.length > 1) {
+                        if (args['selection'] === 'any') {
+                            return capabilityValues.some((value) => value > args['value']);
+                        } else if (args['selection'] === 'all') {
+                            return capabilityValues.every((value) => value > args['value']);
+                        } else if (args['selection'] === '1') {
+                            return capabilityValues[0] > args['value']
+                        } else if (args['selection'] === '2') {
+                            return capabilityValues[1] > args['value'];
+                        }
+                    } else {
+                        return capabilityValues[0] > args['value'];
+                    }
+                } else if (typeof capabilityValues[0] === 'string') {
+                    this.log(`[Condition Listener] ${condition.id} => string => values = ${capabilityValues}`);
+
+                    if (capabilityValues.length > 1) {
+                        if (args['selection'] === 'any') {
+                            return capabilityValues.some((value) => value === args['value']);
+                        } else if (args['selection'] === 'all') {
+                            return capabilityValues.every((value) => value === args['value']);
+                        } else if (args['selection'] === '1') {
+                            return capabilityValues[0] === args['value'];
+                        } else if (args['selection'] === '2') {
+                            return capabilityValues[1] === args['value'];
+                        }
+                    } else {
+                        return capabilityValues[0] === args['value'];
+                    }
                 }
+
+                return false;
             })
         }
     }

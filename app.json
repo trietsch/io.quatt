@@ -942,9 +942,54 @@
           "nl": "Stille modus"
         },
         "titleFormatted": {
-          "en": "Heatpump is !{{set to|not set to}} silent mode",
-          "nl": "Warmtepomp is !{{ingesteld|niet ingesteld}} op stille modus"
+          "en": "[[selection]] is !{{set to|not set to}} silent mode",
+          "nl": "[[selection]] is !{{ingesteld|niet ingesteld}} op stille modus"
         },
+        "hint": {
+          "en": "If you only have one heatpump, you can leave the selection  heatpump (i.e. it doesn't matter which selection you pick).",
+          "nl": "Als je maar één warmtepomp hebt, kun je de selectie op een willekeurige warmtepomp laten staan (het maakt niet uit welke je kiest)."
+        },
+        "args": [
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "Any heatpump",
+                  "nl": "Een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "All heatpumps",
+                  "nl": "Alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "Heatpump 1",
+                  "nl": "Warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "Heatpump 2",
+                  "nl": "Warmtepomp 2"
+                }
+              }
+            ]
+          }
+        ],
+        "supportsMultipleHeatpumps": true,
         "id": "condition_heatpump_silent_mode"
       },
       {
@@ -953,8 +998,12 @@
           "nl": "Warmtepomp watertoevoer temperatuur is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Heatpump incoming water temperature is !{{greater|smaller}} than [[value]]",
-          "nl": "Warmtepomp watertoevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
+          "en": "Incoming water temperature of [[selection]] is !{{greater|smaller}} than [[value]]",
+          "nl": "Watertoevoer temperatuur van [[selection]] is !{{groter|kleiner}} dan [[value]]"
+        },
+        "hint": {
+          "en": "If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
         },
         "args": [
           {
@@ -967,8 +1016,47 @@
             "min": 0,
             "max": 100,
             "step": 0.01
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
           }
         ],
+        "supportsMultipleHeatpumps": true,
         "id": "condition_heatpump_temperature_incoming_water_compare"
       },
       {
@@ -977,8 +1065,12 @@
           "nl": "Warmtepomp waterafvoer temperatuur is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Heatpump outgoing water temperature is !{{greater|smaller}} than [[value]]",
-          "nl": "Warmtepomp waterafvoer temperatuur is !{{groter|kleiner}} dan [[value]]"
+          "en": "Outgoing water temperature of [[selection]] is !{{greater|smaller}} than [[value]]",
+          "nl": "Waterafvoer temperatuur van [[selection]] is !{{groter|kleiner}} dan [[value]]"
+        },
+        "hint": {
+          "en": "If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
         },
         "args": [
           {
@@ -991,8 +1083,47 @@
             "min": 0,
             "max": 100,
             "step": 0.01
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
           }
         ],
+        "supportsMultipleHeatpumps": true,
         "id": "condition_heatpump_temperature_outgoing_water_compare"
       },
       {
@@ -1001,8 +1132,12 @@
           "nl": "Buitentemperatuur is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Outside temperature is !{{greater|smaller}} than [[value]]",
-          "nl": "Buitentemperatuur is !{{groter|kleiner}} dan [[value]]"
+          "en": "Outside temperature measured by [[selection]] is !{{greater|smaller}} than [[value]]",
+          "nl": "Buitentemperatuur gemeten door [[selection]] is !{{groter|kleiner}} dan [[value]]"
+        },
+        "hint": {
+          "en": "If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
         },
         "args": [
           {
@@ -1015,8 +1150,47 @@
             "min": 0,
             "max": 100,
             "step": 0.01
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
           }
         ],
+        "supportsMultipleHeatpumps": true,
         "id": "condition_heatpump_temperature_outside_compare"
       },
       {
@@ -1025,8 +1199,12 @@
           "nl": "Thermisch vermogen is kleiner / groter dan"
         },
         "titleFormatted": {
-          "en": "Thermal power is !{{greater|smaller}} than [[value]]",
-          "nl": "Thermisch vermogen is !{{groter|kleiner}} dan [[value]]"
+          "en": "Thermal power of [[selection]] is !{{greater|smaller}} than [[value]]",
+          "nl": "Thermisch vermogen van [[selection]] is !{{groter|kleiner}} dan [[value]]"
+        },
+        "hint": {
+          "en": "If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
         },
         "args": [
           {
@@ -1038,8 +1216,47 @@
             "type": "number",
             "min": 0,
             "step": 0.1
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
           }
         ],
+        "supportsMultipleHeatpumps": true,
         "id": "condition_heatpump_thermal_power_compare"
       },
       {
@@ -1048,8 +1265,12 @@
           "nl": "Warmtepomp modus is"
         },
         "titleFormatted": {
-          "en": "Heatpump working mode is [[value]]",
-          "nl": "Warmtepomp modus is [[value]]"
+          "en": "Working mode of [[selection]] is [[value]]",
+          "nl": "Modus van [[selection]] is [[value]]"
+        },
+        "hint": {
+          "en": "If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
         },
         "args": [
           {
@@ -1075,8 +1296,47 @@
                 }
               }
             ]
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
           }
         ],
+        "supportsMultipleHeatpumps": true,
         "id": "condition_heatpump_working_mode"
       },
       {

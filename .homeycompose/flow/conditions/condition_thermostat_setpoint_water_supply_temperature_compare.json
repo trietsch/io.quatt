@@ -4,9 +4,9 @@
     "nl": "Ingestelde watertoevoer temperatuur is kleiner / groter dan"
   },
   "titleFormatted": {
-  "en": "Water supply temperature setpoint is !{{greater|smaller}} than [[value]]",
-  "nl": "Ingestelde watertoevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
-},
+    "en": "Water supply temperature setpoint is !{{greater|smaller}} than [[value]]",
+    "nl": "Ingestelde watertoevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
+  },
   "args": [
     {
       "name": "value",

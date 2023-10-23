@@ -4,7 +4,52 @@
     "nl": "Stille modus"
   },
   "titleFormatted": {
-    "en": "Heatpump is !{{set to|not set to}} silent mode",
-    "nl": "Warmtepomp is !{{ingesteld|niet ingesteld}} op stille modus"
-  }
+    "en": "[[selection]] is !{{set to|not set to}} silent mode",
+    "nl": "[[selection]] is !{{ingesteld|niet ingesteld}} op stille modus"
+  },
+  "hint": {
+    "en": "If you only have one heatpump, you can leave the selection  heatpump (i.e. it doesn't matter which selection you pick).",
+    "nl": "Als je maar één warmtepomp hebt, kun je de selectie op een willekeurige warmtepomp laten staan (het maakt niet uit welke je kiest)."
+  },
+  "args": [
+    {
+      "name": "selection",
+      "title": {
+        "en": "Heatpump selection",
+        "nl": "Warmtepomp selectie"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "any",
+          "title": {
+            "en": "Any heatpump",
+            "nl": "Een warmtepomp"
+          }
+        },
+        {
+          "id": "all",
+          "title": {
+            "en": "All heatpumps",
+            "nl": "Alle warmtepompen"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "Heatpump 1",
+            "nl": "Warmtepomp 1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Heatpump 2",
+            "nl": "Warmtepomp 2"
+          }
+        }
+      ]
+    }
+  ],
+  "supportsMultipleHeatpumps": true
 }

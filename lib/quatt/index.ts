@@ -17,8 +17,6 @@ export class QuattClient {
         try {
             const response = await axios.get(`http://${this.deviceAddress}:8080/beta/feed/data.json`);
 
-            Object.keys(response.data)
-
             return response.data as CicStats;
         } catch (error) {
             if (shouldLog) {

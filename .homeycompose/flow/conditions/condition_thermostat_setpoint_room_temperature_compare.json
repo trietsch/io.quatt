@@ -4,9 +4,9 @@
     "nl": "Ingestelde kamer temperatuur is kleiner / groter dan"
   },
   "titleFormatted": {
-  "en": "Room temperature setpoint is !{{greater|smaller}} than [[value]]",
-  "nl": "Ingestelde kamer temperatuur is !{{groter|kleiner}} dan [[value]]"
-},
+    "en": "Room temperature setpoint is !{{greater|smaller}} than [[value]]",
+    "nl": "Ingestelde kamer temperatuur is !{{groter|kleiner}} dan [[value]]"
+  },
   "args": [
     {
       "name": "value",

@@ -4,9 +4,9 @@
     "nl": "Boiler water toevoer temperatuur is kleiner / groter dan"
   },
   "titleFormatted": {
-  "en": "Boiler incoming water temperature is !{{greater|smaller}} than [[value]]",
-  "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
-},
+    "en": "Boiler incoming water temperature is !{{greater|smaller}} than [[value]]",
+    "nl": "Boiler water toevoer temperatuur is !{{groter|kleiner}} dan [[value]]"
+  },
   "args": [
     {
       "name": "value",

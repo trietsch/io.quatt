@@ -4,9 +4,9 @@
     "nl": "Huidige kamer temperatuur is kleiner / groter dan"
   },
   "titleFormatted": {
-  "en": "Current room temperature is !{{greater|smaller}} than [[value]]",
-  "nl": "Huidige kamer temperatuur is !{{groter|kleiner}} dan [[value]]"
-},
+    "en": "Current room temperature is !{{greater|smaller}} than [[value]]",
+    "nl": "Huidige kamer temperatuur is !{{groter|kleiner}} dan [[value]]"
+  },
   "args": [
     {
       "name": "value",

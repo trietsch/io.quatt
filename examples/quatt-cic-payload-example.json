@@ -14,7 +14,17 @@
     "silentModeStatus": false,
     "limitedByCop": false
   },
-  "hp2": null,
+  "hp2": {
+    "modbusSlaveId": 1,
+    "getMainWorkingMode": 2,
+    "temperatureOutside": 7,
+    "temperatureWaterIn": 45.33,
+    "temperatureWaterOut": 49.37,
+    "powerInput": 1080.325347,
+    "power": 3724.620618,
+    "silentModeStatus": false,
+    "limitedByCop": false
+  },
   "boiler": {
     "otFbChModeActive": true,
     "otFbDhwActive": false,

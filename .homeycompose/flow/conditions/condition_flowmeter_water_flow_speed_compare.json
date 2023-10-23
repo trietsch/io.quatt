@@ -4,9 +4,9 @@
     "nl": "Water doorvoersnelheid is kleiner / groter dan"
   },
   "titleFormatted": {
-  "en": "Water flow speed is !{{greater|smaller}} than [[value]]",
-  "nl": "Water doorvoersnelheid is !{{groter|kleiner}} dan [[value]]"
-},
+    "en": "Water flow speed is !{{greater|smaller}} than [[value]]",
+    "nl": "Water doorvoersnelheid is !{{groter|kleiner}} dan [[value]]"
+  },
   "args": [
     {
       "name": "value",
