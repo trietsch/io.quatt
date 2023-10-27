@@ -55,7 +55,7 @@ class QuattHeatpump extends Homey.Device {
         await this.registerTriggers();
         await this.registerConditionListeners();
         await this.setCapabilityValues();
-        await this.setCapabilityValuesInterval(10);
+        await this.setCapabilityValuesInterval(5);
     }
 
     /**
@@ -74,35 +74,46 @@ class QuattHeatpump extends Homey.Device {
                 return;
             }
 
+            let promises = [];
+
             if (!cicStats.hp2) {
-                await this.addCapabilities(this.singleHeatpumpCapabilities);
-                await this.setHeatPumpValues(cicStats.hp1);
-                await this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput)
+                promises.push(
+                    this.addCapabilities(this.singleHeatpumpCapabilities),
+                    this.setHeatPumpValues(cicStats.hp1),
+                    this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput)
+                );
             } else {
                 this.multipleHeatpumps = true;
-                await this.addCapabilities(this.multipleHeatpumpCapabilities);
-                await this.setHeatPumpValues(cicStats.hp1, 'heatpump1');
-                await this.setHeatPumpValues(cicStats.hp2, 'heatpump2');
-                await this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput + cicStats.hp2.powerInput)
+
+                promises.push(
+                    this.addCapabilities(this.multipleHeatpumpCapabilities),
+                    this.setHeatPumpValues(cicStats.hp1, 'heatpump1'),
+                    this.setHeatPumpValues(cicStats.hp2, 'heatpump2'),
+                    this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput + cicStats.hp2.powerInput)
+                );
             }
 
-            await this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature);
-            await this.safeSetCapabilityValue('measure_boiler_central_heating_mode', cicStats.boiler.otFbChModeActive)
-            await this.safeSetCapabilityValue('measure_boiler_cic_central_heating_on', cicStats.boiler.otTbCH)
-            await this.safeSetCapabilityValue('measure_boiler_cic_central_heating_onoff_boiler', cicStats.boiler.oTtbTurnOnOffBoilerOn)
-            await this.safeSetCapabilityValue('measure_boiler_domestic_hot_water_on', cicStats.boiler.otFbDhwActive)
-            await this.safeSetCapabilityValue('measure_boiler_flame_on', cicStats.boiler.otFbFlameOn)
-            await this.safeSetCapabilityValue('measure_boiler_temperature_incoming_water', cicStats.boiler.otFbSupplyInletTemperature)
-            await this.safeSetCapabilityValue('measure_boiler_temperature_outgoing_water', cicStats.boiler.otFbSupplyOutletTemperature)
-            await this.safeSetCapabilityValue('measure_flowmeter_water_flow_speed', cicStats.flowMeter.flowRate)
-            await this.safeSetCapabilityValue('measure_flowmeter_water_supply_temperature', cicStats.flowMeter.waterSupplyTemperature)
-            await this.safeSetCapabilityValue('measure_quality_control_supervisory_control_mode', cicStats.qc.supervisoryControlMode.toString());
-            await this.safeSetCapabilityValue('measure_thermostat_cooling_on', cicStats.thermostat.otFtCoolingEnabled)
-            await this.safeSetCapabilityValue('measure_thermostat_domestic_hot_water_on', cicStats.thermostat.otFtDhwEnabled)
-            await this.safeSetCapabilityValue('measure_thermostat_heating_on', cicStats.thermostat.otFtChEnabled)
-            await this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature)
-            await this.safeSetCapabilityValue('measure_thermostat_setpoint_room_temperature', cicStats.thermostat.otFtRoomSetpoint)
-            await this.safeSetCapabilityValue('measure_thermostat_setpoint_water_supply_temperature', cicStats.thermostat.otFtControlSetpoint)
+            promises.push(
+                this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature),
+                this.safeSetCapabilityValue('measure_boiler_central_heating_mode', cicStats.boiler.otFbChModeActive),
+                this.safeSetCapabilityValue('measure_boiler_cic_central_heating_on', cicStats.boiler.otTbCH),
+                this.safeSetCapabilityValue('measure_boiler_cic_central_heating_onoff_boiler', cicStats.boiler.oTtbTurnOnOffBoilerOn),
+                this.safeSetCapabilityValue('measure_boiler_domestic_hot_water_on', cicStats.boiler.otFbDhwActive),
+                this.safeSetCapabilityValue('measure_boiler_flame_on', cicStats.boiler.otFbFlameOn),
+                this.safeSetCapabilityValue('measure_boiler_temperature_incoming_water', cicStats.boiler.otFbSupplyInletTemperature),
+                this.safeSetCapabilityValue('measure_boiler_temperature_outgoing_water', cicStats.boiler.otFbSupplyOutletTemperature),
+                this.safeSetCapabilityValue('measure_flowmeter_water_flow_speed', cicStats.flowMeter.flowRate),
+                this.safeSetCapabilityValue('measure_flowmeter_water_supply_temperature', cicStats.flowMeter.waterSupplyTemperature),
+                this.safeSetCapabilityValue('measure_quality_control_supervisory_control_mode', cicStats.qc.supervisoryControlMode.toString()),
+                this.safeSetCapabilityValue('measure_thermostat_cooling_on', cicStats.thermostat.otFtCoolingEnabled),
+                this.safeSetCapabilityValue('measure_thermostat_domestic_hot_water_on', cicStats.thermostat.otFtDhwEnabled),
+                this.safeSetCapabilityValue('measure_thermostat_heating_on', cicStats.thermostat.otFtChEnabled),
+                this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature),
+                this.safeSetCapabilityValue('measure_thermostat_setpoint_room_temperature', cicStats.thermostat.otFtRoomSetpoint),
+                this.safeSetCapabilityValue('measure_thermostat_setpoint_water_supply_temperature', cicStats.thermostat.otFtControlSetpoint)
+            )
+
+            await Promise.all(promises);
         } catch (error) {
             this.homey.app.error(error);
         }
@@ -111,7 +122,7 @@ class QuattHeatpump extends Homey.Device {
     async registerTriggers() {
         for (const trigger of this.homey.manifest.flow.triggers) {
             let triggerCard = this.homey.flow.getTriggerCard(trigger.id);
-            let triggerArgs: string[] | undefined = trigger.args?.map((arg: any) => arg.name);
+            let triggerArgs: string[] = trigger.args !== undefined ? trigger.args?.map((arg: any) => arg.name) : [];
 
             triggerCard.registerRunListener(async (args, state) => {
                 // If this card does not allow any arguments to be passed as input, it should always continue
@@ -119,36 +130,36 @@ class QuattHeatpump extends Homey.Device {
                     return true;
                 }
 
-                const heatpumpNumber: string | undefined = state.heatpumpNumber;
+                let allowsSelection = triggerArgs.includes('selection') && Object.keys(state).includes('heatpumpNumber');
+
                 let triggerMapping = this.triggerMappings.get(trigger.id);
+                let argumentName = triggerMapping?.get('argument') as string | undefined;
 
-                if (!triggerMapping) {
-                    this.log(`[Trigger Run Listener] - Trigger mapping not found for ${trigger.id}`);
-                }
+                if (argumentName) {
+                    let argumentValue = args[argumentName];
+                    let mappedValue = triggerMapping!.get(argumentValue);
 
-                let argumentName = triggerMapping!.get('argument') as string;
-                let argumentValue = args[argumentName];
-                let mappedValue = triggerMapping!.get(argumentValue);
+                    this.log(`[Trigger Run Listener] Trigger mapping found for ${trigger.id} and '${argumentValue}' => ${mappedValue}. State => ${state.value}`);
 
-                // If there is no mapping, use identity function, i.e. take the argument value as is
-                if (!mappedValue) {
-                    mappedValue = argumentValue;
-                }
-
-                this.log(`[Trigger Run Listener] Trigger mapping found for ${trigger.id} and '${argumentValue}' => ${mappedValue}. State => ${state.value}`);
-
-                if (triggerArgs?.includes('selection') && heatpumpNumber) {
-                    // There are more than one heatpumps and this trigger card allows for heatpump selection
-
-                    // TODO this needs to be tested with Quatt DUO
-                    if (args['selection'] === heatpumpNumber) {
-                        return mappedValue === state.value;
+                    if (allowsSelection) {
+                        // Heatpump selection and mapped value comparison
+                        return args['selection'] === state.heatpumpNumber && mappedValue === state.value;
                     } else {
-                        return false;
+                        // Mapped value comparison
+                        return mappedValue === state.value;
+                    }
+                } else {
+                    // Heatpump selection only
+                    this.log(`[Trigger Run Listener] - Trigger mapping not found for ${trigger.id} => selection = ${args['selection']} => heatpump number = ${state.heatpumpNumber}`);
+
+                    if (allowsSelection) {
+                        // In case there are multiple heatpumps, the selection needs to be checked
+                        return args['selection'] === state.heatpumpNumber;
+                    } else {
+                        // In case there is only one heatpump, the selection does not need to be checked
+                        return true;
                     }
                 }
-
-                return mappedValue === state.value;
             });
 
             this.triggers.set(trigger.id, triggerCard);
@@ -236,13 +247,15 @@ class QuattHeatpump extends Homey.Device {
             suffix = `.${name}`;
         }
 
-        await this.safeSetCapabilityValue(`measure_heatpump_limited_by_cop${suffix}`, hp.limitedByCop);
-        await this.safeSetCapabilityValue(`measure_heatpump_thermal_power${suffix}`, hp.power);
-        await this.safeSetCapabilityValue(`measure_heatpump_silent_mode${suffix}`, hp.silentModeStatus)
-        await this.safeSetCapabilityValue(`measure_heatpump_temperature_incoming_water${suffix}`, hp.temperatureWaterIn)
-        await this.safeSetCapabilityValue(`measure_heatpump_temperature_outgoing_water${suffix}`, hp.temperatureWaterOut)
-        await this.safeSetCapabilityValue(`measure_heatpump_temperature_outside${suffix}`, hp.temperatureOutside)
-        await this.safeSetCapabilityValue(`measure_heatpump_working_mode${suffix}`, hp.getMainWorkingMode.toString())
+        return Promise.all([
+            this.safeSetCapabilityValue(`measure_heatpump_limited_by_cop${suffix}`, hp.limitedByCop),
+            this.safeSetCapabilityValue(`measure_heatpump_thermal_power${suffix}`, hp.power),
+            this.safeSetCapabilityValue(`measure_heatpump_silent_mode${suffix}`, hp.silentModeStatus),
+            this.safeSetCapabilityValue(`measure_heatpump_temperature_incoming_water${suffix}`, hp.temperatureWaterIn),
+            this.safeSetCapabilityValue(`measure_heatpump_temperature_outgoing_water${suffix}`, hp.temperatureWaterOut),
+            this.safeSetCapabilityValue(`measure_heatpump_temperature_outside${suffix}`, hp.temperatureOutside),
+            this.safeSetCapabilityValue(`measure_heatpump_working_mode${suffix}`, hp.getMainWorkingMode.toString())
+        ]);
     }
 
     async addCapabilities(capabilities: string[]) {
@@ -293,7 +306,10 @@ class QuattHeatpump extends Homey.Device {
                     const triggerExists = this.triggers.get(`${triggerId}_changed`);
 
                     if (triggerExists) {
-                        await this.homey.flow.getTriggerCard(`${triggerId}_changed`).trigger(undefined, {value: newValue, heatpumpNumber: heatpumpNumber})
+                        await this.homey.flow.getTriggerCard(`${triggerId}_changed`).trigger(undefined, {
+                            value: newValue,
+                            heatpumpNumber: heatpumpNumber
+                        })
                             .catch(this.error)
                             .then(
                                 () => this.homey.app.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Triggered: "${triggerId} | ${newValue}"`),
