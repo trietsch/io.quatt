@@ -113,6 +113,7 @@ class QuattHeatpump extends Homey.Device {
             let triggerCard = this.homey.flow.getTriggerCard(trigger.id);
             let triggerMappingExists = this.triggerMappings.get(trigger.id);
 
+            // TODO check whether the card should be triggered, based on the provided values of heatpump selection
             if (triggerMappingExists) {
                 triggerCard.registerRunListener(async (args, state) => {
                     let triggerMapping = this.triggerMappings.get(trigger.id);
@@ -192,6 +193,7 @@ class QuattHeatpump extends Homey.Device {
                         return capabilityValues[0] > args['value'];
                     }
                 } else if (typeof capabilityValues[0] === 'string') {
+                    // List of values, e.g. quality control mode
                     this.log(`[Condition Listener] ${condition.id} => string => values = ${capabilityValues}`);
 
                     if (capabilityValues.length > 1) {

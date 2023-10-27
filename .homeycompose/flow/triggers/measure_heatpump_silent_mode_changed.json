@@ -4,12 +4,12 @@
     "nl": "Stille modus is veranderd"
   },
   "titleFormatted": {
-    "en": "Silent mode is [[state]]",
-    "nl": "Stille modus is [[state]]"
+    "en": "Silent mode of [[selection]] is [[state]]",
+    "nl": "Stille modus van [[selection]] is [[state]]"
   },
   "hint": {
-    "en": "This card starts whenever the heatpump switches from silent mode.",
-    "nl": "Deze kaart start wanneer de warmtepomp van stille modus verandert."
+    "en": "This card starts whenever the heatpump switches from silent mode. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+    "nl": "Deze kaart start wanneer de warmtepomp van stille modus verandert. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
   },
   "args": [
     {
@@ -36,6 +36,45 @@
           }
         }
       ]
+    },
+    {
+      "name": "selection",
+      "title": {
+        "en": "Heatpump selection",
+        "nl": "Warmtepomp selectie"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "any",
+          "title": {
+            "en": "any heatpump",
+            "nl": "een warmtepomp"
+          }
+        },
+        {
+          "id": "all",
+          "title": {
+            "en": "all heatpumps",
+            "nl": "alle warmtepompen"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "heatpump 1",
+            "nl": "warmtepomp 1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "heatpump 2",
+            "nl": "warmtepomp 2"
+          }
+        }
+      ]
     }
+
   ]
 }

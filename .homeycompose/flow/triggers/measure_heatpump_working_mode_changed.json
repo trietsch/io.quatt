@@ -4,12 +4,12 @@
     "nl": "Warmtepomp werkmodus is veranderd"
   },
   "titleFormatted": {
-    "en": "Heatpump working mode is: [[workingMode]]",
-    "nl": "Warmtepomp werkmodus is: [[workingMode]]"
+    "en": "Working mode of [[selection]] is: [[workingMode]]",
+    "nl": "Werkmodus van [[selection]] is: [[workingMode]]"
   },
   "hint": {
-    "en": "This card starts whenever the current working mode of the heatpump is changed.",
-    "nl": "Deze kaart start wanneer de huidige werkmodus van de warmtepomp verandert."
+    "en": "This card starts whenever the current working mode of the heatpump is changed. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+    "nl": "Deze kaart start wanneer de huidige werkmodus van de warmtepomp verandert. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
   },
   "args": [
     {
@@ -33,6 +33,44 @@
           "title": {
             "en": "heating",
             "nl": "verwarmen"
+          }
+        }
+      ]
+    },
+    {
+      "name": "selection",
+      "title": {
+        "en": "Heatpump selection",
+        "nl": "Warmtepomp selectie"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "any",
+          "title": {
+            "en": "any heatpump",
+            "nl": "een warmtepomp"
+          }
+        },
+        {
+          "id": "all",
+          "title": {
+            "en": "all heatpumps",
+            "nl": "alle warmtepompen"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "heatpump 1",
+            "nl": "warmtepomp 1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "heatpump 2",
+            "nl": "warmtepomp 2"
           }
         }
       ]

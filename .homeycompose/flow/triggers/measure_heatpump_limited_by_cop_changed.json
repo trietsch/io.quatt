@@ -4,8 +4,8 @@
     "nl": "Beperkt door COP is veranderd"
   },
   "titleFormatted": {
-    "en": "Heatpump is [[state]]",
-    "nl": "Warmtepomp wordt [[state]]"
+    "en": "[[selection]] [[state]]",
+    "nl": "[[selection]] [[state]]"
   },
   "hint": {
     "en": "This card starts whenever value indicating that the heatpump is limited by COP changes. The heatpump might be limited by the COP (Coefficient of Performance) based on energy pricing, current ambient temperature and heat pump outlet temperature.",
@@ -36,6 +36,45 @@
           }
         }
       ]
+    },
+    {
+      "name": "selection",
+      "title": {
+        "en": "Heatpump selection",
+        "nl": "Warmtepomp selectie"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "any",
+          "title": {
+            "en": "Any heatpump is",
+            "nl": "Een warmtepomp wordt"
+          }
+        },
+        {
+          "id": "all",
+          "title": {
+            "en": "All heatpumps are",
+            "nl": "Alle warmtepompen worden"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "Heatpump 1 is",
+            "nl": "Warmtepomp 1 wordt"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Heatpump 2 is",
+            "nl": "Warmtepomp 2 wordt"
+          }
+        }
+      ]
     }
+
   ]
 }

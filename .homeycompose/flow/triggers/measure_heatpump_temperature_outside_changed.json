@@ -3,8 +3,52 @@
     "en": "Outside temperature changed",
     "nl": "Buitentemperatuur is veranderd"
   },
+  "titleFormatted": {
+    "en": "Outside temperature measured by [[selection]] has changed",
+    "nl": "Buitentemperatuur gemeten door [[selection]] is veranderd"
+  },
   "hint": {
-    "en": "This card starts when the current ambient temperature outside the heatpump has changed.",
-    "nl": "Deze kaart start wanneer de huidige omgevingstemperatuur buiten de warmtepomp is veranderd."
-  }
+    "en": "This card starts when the current ambient temperature outside the heatpump has changed. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+    "nl": "Deze kaart start wanneer de huidige omgevingstemperatuur buiten de warmtepomp is veranderd. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+  },
+  "args": [
+    {
+      "name": "selection",
+      "title": {
+        "en": "Heatpump selection",
+        "nl": "Warmtepomp selectie"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "any",
+          "title": {
+            "en": "any heatpump",
+            "nl": "een warmtepomp"
+          }
+        },
+        {
+          "id": "all",
+          "title": {
+            "en": "all heatpumps",
+            "nl": "alle warmtepompen"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "heatpump 1",
+            "nl": "warmtepomp 1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "heatpump 2",
+            "nl": "warmtepomp 2"
+          }
+        }
+      ]
+    }
+  ]
 }
