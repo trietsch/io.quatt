@@ -8,8 +8,8 @@
     "nl": "Buitentemperatuur gemeten door [[selection]] is veranderd"
   },
   "hint": {
-    "en": "This card starts when the current ambient temperature outside the heatpump has changed. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
-    "nl": "Deze kaart start wanneer de huidige omgevingstemperatuur buiten de warmtepomp is veranderd. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+    "en": "This card starts when the current ambient temperature outside the heatpump has changed. If you only have one heatpump, the selection of the heatpump doesn't matter (1/2 can be used interchangeably).",
+    "nl": "Deze kaart start wanneer de huidige omgevingstemperatuur buiten de warmtepomp is veranderd. Als je maar één warmtepomp hebt, maakt de selectie van de warmtepomp niet uit (1/2 kan allebei gebruikt worden)."
   },
   "args": [
     {
@@ -20,20 +20,6 @@
       },
       "type": "dropdown",
       "values": [
-        {
-          "id": "any",
-          "title": {
-            "en": "any heatpump",
-            "nl": "een warmtepomp"
-          }
-        },
-        {
-          "id": "all",
-          "title": {
-            "en": "all heatpumps",
-            "nl": "alle warmtepompen"
-          }
-        },
         {
           "id": "1",
           "title": {

@@ -111,31 +111,45 @@ class QuattHeatpump extends Homey.Device {
     async registerTriggers() {
         for (const trigger of this.homey.manifest.flow.triggers) {
             let triggerCard = this.homey.flow.getTriggerCard(trigger.id);
-            let triggerMappingExists = this.triggerMappings.get(trigger.id);
+            let triggerArgs: string[] | undefined = trigger.args?.map((arg: any) => arg.name);
 
-            // TODO check whether the card should be triggered, based on the provided values of heatpump selection
-            if (triggerMappingExists) {
-                triggerCard.registerRunListener(async (args, state) => {
-                    let triggerMapping = this.triggerMappings.get(trigger.id);
+            triggerCard.registerRunListener(async (args, state) => {
+                // If this card does not allow any arguments to be passed as input, it should always continue
+                if (!args) {
+                    return true;
+                }
 
-                    if (!triggerMapping) {
-                        this.log(`[Trigger Run Listener] - Trigger mapping not found for ${trigger.id}`);
+                const heatpumpNumber: string | undefined = state.heatpumpNumber;
+                let triggerMapping = this.triggerMappings.get(trigger.id);
+
+                if (!triggerMapping) {
+                    this.log(`[Trigger Run Listener] - Trigger mapping not found for ${trigger.id}`);
+                }
+
+                let argumentName = triggerMapping!.get('argument') as string;
+                let argumentValue = args[argumentName];
+                let mappedValue = triggerMapping!.get(argumentValue);
+
+                // If there is no mapping, use identity function, i.e. take the argument value as is
+                if (!mappedValue) {
+                    mappedValue = argumentValue;
+                }
+
+                this.log(`[Trigger Run Listener] Trigger mapping found for ${trigger.id} and '${argumentValue}' => ${mappedValue}. State => ${state.value}`);
+
+                if (triggerArgs?.includes('selection') && heatpumpNumber) {
+                    // There are more than one heatpumps and this trigger card allows for heatpump selection
+
+                    // TODO this needs to be tested with Quatt DUO
+                    if (args['selection'] === heatpumpNumber) {
+                        return mappedValue === state.value;
+                    } else {
+                        return false;
                     }
+                }
 
-                    let argumentName = triggerMapping!.get('argument') as string;
-                    let argumentValue = args[argumentName];
-                    let mappedValue = triggerMapping!.get(argumentValue);
-
-                    // If there is no mapping, use identity function, i.e. take the argument value as is
-                    if (!mappedValue) {
-                        mappedValue = argumentValue;
-                    }
-
-                    this.log(`[Trigger Run Listener] Trigger mapping found for ${trigger.id} and '${argumentValue}' => ${mappedValue}. State => ${state.value}`);
-
-                    return mappedValue === state.value;
-                });
-            }
+                return mappedValue === state.value;
+            });
 
             this.triggers.set(trigger.id, triggerCard);
         }
@@ -261,7 +275,9 @@ class QuattHeatpump extends Homey.Device {
         // this.log(`[Device] ${this.getName()} - setValue => ${capability} => `, newValue);
 
         if (this.hasCapability(capability)) {
-            const triggerId = capability.replace('.', '_');
+            // @ts-ignore FIXME cannot get the typing correct, since it requires a minimum of 2 elements
+            const [triggerId, heatpump]: [string, string | undefined] = capability.split('.');
+            const heatpumpNumber: string | undefined = heatpump?.replace('heatpump', '');
             const oldValue = await this.getCapabilityValue(capability);
 
             // this.homey.app.log(`[Device] ${this.getName()} - setValue - oldValue => ${capability} => `, oldValue, newValue);
@@ -277,7 +293,7 @@ class QuattHeatpump extends Homey.Device {
                     const triggerExists = this.triggers.get(`${triggerId}_changed`);
 
                     if (triggerExists) {
-                        await this.homey.flow.getTriggerCard(`${triggerId}_changed`).trigger(undefined, {value: newValue})
+                        await this.homey.flow.getTriggerCard(`${triggerId}_changed`).trigger(undefined, {value: newValue, heatpumpNumber: heatpumpNumber})
                             .catch(this.error)
                             .then(
                                 () => this.homey.app.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Triggered: "${triggerId} | ${newValue}"`),

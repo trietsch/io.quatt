@@ -328,8 +328,8 @@
           "nl": "Beperkt door COP is veranderd"
         },
         "titleFormatted": {
-          "en": "Heatpump is [[state]]",
-          "nl": "Warmtepomp wordt [[state]]"
+          "en": "[[selection]] [[state]]",
+          "nl": "[[selection]] [[state]]"
         },
         "hint": {
           "en": "This card starts whenever value indicating that the heatpump is limited by COP changes. The heatpump might be limited by the COP (Coefficient of Performance) based on energy pricing, current ambient temperature and heat pump outlet temperature.",
@@ -360,6 +360,44 @@
                 }
               }
             ]
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "Any heatpump is",
+                  "nl": "Een warmtepomp wordt"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "All heatpumps are",
+                  "nl": "Alle warmtepompen worden"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "Heatpump 1 is",
+                  "nl": "Warmtepomp 1 wordt"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "Heatpump 2 is",
+                  "nl": "Warmtepomp 2 wordt"
+                }
+              }
+            ]
           }
         ],
         "id": "measure_heatpump_limited_by_cop_changed"
@@ -370,12 +408,12 @@
           "nl": "Stille modus is veranderd"
         },
         "titleFormatted": {
-          "en": "Silent mode is [[state]]",
-          "nl": "Stille modus is [[state]]"
+          "en": "Silent mode of [[selection]] is [[state]]",
+          "nl": "Stille modus van [[selection]] is [[state]]"
         },
         "hint": {
-          "en": "This card starts whenever the heatpump switches from silent mode.",
-          "nl": "Deze kaart start wanneer de warmtepomp van stille modus verandert."
+          "en": "This card starts whenever the heatpump switches from silent mode. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Deze kaart start wanneer de warmtepomp van stille modus verandert. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
         },
         "args": [
           {
@@ -402,6 +440,44 @@
                 }
               }
             ]
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
           }
         ],
         "id": "measure_heatpump_silent_mode_changed"
@@ -411,10 +487,54 @@
           "en": "Heatpump incoming water temperature changed",
           "nl": "Warmtepomp water toevoer temperatuur is veranderd"
         },
-        "hint": {
-          "en": "This card starts when the current temperature of the water going into the heatpump has changed.",
-          "nl": "Deze kaart start wanneer de huidige temperatuur van de watertoevoer naar de warmtepomp is veranderd."
+        "titleFormatted": {
+          "en": "Incoming water temperature of [[selection]] has changed",
+          "nl": "Water toevoer temperatuur van [[selection]] is veranderd"
         },
+        "hint": {
+          "en": "This card starts when the current temperature of the water going into the heatpump has changed. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Deze kaart start wanneer de huidige temperatuur van de watertoevoer naar de warmtepomp is veranderd. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+        },
+        "args": [
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
+          }
+        ],
         "id": "measure_heatpump_temperature_incoming_water_changed"
       },
       {
@@ -422,10 +542,54 @@
           "en": "Heatpump outgoing water temperature changed",
           "nl": "Warmtepomp waterafvoer temperatuur is veranderd"
         },
-        "hint": {
-          "en": "This card starts when the current temperature of the water coming out of the heatpump has changed.",
-          "nl": "Deze kaart start wanneer de huidige temperatuur van de waterafvoer van de warmtepomp is veranderd."
+        "titleFormatted": {
+          "en": "Outgoing water temperature of [[selection]] has changed",
+          "nl": "Waterafvoer temperatuur van [[selection]] is veranderd"
         },
+        "hint": {
+          "en": "This card starts when the current temperature of the water coming out of the heatpump has changed. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Deze kaart start wanneer de huidige temperatuur van de waterafvoer van de warmtepomp is veranderd. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+        },
+        "args": [
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
+          }
+        ],
         "id": "measure_heatpump_temperature_outgoing_water_changed"
       },
       {
@@ -433,10 +597,54 @@
           "en": "Outside temperature changed",
           "nl": "Buitentemperatuur is veranderd"
         },
-        "hint": {
-          "en": "This card starts when the current ambient temperature outside the heatpump has changed.",
-          "nl": "Deze kaart start wanneer de huidige omgevingstemperatuur buiten de warmtepomp is veranderd."
+        "titleFormatted": {
+          "en": "Outside temperature measured by [[selection]] has changed",
+          "nl": "Buitentemperatuur gemeten door [[selection]] is veranderd"
         },
+        "hint": {
+          "en": "This card starts when the current ambient temperature outside the heatpump has changed. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Deze kaart start wanneer de huidige omgevingstemperatuur buiten de warmtepomp is veranderd. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+        },
+        "args": [
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
+          }
+        ],
         "id": "measure_heatpump_temperature_outside_changed"
       },
       {
@@ -444,10 +652,54 @@
           "en": "Thermal power changed",
           "nl": "Thermisch vermogen is veranderd"
         },
-        "hint": {
-          "en": "This card starts when the thermal power output of the heatpump has changed.",
-          "nl": "Deze kaart start wanneer het thermisch vermogen van de warmtepomp is veranderd."
+        "titleFormatted": {
+          "en": "Thermal power of [[selection]] has changed",
+          "nl": "Thermisch vermogen van [[selection]] is veranderd"
         },
+        "hint": {
+          "en": "This card starts when the thermal power output of the heatpump has changed. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Deze kaart start wanneer het thermisch vermogen van de warmtepomp is veranderd. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+        },
+        "args": [
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
+          }
+        ],
         "id": "measure_heatpump_thermal_power_changed"
       },
       {
@@ -456,12 +708,12 @@
           "nl": "Warmtepomp werkmodus is veranderd"
         },
         "titleFormatted": {
-          "en": "Heatpump working mode is: [[workingMode]]",
-          "nl": "Warmtepomp werkmodus is: [[workingMode]]"
+          "en": "Working mode of [[selection]] is: [[workingMode]]",
+          "nl": "Werkmodus van [[selection]] is: [[workingMode]]"
         },
         "hint": {
-          "en": "This card starts whenever the current working mode of the heatpump is changed.",
-          "nl": "Deze kaart start wanneer de huidige werkmodus van de warmtepomp verandert."
+          "en": "This card starts whenever the current working mode of the heatpump is changed. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Deze kaart start wanneer de huidige werkmodus van de warmtepomp verandert. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
         },
         "args": [
           {
@@ -485,6 +737,44 @@
                 "title": {
                   "en": "heating",
                   "nl": "verwarmen"
+                }
+              }
+            ]
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
                 }
               }
             ]
