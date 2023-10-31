@@ -130,14 +130,15 @@ class QuattHeatpump extends Homey.Device {
                     return true;
                 }
 
-                let allowsSelection = triggerArgs.includes('selection') && Object.keys(state).includes('heatpumpNumber');
+                let allowsSelection = triggerArgs.includes('selection') && state.heatpumpNumber !== undefined;
 
                 let triggerMapping = this.triggerMappings.get(trigger.id);
                 let argumentName = triggerMapping?.get('argument') as string | undefined;
 
                 if (argumentName) {
                     let argumentValue = args[argumentName];
-                    let mappedValue = triggerMapping!.get(argumentValue);
+                    // Get the mapping if present, otherwise take the identity
+                    let mappedValue = triggerMapping!.get(argumentValue) || argumentValue;
 
                     this.log(`[Trigger Run Listener] Trigger mapping found for ${trigger.id} and '${argumentValue}' => ${mappedValue}. State => ${state.value}`);
 
