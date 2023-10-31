@@ -13,5 +13,8 @@
   },
   "1.0.0": {
     "en": "Add triggers and conditions"
+  },
+  "1.0.1": {
+    "en": "Fix for working mode flows"
   }
 }
