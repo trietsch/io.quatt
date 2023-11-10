@@ -2238,7 +2238,7 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/bad-performance.svg",
+      "icon": "assets/icons/performance.svg",
       "decimals": 2,
       "step": 0.01
     },
