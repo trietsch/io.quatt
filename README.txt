@@ -29,3 +29,7 @@ Available sensor values:
 - CV Mode Active
 - Power consumption
 - Thermal power output
+
+Computed sensor values:
+- Heatpump COP
+- Heatpump water temperature difference

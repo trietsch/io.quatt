@@ -1,0 +1,65 @@
+{
+  "title": {
+    "en": "Coefficient of performance is smaller / greater than",
+    "nl": "Prestatiecoëfficiënt (COP) is kleiner / groter dan"
+  },
+  "titleFormatted": {
+    "en": "Coefficient of performance of [[selection]] is !{{greater|smaller}} than [[value]]",
+    "nl": "Prestatiecoëfficiënt (COP) van [[selection]] is !{{groter|kleiner}} dan [[value]]"
+  },
+  "hint": {
+    "en": "The COP is a ratio. A value > 1 means that the heatpump delivers more thermal power than the electrical power it consumes. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+    "nl": "De COP is een ratio. Een waarde > 1 betekent dat de warmtepomp meer thermisch vermogen levert dan het elektrisch vermogen dat hij verbruikt. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+  },
+  "args": [
+    {
+      "name": "value",
+      "title": {
+        "en": "COP",
+        "nl": "COP"
+      },
+      "type": "number",
+      "min": 0,
+      "step": 0.01
+    },
+    {
+      "name": "selection",
+      "title": {
+        "en": "Heatpump selection",
+        "nl": "Warmtepomp selectie"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "any",
+          "title": {
+            "en": "any heatpump",
+            "nl": "een warmtepomp"
+          }
+        },
+        {
+          "id": "all",
+          "title": {
+            "en": "all heatpumps",
+            "nl": "alle warmtepompen"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "heatpump 1",
+            "nl": "warmtepomp 1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "heatpump 2",
+            "nl": "warmtepomp 2"
+          }
+        }
+      ]
+    }
+  ],
+  "supportsMultipleHeatpumps": true
+}

@@ -9,9 +9,11 @@ class QuattHeatpump extends Homey.Device {
     private capabilitiesAdded = false;
     private multipleHeatpumps = false;
     private singleHeatpumpCapabilities = [
+        "measure_heatpump_cop",
         "measure_heatpump_limited_by_cop",
         "measure_heatpump_thermal_power",
         "measure_heatpump_silent_mode",
+        "measure_heatpump_temperature_delta_water",
         "measure_heatpump_temperature_incoming_water",
         "measure_heatpump_temperature_outgoing_water",
         "measure_heatpump_temperature_outside",
@@ -249,9 +251,11 @@ class QuattHeatpump extends Homey.Device {
         }
 
         return Promise.all([
+            this.safeSetCapabilityValue(`measure_heatpump_cop${suffix}`, this.computeCoefficientOfPerformance(hp)),
             this.safeSetCapabilityValue(`measure_heatpump_limited_by_cop${suffix}`, hp.limitedByCop),
             this.safeSetCapabilityValue(`measure_heatpump_thermal_power${suffix}`, hp.power),
             this.safeSetCapabilityValue(`measure_heatpump_silent_mode${suffix}`, hp.silentModeStatus),
+            this.safeSetCapabilityValue(`measure_heatpump_temperature_delta_water${suffix}`, this.computeWaterTemperatureDelta(hp)),
             this.safeSetCapabilityValue(`measure_heatpump_temperature_incoming_water${suffix}`, hp.temperatureWaterIn),
             this.safeSetCapabilityValue(`measure_heatpump_temperature_outgoing_water${suffix}`, hp.temperatureWaterOut),
             this.safeSetCapabilityValue(`measure_heatpump_temperature_outside${suffix}`, hp.temperatureOutside),
@@ -328,6 +332,17 @@ class QuattHeatpump extends Homey.Device {
 
     async clearIntervals() {
         await clearInterval(this.onPollInterval);
+    }
+
+    computeWaterTemperatureDelta(hp: CicHeatpump): number | undefined {
+        if (hp.temperatureWaterOut < hp.temperatureWaterIn) {
+            return undefined;
+        }
+        return hp.temperatureWaterOut - hp.temperatureWaterIn
+    }
+
+    computeCoefficientOfPerformance(hp: CicHeatpump): number {
+        return hp.power / hp.powerInput;
     }
 
     async sleep(ms: number) {

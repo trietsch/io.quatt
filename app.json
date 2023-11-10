@@ -324,6 +324,47 @@
       },
       {
         "title": {
+          "en": "Coefficient of performance changed",
+          "nl": "Prestatiecoëfficiënt (COP) is veranderd"
+        },
+        "titleFormatted": {
+          "en": "Coefficient of performance of [[selection]] has changed",
+          "nl": "Prestatiecoëfficiënt (COP) van [[selection]] is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the coefficient of performance of the heatpump has changed. If you only have one heatpump, the selection of the heatpump doesn't matter (1/2 can be used interchangeably).",
+          "nl": "Deze kaart start wanneer de prestatiecoëfficiënt van de warmtepomp is veranderd. Als je maar één warmtepomp hebt, maakt de selectie van de warmtepomp niet uit (1/2 kan allebei gebruikt worden)."
+        },
+        "args": [
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_heatpump_cop_changed"
+      },
+      {
+        "title": {
           "en": "Limited by COP changed",
           "nl": "Beperkt door COP is veranderd"
         },
@@ -453,6 +494,47 @@
           }
         ],
         "id": "measure_heatpump_silent_mode_changed"
+      },
+      {
+        "title": {
+          "en": "Heatpump water temperature delta changed",
+          "nl": "Warmtepomp water temperatuur delta is veranderd"
+        },
+        "titleFormatted": {
+          "en": "Water temperature delta of [[selection]] has changed",
+          "nl": "Water temperatuur delta van [[selection]] is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the water temperature delta of the heatpump has changed. If you only have one heatpump, the selection of the heatpump doesn't matter (1/2 can be used interchangeably).",
+          "nl": "Deze kaart start wanneer de water temperatuur delta van de warmtepomp is veranderd. Als je maar één warmtepomp hebt, maakt de selectie van de warmtepomp niet uit (1/2 kan allebei gebruikt worden)."
+        },
+        "args": [
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "measure_heatpump_temperature_delta_water_changed"
       },
       {
         "title": {
@@ -1115,6 +1197,72 @@
       },
       {
         "title": {
+          "en": "Coefficient of performance is smaller / greater than",
+          "nl": "Prestatiecoëfficiënt (COP) is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Coefficient of performance of [[selection]] is !{{greater|smaller}} than [[value]]",
+          "nl": "Prestatiecoëfficiënt (COP) van [[selection]] is !{{groter|kleiner}} dan [[value]]"
+        },
+        "hint": {
+          "en": "The COP is a ratio. A value > 1 means that the heatpump delivers more thermal power than the electrical power it consumes. If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "De COP is een ratio. Een waarde > 1 betekent dat de warmtepomp meer thermisch vermogen levert dan het elektrisch vermogen dat hij verbruikt. Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+        },
+        "args": [
+          {
+            "name": "value",
+            "title": {
+              "en": "COP",
+              "nl": "COP"
+            },
+            "type": "number",
+            "min": 0,
+            "step": 0.01
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
+          }
+        ],
+        "supportsMultipleHeatpumps": true,
+        "id": "condition_heatpump_cop_compare"
+      },
+      {
+        "title": {
           "en": "Limited by COP",
           "nl": "Beperkt door COP"
         },
@@ -1183,6 +1331,73 @@
         ],
         "supportsMultipleHeatpumps": true,
         "id": "condition_heatpump_silent_mode"
+      },
+      {
+        "title": {
+          "en": "Heatpump water temperature delta is smaller / greater than",
+          "nl": "Warmtepomp water temperatuur delta is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Water temperature delta of [[selection]] is !{{greater|smaller}} than [[value]]",
+          "nl": "Water temperatuur delta van [[selection]] is !{{groter|kleiner}} dan [[value]]"
+        },
+        "hint": {
+          "en": "If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+          "nl": "Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+        },
+        "args": [
+          {
+            "name": "value",
+            "title": {
+              "en": "Temperature (°C)",
+              "nl": "Temperatuur (°C)"
+            },
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          },
+          {
+            "name": "selection",
+            "title": {
+              "en": "Heatpump selection",
+              "nl": "Warmtepomp selectie"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "any",
+                "title": {
+                  "en": "any heatpump",
+                  "nl": "een warmtepomp"
+                }
+              },
+              {
+                "id": "all",
+                "title": {
+                  "en": "all heatpumps",
+                  "nl": "alle warmtepompen"
+                }
+              },
+              {
+                "id": "1",
+                "title": {
+                  "en": "heatpump 1",
+                  "nl": "warmtepomp 1"
+                }
+              },
+              {
+                "id": "2",
+                "title": {
+                  "en": "heatpump 2",
+                  "nl": "warmtepomp 2"
+                }
+              }
+            ]
+          }
+        ],
+        "supportsMultipleHeatpumps": true,
+        "id": "condition_heatpump_temperature_delta_water_compare"
       },
       {
         "title": {
@@ -2014,6 +2229,19 @@
       "decimals": 2,
       "step": 0.01
     },
+    "measure_heatpump_cop": {
+      "type": "number",
+      "title": {
+        "en": "Coefficient of performance",
+        "nl": "Prestatiecoëfficiënt (COP)"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "assets/icons/bad-performance.svg",
+      "decimals": 2,
+      "step": 0.01
+    },
     "measure_heatpump_limited_by_cop": {
       "type": "boolean",
       "title": {
@@ -2037,6 +2265,24 @@
       "setable": false,
       "uiComponent": "sensor",
       "icon": "assets/icons/silent-mode.svg"
+    },
+    "measure_heatpump_temperature_delta_water": {
+      "type": "number",
+      "title": {
+        "en": "Heatpump outgoing water temperature",
+        "nl": "Warmtepomp waterafvoer temperatuur"
+      },
+      "description": "Computed: temperatureWaterOut - temperatureWaterIn",
+      "uiComponent": "sensor",
+      "icon": "assets/icons/heatpump-outgoing-water-temperature.svg",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "°C",
+        "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01
     },
     "measure_heatpump_temperature_incoming_water": {
       "type": "number",

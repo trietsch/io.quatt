@@ -1,0 +1,66 @@
+{
+  "title": {
+    "en": "Heatpump water temperature delta is smaller / greater than",
+    "nl": "Warmtepomp water temperatuur delta is kleiner / groter dan"
+  },
+  "titleFormatted": {
+    "en": "Water temperature delta of [[selection]] is !{{greater|smaller}} than [[value]]",
+    "nl": "Water temperatuur delta van [[selection]] is !{{groter|kleiner}} dan [[value]]"
+  },
+  "hint": {
+    "en": "If you only have one heatpump, you can leave the selection on any/all/1 heatpump.",
+    "nl": "Als je maar één warmtepomp hebt, kun je de selectie op een een/alle/1 warmtepomp laten staan."
+  },
+  "args": [
+    {
+      "name": "value",
+      "title": {
+        "en": "Temperature (°C)",
+        "nl": "Temperatuur (°C)"
+      },
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "step": 0.01
+    },
+    {
+      "name": "selection",
+      "title": {
+        "en": "Heatpump selection",
+        "nl": "Warmtepomp selectie"
+      },
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "any",
+          "title": {
+            "en": "any heatpump",
+            "nl": "een warmtepomp"
+          }
+        },
+        {
+          "id": "all",
+          "title": {
+            "en": "all heatpumps",
+            "nl": "alle warmtepompen"
+          }
+        },
+        {
+          "id": "1",
+          "title": {
+            "en": "heatpump 1",
+            "nl": "warmtepomp 1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "heatpump 2",
+            "nl": "warmtepomp 2"
+          }
+        }
+      ]
+    }
+  ],
+  "supportsMultipleHeatpumps": true
+}

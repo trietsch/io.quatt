@@ -1,0 +1,13 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Coefficient of performance",
+    "nl": "Prestatiecoëfficiënt (COP)"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/performance.svg",
+  "decimals": 2,
+  "step": 0.01
+}
