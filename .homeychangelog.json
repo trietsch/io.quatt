@@ -22,5 +22,8 @@
   },
   "1.1.1": {
     "en": "fix: crash due to toString on undefined"
+  },
+  "1.1.2": {
+    "en": "fix: don't crash when CicHeatpump is undefined"
   }
 }
