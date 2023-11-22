@@ -341,8 +341,8 @@ class QuattHeatpump extends Homey.Device {
         return hp.temperatureWaterOut - hp.temperatureWaterIn
     }
 
-    computeCoefficientOfPerformance(hp: CicHeatpump): number {
-        return hp.power / hp.powerInput;
+    computeCoefficientOfPerformance(hp: CicHeatpump): number | undefined {
+        return hp?.power / hp?.powerInput || undefined;
     }
 
     async sleep(ms: number) {
