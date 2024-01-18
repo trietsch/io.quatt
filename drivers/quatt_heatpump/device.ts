@@ -245,6 +245,10 @@ class QuattHeatpump extends Homey.Device {
     }
 
     async setHeatPumpValues(hp: CicHeatpump, name?: string) {
+        if (!hp) {
+            return;
+        }
+
         let suffix = ""
         if (name) {
             suffix = `.${name}`;
