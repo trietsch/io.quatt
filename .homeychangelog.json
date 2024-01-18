@@ -25,5 +25,8 @@
   },
   "1.1.2": {
     "en": "fix: don't crash when CicHeatpump is undefined"
+  },
+  "1.1.3": {
+    "en": "Ensure resilience to Quatt CIC data being null"
   }
 }
