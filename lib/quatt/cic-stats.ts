@@ -1,3 +1,5 @@
+// Could use https://github.com/typestack/class-validator to validate the data
+
 export interface CicTime {
     ts: bigint;
     tsHuman: string;

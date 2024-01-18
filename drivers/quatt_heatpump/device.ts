@@ -289,7 +289,11 @@ class QuattHeatpump extends Homey.Device {
         }
     }
 
-    async safeSetCapabilityValue(capability: string, newValue: any, delay: number = 10) {
+    async safeSetCapabilityValue(capability: string | undefined, newValue: any, delay: number = 10) {
+        if (!capability) {
+            return;
+        }
+
         // this.log(`[Device] ${this.getName()} - setValue => ${capability} => `, newValue);
 
         if (this.hasCapability(capability)) {
@@ -325,7 +329,7 @@ class QuattHeatpump extends Homey.Device {
                     }
                 }
             } catch (error: unknown) {
-                this.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Error: "${triggerId} | ${newValue}"`);
+                this.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Error: "${error} | ${newValue}"`);
             }
         }
     }
