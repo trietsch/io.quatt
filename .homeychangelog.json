@@ -31,5 +31,8 @@
   },
   "1.1.4": {
     "en": "Ensure resilience to Quatt CIC unexpected values"
+  },
+  "1.2.0": {
+    "en": "Use new flow rate property; convert control mode types"
   }
 }
