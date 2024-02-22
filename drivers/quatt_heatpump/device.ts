@@ -104,7 +104,7 @@ class QuattHeatpump extends Homey.Device {
                 this.safeSetCapabilityValue('measure_boiler_flame_on', cicStats.boiler.otFbFlameOn),
                 this.safeSetCapabilityValue('measure_boiler_temperature_incoming_water', cicStats.boiler.otFbSupplyInletTemperature),
                 this.safeSetCapabilityValue('measure_boiler_temperature_outgoing_water', cicStats.boiler.otFbSupplyOutletTemperature),
-                this.safeSetCapabilityValue('measure_flowmeter_water_flow_speed', cicStats.flowMeter.flowRate),
+                this.safeSetCapabilityValue('measure_flowmeter_water_flow_speed', cicStats.qc.flowRateFiltered),
                 this.safeSetCapabilityValue('measure_flowmeter_water_supply_temperature', cicStats.flowMeter.waterSupplyTemperature),
                 this.safeSetCapabilityValue('measure_quality_control_supervisory_control_mode', cicStats.qc.supervisoryControlMode),
                 this.safeSetCapabilityValue('measure_thermostat_cooling_on', cicStats.thermostat.otFtCoolingEnabled),
@@ -294,7 +294,7 @@ class QuattHeatpump extends Homey.Device {
     }
 
     async safeSetCapabilityValue(capability: string | undefined, newValue: any, delay: number = 10) {
-        if (!capability) {
+        if (capability === undefined || newValue === undefined) {
             return;
         }
 
@@ -314,6 +314,9 @@ class QuattHeatpump extends Homey.Device {
 
             try {
                 await this.setCapabilityValue(capability, newValue);
+
+                // If the trigger is one of the built-in capabilities, we don't need to trigger the event
+                if (triggerId === 'measure_power') return;
 
                 if (oldValue !== null && oldValue !== newValue) {
                     const triggerExists = this.triggers.get(`${triggerId}_changed`);

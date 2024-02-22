@@ -1,0 +1,99 @@
+{
+  "uuid": "79f33f24-77ab-4eed-bce4-812ed3de100b",
+  "lastMigration": 32,
+  "name": "Mocks",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 8080,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "0d1b1556-79e9-4eaf-adb5-9309d295b631",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "beta/feed/data.json",
+      "responses": [
+        {
+          "uuid": "fd26263d-ea1e-48c5-a81a-a173f0f57f73",
+          "body": "{\n  \"time\": {\n    \"ts\": 1697613239136,\n    \"tsHuman\": \"2023-10-18T07:13:59.137Z\"\n  },\n  \"hp1\": {\n    \"modbusSlaveId\": 1,\n    \"getMainWorkingMode\": 2,\n    \"temperatureOutside\": 8.09,\n    \"temperatureWaterIn\": 41.83,\n    \"temperatureWaterOut\": 44.61,\n    \"powerInput\": 574.488416,\n    \"power\": 2298.659398,\n    \"silentModeStatus\": true,\n    \"limitedByCop\": false\n  },\n  \"boiler\": {\n    \"otFbChModeActive\": false,\n    \"otFbDhwActive\": false,\n    \"otFbFlameOn\": false,\n    \"otFbSupplyInletTemperature\": 49.0,\n    \"otFbSupplyOutletTemperature\": 46.6875,\n    \"otTbCH\": false,\n    \"oTtbTurnOnOffBoilerOn\": false\n  },\n  \"flowMeter\": {\n    \"waterSupplyTemperature\": 57.014964853740416\n  },\n  \"thermostat\": {\n    \"otFtChEnabled\": true,\n    \"otFtDhwEnabled\": true,\n    \"otFtCoolingEnabled\": false,\n    \"otFtControlSetpoint\": 58,\n    \"otFtRoomSetpoint\": 20,\n    \"otFtRoomTemperature\": 19.5\n  },\n  \"qc\": {\n    \"supervisoryControlMode\": 3,\n    \"flowRateFiltered\": 768.0,\n    \"stickyPumpProtectionEnabled\": false\n  },\n  \"system\": {\n    \"hostName\": \"<omitted>\"\n  }\n}\n",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "2d4f1c4b-336c-4a0a-9e6b-77792d0076dc",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": "SEQUENTIAL"
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "0d1b1556-79e9-4eaf-adb5-9309d295b631"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": []
+}

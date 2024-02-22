@@ -1,0 +1,45 @@
+{
+  "boiler": {
+    "oTtbTurnOnOffBoilerOn": false,
+    "otFbChModeActive": null,
+    "otFbDhwActive": null,
+    "otFbFlameOn": null,
+    "otFbSupplyInletTemperature": null,
+    "otFbSupplyOutletTemperature": null,
+    "otTbCH": false
+  },
+  "flowMeter": {
+    "waterSupplyTemperature": 28.387259
+  },
+  "hp1": {
+    "getMainWorkingMode": 2,
+    "limitedByCop": false,
+    "modbusSlaveId": 1,
+    "power": 2532.816647,
+    "powerInput": 339.104183,
+    "silentModeStatus": false,
+    "temperatureOutside": 13.86,
+    "temperatureWaterIn": 26.07,
+    "temperatureWaterOut": 28.69
+  },
+  "qc": {
+    "flowRateFiltered": 801.0,
+    "stickyPumpProtectionEnabled": false,
+    "supervisoryControlMode": 2
+  },
+  "system": {
+    "hostName": "omitted"
+  },
+  "thermostat": {
+    "otFtChEnabled": true,
+    "otFtControlSetpoint": 32.0,
+    "otFtCoolingEnabled": false,
+    "otFtDhwEnabled": true,
+    "otFtRoomSetpoint": 20.0,
+    "otFtRoomTemperature": 19.75
+  },
+  "time": {
+    "ts": 1708027107758,
+    "tsHuman": "2024-02-15T19:58:27Z"
+  }
+}

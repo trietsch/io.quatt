@@ -6,37 +6,25 @@
   "hp1": {
     "modbusSlaveId": 1,
     "getMainWorkingMode": 2,
-    "temperatureOutside": 7,
-    "temperatureWaterIn": 45.33,
-    "temperatureWaterOut": 49.37,
-    "powerInput": 1080.325347,
-    "power": 3724.620618,
-    "silentModeStatus": false,
-    "limitedByCop": false
-  },
-  "hp2": {
-    "modbusSlaveId": 1,
-    "getMainWorkingMode": 2,
-    "temperatureOutside": 7,
-    "temperatureWaterIn": 45.33,
-    "temperatureWaterOut": 49.37,
-    "powerInput": 1080.325347,
-    "power": 3724.620618,
-    "silentModeStatus": false,
+    "temperatureOutside": 8.09,
+    "temperatureWaterIn": 41.83,
+    "temperatureWaterOut": 44.61,
+    "powerInput": 574.488416,
+    "power": 2298.659398,
+    "silentModeStatus": true,
     "limitedByCop": false
   },
   "boiler": {
-    "otFbChModeActive": true,
+    "otFbChModeActive": false,
     "otFbDhwActive": false,
-    "otFbFlameOn": true,
-    "otFbSupplyInletTemperature": 56.398438,
-    "otFbSupplyOutletTemperature": 49.398438,
-    "otTbCH": true,
+    "otFbFlameOn": false,
+    "otFbSupplyInletTemperature": 49.0,
+    "otFbSupplyOutletTemperature": 46.6875,
+    "otTbCH": false,
     "oTtbTurnOnOffBoilerOn": false
   },
   "flowMeter": {
-    "waterSupplyTemperature": 57.014964853740416,
-    "flowRate": 799.057845
+    "waterSupplyTemperature": 57.014964853740416
   },
   "thermostat": {
     "otFtChEnabled": true,
@@ -48,6 +36,7 @@
   },
   "qc": {
     "supervisoryControlMode": 3,
+    "flowRateFiltered": 768.0,
     "stickyPumpProtectionEnabled": false
   },
   "system": {

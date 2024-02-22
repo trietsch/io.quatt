@@ -29,7 +29,6 @@ export interface CicBoiler {
 
 export interface CicFlowMeter {
     waterSupplyTemperature: number;
-    flowRate: number;
 }
 
 export interface CicThermostat {
@@ -42,6 +41,7 @@ export interface CicThermostat {
 }
 
 export interface CicQualityControl {
+    flowRateFiltered: number;
     supervisoryControlMode: string; // string on purpose, as this makes conditions easier
     stickyPumpProtectionEnabled: boolean;
 }

@@ -20,6 +20,13 @@ export class QuattClient {
         try {
             const response = await axios.get(`http://${this.deviceAddress}:8080/beta/feed/data.json`);
 
+            response.data['qc']['supervisoryControlMode'] = response.data['qc']['supervisoryControlMode'] >= 100 ? '100' : response.data['qc']['supervisoryControlMode'].toString();
+            response.data['hp1']['getMainWorkingMode'] = response.data['hp1']['getMainWorkingMode'].toString();
+
+            if (response.data['hp2'] && response.data['hp2']['getMainWorkingMode'] !== null) {
+                response.data['hp2']['getMainWorkingMode'] = response.data['hp2']['getMainWorkingMode'].toString();
+            }
+
             return response.data as CicStats;
         } catch (error) {
             if (shouldLog) {
