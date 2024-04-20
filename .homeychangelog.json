@@ -34,5 +34,8 @@
   },
   "1.2.0": {
     "en": "Use new flow rate property; convert control mode types"
+  },
+  "1.2.1": {
+    "en": "Replace axios with typed-rest-client"
   }
 }
