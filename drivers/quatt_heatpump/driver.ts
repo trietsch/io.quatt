@@ -1,5 +1,4 @@
 import Homey from 'homey';
-import axios from "axios";
 import {Socket} from "net";
 import {QuattClient} from "../../lib/quatt";
 
@@ -127,7 +126,7 @@ class QuattHeatpumpDriver extends Homey.Driver {
 
     private async verifyIsQuatt(address: string) {
         try {
-            let client = new QuattClient(address);
+            let client = new QuattClient(this.homey.app.manifest.version, address);
             return await client.getCicStats(false) != null;
         } catch (error) {
             return false
