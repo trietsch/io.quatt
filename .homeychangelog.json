@@ -37,5 +37,8 @@
   },
   "1.2.1": {
     "en": "Replace axios with typed-rest-client"
+  },
+  "1.2.2": {
+    "en": "Replace ARP MAC lookup with Quatt hostname"
   }
 }
