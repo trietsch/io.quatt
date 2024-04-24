@@ -140,7 +140,7 @@ class QuattHeatpump extends Homey.Device {
                 if (argumentName) {
                     let argumentValue = args[argumentName];
                     // Get the mapping if present, otherwise take the identity
-                    let mappedValue = triggerMapping!.get(argumentValue) || argumentValue;
+                    let mappedValue = triggerMapping!.get(argumentValue) ?? argumentValue;
 
                     this.log(`[Trigger Run Listener] Trigger mapping found for ${trigger.id} and '${argumentValue}' => ${mappedValue}. State => ${state.value}`);
 
@@ -353,7 +353,7 @@ class QuattHeatpump extends Homey.Device {
     }
 
     computeCoefficientOfPerformance(hp: CicHeatpump): number | undefined {
-        return hp?.power / hp?.powerInput || undefined;
+        return hp?.power / hp?.powerInput ?? undefined;
     }
 
     async sleep(ms: number) {
