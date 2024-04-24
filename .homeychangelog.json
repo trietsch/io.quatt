@@ -40,5 +40,8 @@
   },
   "1.2.2": {
     "en": "Replace ARP MAC lookup with Quatt hostname"
+  },
+  "1.2.3": {
+    "en": "Incorrect value for 'off' capabilities"
   }
 }
