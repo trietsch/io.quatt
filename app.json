@@ -8,6 +8,7 @@
     "local"
   ],
   "brandColor": "#8ebf92",
+  "settings": "settings.html",
   "name": {
     "en": "Quatt",
     "nl": "Quatt"

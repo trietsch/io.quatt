@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Quatt CIC Pairing</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        label { display: block; margin-bottom: 8px; }
+        input[type="text"] { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .error { color: red; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Enter Quatt CIC IP Address</h1>
+    <p>If automatic discovery failed, please enter the IP address of your Quatt CIC device below.</p>
+
+    <label for="ipAddress">IP Address:</label>
+    <input type="text" id="ipAddress" name="ipAddress" placeholder="e.g., 192.168.1.123">
+
+    <button id="submitIp">Connect</button>
+
+    <p id="errorMessage" class="error"></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const submitButton = document.getElementById('submitIp');
+            const ipAddressInput = document.getElementById('ipAddress');
+            const errorMessageElement = document.getElementById('errorMessage');
+
+            submitButton.addEventListener('click', () => {
+                const ipAddress = ipAddressInput.value;
+                errorMessageElement.textContent = ''; // Clear previous errors
+
+                if (!ipAddress) {
+                    errorMessageElement.textContent = 'Please enter an IP address.';
+                    return;
+                }
+
+                // Send the IP address to the driver
+                // This uses Homey.emit to send data back to the driver's pair view listener
+                Homey.emit('manual_ip_address', ipAddress)
+                    .then(() => {
+                        // Optionally, provide feedback or close the view if emit is successful
+                        // Homey.done() might be used here if the driver handles the rest
+                        console.log('IP address submitted to driver.');
+                    })
+                    .catch(err => {
+                        console.error('Error submitting IP address:', err);
+                        errorMessageElement.textContent = 'Failed to send IP address to driver. ' + (err.message || '');
+                    });
+            });
+
+            // Listen for error messages from the driver
+            Homey.on('manual_pair_error', (errorMessage) => {
+                errorMessageElement.textContent = errorMessage;
+            });
+
+            // Listen for success message from the driver (and then close the pairing window)
+            Homey.on('manual_pair_success', () => {
+                // This will close the pairing view.
+                Homey.done();
+            });
+        });
+    </script>
+</body>
+</html>

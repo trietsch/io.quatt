@@ -5,11 +5,45 @@ import {QuattClient} from "../../lib/quatt";
 class QuattHeatpumpDriver extends Homey.Driver {
 
     async onInit() {
+        this.log('QuattHeatpumpDriver initialized.');
     }
 
     async onPairListDevices() {
+        this.log('onPairListDevices called. Starting pairing process...');
+        // 1. Try IP from App Settings first
+        const settingsIp = this.homey.settings.get('cicIPAddress');
+        if (settingsIp) {
+            this.log(`Attempting to pair using IP from app settings: ${settingsIp}.`);
+            try {
+                const hostname = await this.getQuattHostname(settingsIp);
+                if (hostname) {
+                    this.log(`Successfully verified Quatt CIC at settings IP ${settingsIp}, hostname: ${hostname}.`);
+                    return [
+                        {
+                            name: "Quatt CIC (Settings)", // Indicate it's from settings
+                            data: {
+                                id: hostname,
+                            },
+                            store: {
+                                address: settingsIp,
+                            },
+                        }
+                    ];
+                } else {
+                    this.log(`Failed to verify Quatt CIC at settings IP ${settingsIp}. Proceeding to automatic discovery.`);
+                }
+            } catch (error: any) {
+                this.error(`Error during pairing attempt with settings IP ${settingsIp}: ${error.message}. Proceeding to automatic discovery.`);
+            }
+        } else {
+            this.log("No IP address found in app settings. Proceeding to automatic discovery.");
+        }
+
+        // 2. If settings IP is not available or failed, try automatic discovery
         try {
+            this.log("Attempting automatic Quatt CIC discovery...");
             let {ip, hostname} = await this.findQuattDevice();
+            this.log(`Automatic discovery successful: Found ${hostname} at ${ip}.`);
             return [
                 {
                     name: "Quatt CIC",
@@ -21,11 +55,78 @@ class QuattHeatpumpDriver extends Homey.Driver {
                     },
                 }
             ];
-        } catch (e) {
-            // FIXME ensure that the fallback first tries to use a provided static ip for the Quatt CiC
-            this.homey.log("Error while discovering Quatt CiC, falling back to no devices.", e);
+        } catch (e: any) {
+            this.error("Automatic Quatt CIC discovery failed:", e.message); // Changed to this.error for consistency
+            this.log("Fallback: Attempting manual IP entry.");
 
-            return [];
+            // Show custom view for manual IP entry
+            // const view = this.homey.flow.getView('manual_pair'); // Already gets view below, avoid duplication
+
+            return new Promise(async (resolve, reject) => {
+                const view = this.homey.flow.getView('manual_pair'); // Get view instance
+
+                const manualIpListener = async (ipAddress: string) => {
+                    this.log(`Manual IP pairing: User submitted IP address: ${ipAddress}`);
+                    try {
+                        // Unregister listener to prevent multiple calls - view.off is appropriate
+                        view.off('manual_ip_address', manualIpListener);
+
+                        const hostname = await this.getQuattHostname(ipAddress); // This call is already within a try/catch in the caller
+                        if (hostname) {
+                            this.log(`Manual IP pairing: Successfully verified Quatt CIC at ${ipAddress}, hostname: ${hostname}.`);
+                            view.emit('manual_pair_success'); // Emit success to the view
+                            resolve([
+                                {
+                                    name: "Quatt CIC",
+                                    data: {
+                                        id: hostname,
+                                    },
+                                    store: {
+                                        address: ipAddress,
+                                    },
+                                }
+                            ]);
+                        } else {
+                            this.log(`Manual IP pairing: Could not verify Quatt CIC at ${ipAddress}. Hostname not found.`);
+                            view.emit('manual_pair_error', `Could not connect to or verify Quatt CIC at ${ipAddress}. Please check the address and try again, or ensure the device is online.`);
+                            // Keeping the view open by not resolving immediately with devices.
+                            // The user can try again. If they cancel the view, viewClosedListener handles it.
+                            // To prevent pairing hanging, we might still want to resolve([]) here if strict "one-shot" manual entry is desired.
+                            // However, allowing multiple tries from the view is more user-friendly.
+                            // For now, let's assume the view allows retrying and doesn't auto-close on error emission.
+                        }
+                    } catch (err: any) {
+                        view.off('manual_ip_address', manualIpListener); // Ensure listener is removed on error
+                        this.error(`Manual IP pairing: Error after submitting IP ${ipAddress}: ${err.message}`);
+                        view.emit('manual_pair_error', `An unexpected error occurred: ${err.message}. Please try again.`);
+                        // Resolve with empty list to allow cancellation from Homey's side if needed,
+                        // though ideally the view handles retries or cancellation.
+                        resolve([]);
+                    }
+                };
+
+                // Register the listener for the event emitted by the HTML view
+                view.on('manual_ip_address', manualIpListener);
+
+                // Handle view close/cancel
+                const viewClosedListener = () => {
+                    this.log("Manual pair view was closed by user.");
+                    view.off('manual_ip_address', manualIpListener); // Clean up IP listener
+                    // view.off('close', viewClosedListener); // Clean up self, though once should handle it.
+                    resolve([]); // No device selected
+                };
+                view.once('close', viewClosedListener); // 'close' event is emitted when Homey.done() is called or user cancels
+
+                try {
+                    this.log("Showing manual IP entry view: 'manual_pair'");
+                    await this.homey.flow.showView('manual_pair');
+                } catch (viewError: any) { // Added type for viewError
+                    this.error("Error showing 'manual_pair' view:", viewError.message);
+                    view.off('manual_ip_address', manualIpListener);
+                    view.off('close', viewClosedListener);
+                    reject(viewError); // Propagate error to end pairing session
+                }
+            });
         }
     }
 
@@ -36,11 +137,22 @@ class QuattHeatpumpDriver extends Homey.Driver {
      * Therefore, I've setup a simple network scan, which scans the local network for the Quatt CIC, by trying to connect to port 8080 on all IP addresses in the local subnet. If the port is open, we try to fetch data from the candidate device, and if that succeeds, we assume it's the Quatt CIC.
      */
     private async findQuattDevice(): Promise<QuattDetails> {
-        let homeyAddress = await this.homey.cloud.getLocalAddress();
-        let lan = homeyAddress.split('.').slice(0, 3).join('.');
-        this.log('lan', lan)
+        // Ensure homeyAddress is fetched safely
+        let homeyAddress: string | null = null;
+        try {
+            homeyAddress = await this.homey.cloud.getLocalAddress();
+            if (!homeyAddress) {
+                throw new Error("Homey local address is null or undefined.");
+            }
+        } catch (err: any) {
+            this.error("Failed to get Homey local address for network scan:", err.message);
+            throw new Error("Could not determine local network for discovery."); // Propagate to onPairListDevices catch
+        }
 
-        let quattCandidates: string[] = [];
+        const lan = homeyAddress.split('.').slice(0, 3).join('.');
+        this.log(`Starting network scan on LAN: ${lan}.* for Quatt CIC.`);
+
+        const quattCandidates: string[] = [];
         let quattIP: string | null = null;
         let quattHostname: string | null = null;
 
@@ -55,51 +167,77 @@ class QuattHeatpumpDriver extends Homey.Driver {
                 status = 'open';
                 socket.end();
             });
-            socket.setTimeout(1500);// If no response, assume port is not listening
-            socket.on('timeout', function () {
+            socket.setTimeout(1500); // If no response, assume port is not listening
+            socket.on('timeout', () => { // Arrow function for consistent `this` if needed, though not used here
                 status = 'closed';
-                quattCandidates.splice(quattCandidates.indexOf(host), 1);
+                const index = quattCandidates.indexOf(host);
+                if (index > -1) quattCandidates.splice(index, 1);
                 socket.destroy();
             });
-            socket.on('error', (exception) => {
+            socket.on('error', (exception: Error) => { // Added type for exception
                 status = 'closed';
-                quattCandidates.splice(quattCandidates.indexOf(host), 1);
+                const index = quattCandidates.indexOf(host);
+                if (index > -1) quattCandidates.splice(index, 1);
+                // this.log(`Socket error for ${host}: ${exception.message}`); // Potentially too verbose
             });
-            socket.on('close', async (exception) => {
-                if (status == 'open') {
-                    let hostname = await this.getQuattHostname(host);
-                    if (hostname !== undefined) {
+            socket.on('close', async (hadError: boolean) => { // Added hadError parameter
+                if (status === 'open' && !hadError) {
+                    this.log(`Port 8080 open on ${host}. Verifying if it's a Quatt CIC.`);
+                    const hostname = await this.getQuattHostname(host); // getQuattHostname already logs its errors
+                    if (hostname) {
+                        this.log(`Verified Quatt CIC: ${hostname} at ${host}.`);
                         quattIP = host;
                         quattHostname = hostname;
+                        // Optimization: If one is found, could potentially stop scanning or resolve early.
+                        // For now, it continues scanning all, then picks the last one found or first.
+                        // Current logic implies last one found that successfully sets quattIP/quattHostname will be used.
                     }
                 }
-
-                quattCandidates.splice(quattCandidates.indexOf(host), 1);
+                const index = quattCandidates.indexOf(host);
+                if (index > -1) quattCandidates.splice(index, 1);
             });
 
             quattCandidates.push(host);
             socket.connect(8080, host);
         }
 
-        while (quattCandidates.length > 0) {
+        this.log("Network scan initiated for all candidates. Waiting for results...");
+        // Wait for all sockets to close or timeout
+        let waitCycles = 0;
+        const maxWaitCycles = (1500 + 500) / 25; // Max timeout + buffer, divided by sleep interval
+        while (quattCandidates.length > 0 && waitCycles < maxWaitCycles) {
             await new Promise(resolve => setTimeout(resolve, 25));
+            waitCycles++;
+        }
+        if (quattCandidates.length > 0) {
+            this.log(`Network scan timed out with ${quattCandidates.length} candidates remaining.`);
+            quattCandidates.forEach(host => this.log(` - ${host} did not resolve in time.`));
+            // Forcibly destroy remaining sockets?
         }
 
+
         if (quattIP && quattHostname) {
+            this.log(`Automatic discovery finished. Found Quatt CIC: ${quattHostname} at ${quattIP}`);
             return {ip: quattIP, hostname: quattHostname};
         } else {
-            this.homey.app.log('No Quatt device found on the local network');
-            throw new Error('No Quatt device found on the local network');
+            this.log('Automatic discovery finished. No Quatt CIC found on the local network.');
+            throw new Error('No Quatt device found on the local network during scan.');
         }
     }
 
-    private async getQuattHostname(address: string) {
+    private async getQuattHostname(address: string): Promise<string | undefined> {
+        this.log(`Verifying hostname for address: ${address}`);
         try {
-            let client = new QuattClient(this.homey.app.manifest.version, address);
-            let stats = await client.getCicStats(false);
-
-            return stats?.system.hostName
-        } catch (error) {
+            const client = new QuattClient(this.homey.manifest.version, address);
+            const stats = await client.getCicStats(false); // false for full stats, could be true for quicker check if available
+            if (stats && stats.system && stats.system.hostName) {
+                this.log(`Successfully fetched hostname '${stats.system.hostName}' from ${address}`);
+                return stats.system.hostName;
+            }
+            this.log(`Could not retrieve valid hostname from ${address}. Response or system data missing.`);
+            return undefined;
+        } catch (error: any) {
+            this.error(`Error in getQuattHostname for IP ${address}: ${error.message}`);
             return undefined;
         }
     }
