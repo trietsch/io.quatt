@@ -1,0 +1,5 @@
+{
+  "pair": {
+    "error_notAQuattDevice": "Er is een handmatig IP-adres ingevoerd, maar dit lijkt geen Quatt apparaat te zijn. Controleer het IP-adres en probeer het opnieuw."
+  }
+}

@@ -1,1 +1,5 @@
-{}
+{
+  "pair": {
+    "error_notAQuattDevice": "A manual IP address has been entered, but this does not appear to be a Quatt device. Please check the IP address and try again."
+  }
+}

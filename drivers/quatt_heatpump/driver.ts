@@ -12,18 +12,18 @@ class QuattHeatpumpDriver extends Homey.Driver {
     }
 
     async onPair(session: PairSession) {
-        this.type = 'pair';
-        return await this.setPairingSession(session);
-    }
+        session.setHandler('showView', async (view) => {
+            if (view === 'error' && this.deviceError) {
+                await session.emit('deviceError', this.deviceError);
+            }
+        });
 
-    async onRepair(session: PairSession) {
-        this.type = 'repair';
-        return await this.setPairingSession(session);
-    }
-
-    async setPairingSession(session: PairSession) {
         session.setHandler('list_devices', async () => {
             try {
+                if (this.deviceError) {
+                    await session.showView('error');
+                    return;
+                }
                 if (this.devices === null) {
                     this.homey.app.log(`[Driver] ${this.id} - No devices searched yet, using autodiscovery.`);
                     this.devices = await this.fetchQuattDevicesViaAutodiscovery();
@@ -50,6 +50,9 @@ class QuattHeatpumpDriver extends Homey.Driver {
                 this.homey.app.log(`[Driver] ${this.id} - Manually pairing with IP address: ${ipAddress}`);
                 let hostname = await this.getQuattHostname(ipAddress);
 
+                // @ts-ignore updateSettings is an extension of the Quatt Homey App
+                this.homey.app.updateSettings({ipAddress: ipAddress});
+
                 this.devices = [
                     {
                         name: "Quatt CIC (manual)",
@@ -64,13 +67,15 @@ class QuattHeatpumpDriver extends Homey.Driver {
 
                 this.deviceError = false;
 
+                this.homey.app.log(`[Driver] ${this.id} - Successful manual connection with device:`, ipAddress);
                 await session.showView('list_devices');
-
             } catch (error) {
-                this.homey.app.error(`[Driver] ${this.id} - Error while manually pairing:`, error);
-                this.deviceError = error;
+                this.homey.app.error(`[Driver] ${this.id} - Error while manually pairing:`, JSON.stringify(error));
+                this.deviceError = this.homey.__('pair.error_notAQuattDevice');
 
                 await session.showView('error');
+                this.homey.app.log(`[Driver] ${this.id} - Error while manually pairing, showing error view.`);
+                return false;
             }
         });
     }
@@ -78,18 +83,19 @@ class QuattHeatpumpDriver extends Homey.Driver {
     async fetchQuattDevicesViaAutodiscovery() {
         try {
             let {ip, hostname} = await this.quattDeviceNetworkScan();
-            return [
-                {
-                    name: "Quatt CiC",
-                    data: {
-                        hostname: hostname,
-                        ip: ip
-                    },
-                    store: {
-                        address: ip,
-                    },
-                }
-            ];
+            // return [
+            //     {
+            //         name: "Quatt CiC",
+            //         data: {
+            //             hostname: hostname,
+            //             ip: ip
+            //         },
+            //         store: {
+            //             address: ip,
+            //         },
+            //     }
+            // ];
+            return [];
         } catch (e) {
             this.homey.log("Error while discovering Quatt CiC, falling back to no devices.", e);
 
@@ -135,10 +141,14 @@ class QuattHeatpumpDriver extends Homey.Driver {
             });
             socket.on('close', async (exception) => {
                 if (status == 'open') {
-                    let hostname = await this.getQuattHostname(host);
-                    if (hostname !== undefined) {
-                        quattIP = host;
-                        quattHostname = hostname;
+                    try {
+                        let hostname = await this.getQuattHostname(host);
+                        if (hostname !== undefined) {
+                            quattIP = host;
+                            quattHostname = hostname;
+                        }
+                    } catch (error) {
+
                     }
                 }
 
@@ -162,14 +172,10 @@ class QuattHeatpumpDriver extends Homey.Driver {
     }
 
     private async getQuattHostname(address: string) {
-        try {
-            let client = new QuattClient(this.homey.app.manifest.version, address);
-            let stats = await client.getCicStats(false);
+        let client = new QuattClient(this.homey.app.manifest.version, address);
+        let stats = await client.getCicStats();
 
-            return stats?.system.hostName
-        } catch (error) {
-            return undefined;
-        }
+        return stats?.system.hostName
     }
 }
 
@@ -179,3 +185,5 @@ interface QuattDetails {
 }
 
 module.exports = QuattHeatpumpDriver;
+
+
