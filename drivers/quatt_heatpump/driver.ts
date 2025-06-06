@@ -22,24 +22,6 @@ class QuattHeatpumpDriver extends Homey.Driver {
     }
 
     async setPairingSession(session: PairSession) {
-        // session.setHandler('showView', async (view) => {
-        //     try {
-        //         this.homey.app.log(`[Driver] ${this.id} - currentView:`, {
-        //             view,
-        //             type: this.type,
-        //             deviceError: this.deviceError
-        //         });
-        //
-        //         if (view === 'manual_pair') {
-        //             await session.showView('manual_pair');
-        //         }
-        //
-        //         return true;
-        //     } catch (error) {
-        //         this.homey.app.error(`[Driver] ${this.id} - Error:`, error);
-        //     }
-        // });
-
         session.setHandler('list_devices', async () => {
             try {
                 if (this.devices === null) {
