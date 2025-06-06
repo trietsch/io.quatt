@@ -1,20 +1,107 @@
 import Homey from 'homey';
 import {Socket} from "net";
 import {QuattClient} from "../../lib/quatt";
+import PairSession from "homey/lib/PairSession";
 
 class QuattHeatpumpDriver extends Homey.Driver {
+    private type: string = '';
+    private deviceError: any = false;
+    private devices: any[] | null = null;
 
     async onInit() {
     }
 
-    async onPairListDevices() {
+    async onPair(session: PairSession) {
+        this.type = 'pair';
+        return await this.setPairingSession(session);
+    }
+
+    async onRepair(session: PairSession) {
+        this.type = 'repair';
+        return await this.setPairingSession(session);
+    }
+
+    async setPairingSession(session: PairSession) {
+        // session.setHandler('showView', async (view) => {
+        //     try {
+        //         this.homey.app.log(`[Driver] ${this.id} - currentView:`, {
+        //             view,
+        //             type: this.type,
+        //             deviceError: this.deviceError
+        //         });
+        //
+        //         if (view === 'manual_pair') {
+        //             await session.showView('manual_pair');
+        //         }
+        //
+        //         return true;
+        //     } catch (error) {
+        //         this.homey.app.error(`[Driver] ${this.id} - Error:`, error);
+        //     }
+        // });
+
+        session.setHandler('list_devices', async () => {
+            try {
+                if (this.devices === null) {
+                    this.homey.app.log(`[Driver] ${this.id} - No devices searched yet, using autodiscovery.`);
+                    this.devices = await this.fetchQuattDevicesViaAutodiscovery();
+                }
+
+                if (this.devices !== null && this.devices.length === 0) {
+                    this.homey.app.log(`[Driver] ${this.id} - No devices found, showing manual pairing view.`);
+                    await session.showView('manual_pair');
+                } else {
+                    this.homey.app.log(`[Driver] ${this.id} - Found devices:`, this.devices);
+                    return this.devices;
+                }
+            } catch (error: any) {
+                this.homey.app.error(`[Driver] ${this.id} - Error:`, error);
+                this.deviceError = error;
+
+                await session.showView('error');
+            }
+        });
+
+        session.setHandler('manual_pair', async (data) => {
+            try {
+                const ipAddress = data.ipAddress;
+                this.homey.app.log(`[Driver] ${this.id} - Manually pairing with IP address: ${ipAddress}`);
+                let hostname = await this.getQuattHostname(ipAddress);
+
+                this.devices = [
+                    {
+                        name: "Quatt CIC (manual)",
+                        data: {
+                            id: hostname,
+                        },
+                        store: {
+                            address: ipAddress,
+                        },
+                    }
+                ]
+
+                this.deviceError = false;
+
+                await session.showView('list_devices');
+
+            } catch (error) {
+                this.homey.app.error(`[Driver] ${this.id} - Error while manually pairing:`, error);
+                this.deviceError = error;
+
+                await session.showView('error');
+            }
+        });
+    }
+
+    async fetchQuattDevicesViaAutodiscovery() {
         try {
-            let {ip, hostname} = await this.findQuattDevice();
+            let {ip, hostname} = await this.quattDeviceNetworkScan();
             return [
                 {
-                    name: "Quatt CIC",
+                    name: "Quatt CiC",
                     data: {
-                        id: hostname,
+                        hostname: hostname,
+                        ip: ip
                     },
                     store: {
                         address: ip,
@@ -22,7 +109,6 @@ class QuattHeatpumpDriver extends Homey.Driver {
                 }
             ];
         } catch (e) {
-            // FIXME ensure that the fallback first tries to use a provided static ip for the Quatt CiC
             this.homey.log("Error while discovering Quatt CiC, falling back to no devices.", e);
 
             return [];
@@ -35,10 +121,10 @@ class QuattHeatpumpDriver extends Homey.Driver {
      *
      * Therefore, I've setup a simple network scan, which scans the local network for the Quatt CIC, by trying to connect to port 8080 on all IP addresses in the local subnet. If the port is open, we try to fetch data from the candidate device, and if that succeeds, we assume it's the Quatt CIC.
      */
-    private async findQuattDevice(): Promise<QuattDetails> {
+    private async quattDeviceNetworkScan(): Promise<QuattDetails> {
         let homeyAddress = await this.homey.cloud.getLocalAddress();
         let lan = homeyAddress.split('.').slice(0, 3).join('.');
-        this.log('lan', lan)
+        this.homey.app.error(`[Driver] ${this.id} - autodiscovering Quatt device on local network, using LAN subnet:`, lan);
 
         let quattCandidates: string[] = [];
         let quattIP: string | null = null;

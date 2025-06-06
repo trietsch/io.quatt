@@ -125,15 +125,60 @@
   },
   "pair": [
     {
-      "id": "list_my_devices",
+      "id": "list_devices",
       "template": "list_devices",
       "navigation": {
-        "next": "add_my_devices"
+        "next": "add_devices"
       }
     },
     {
-      "id": "add_my_devices",
+      "id": "manual_pair",
+      "$template": "manual_pair"
+    },
+    {
+      "id": "error",
+      "$template": "error",
+      "navigation": {
+        "next": "manual_pair"
+      },
+      "options": {
+        "title": {
+          "en": "Error",
+          "nl": "Error",
+          "fr": "Erreur",
+          "da": "Fejl",
+          "de": "Fehler",
+          "es": "Error",
+          "it": "Errore",
+          "no": "Feil",
+          "sv": "Fel",
+          "pl": "Błąd",
+          "ru": "Ошибка",
+          "ko": "오류"
+        },
+        "text": {
+          "en": "<hr><br><br>To change the login click 'previous'.<hr><br><br>",
+          "nl": "<hr><br><br>Om opnieuw in te loggen, klik 'vorige'.<hr><br><br>",
+          "fr": "<hr><br><br>Pour changer le login, cliquez sur 'précédent'.<hr><br><br>",
+          "da": "<hr><br><br>For at ændre login skal du klikke 'forrige'.<hr><br><br>",
+          "de": "<hr><br><br>Um den Login zu ändern, klicke auf 'zurück'.<hr><br><br>",
+          "es": "<hr><br><br>Para cambiar el inicio de sesión, haz clic en 'anterior'.<hr><br><br>",
+          "it": "<hr><br><br>Per modificare il login, fai clic su 'precedente'.<hr><br><br>",
+          "no": "<hr><br><br>For å endre pålogging, klikk 'forrige'.<hr><br><br>",
+          "sv": "<hr><br><br>För att ändra inloggningen, klicka på 'föregående'.<hr><br><br>",
+          "pl": "<hr><br><br>Aby zmienić login, kliknij 'poprzedni'.<hr><br><br>",
+          "ru": "<hr><br><br>Для изменения входа нажмите 'предыдущий'.<hr><br><br>",
+          "ko": "<hr><br><br>로그인을 변경하려면 '이전'을 클릭하세요.<hr><br><br>"
+        }
+      }
+    },
+    {
+      "id": "add_devices",
       "template": "add_devices"
+    },
+    {
+      "id": "done",
+      "template": "done"
     }
   ]
 }

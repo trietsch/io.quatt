@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pairing Error</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .error-container {
+            border: 1px solid #b3c6e0;
+            background: #f4f8fb;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 400px;
+            margin: 40px auto;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        h1 {
+            color: #3578e5;
+        }
+
+        .error-message {
+            color: #333;
+            margin: 16px 0;
+            font-size: 1.1em;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #3578e5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #285bb5;
+        }
+
+        .icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            color: #3578e5;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <div class="icon">&#9888;&#65039;</div>
+    <h1>Oops, something went wrong</h1>
+    <div class="error-message" id="errorMessage">We couldn't complete the pairing.<br>
+        <div class="error"></div>
+    </div>
+    <button id="retryButton">Try Again</button>
+</div>
+<script>
+    (function () {
+        Homey.on("deviceError", function (message) {
+            var $error = document.querySelector('.error');
+            $error.innerHTML = `<p>${message}</p>`;
+            return true;
+        });
+
+        document.getElementById('retryButton').addEventListener('click', function () {
+            // Notify Homey to retry or go back to the previous step
+            Homey.emit('retry_pairing')
+                .then(() => {
+                    // TODO Optionally close the view or provide feedback
+                })
+                .catch(() => {
+                    // TODO Optionally show another error
+                });
+        });
+    })();
+</script>
+</body>
+</html>
