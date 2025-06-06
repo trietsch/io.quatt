@@ -125,19 +125,23 @@
   },
   "pair": [
     {
-      "id": "list_my_devices",
+      "id": "list_devices",
       "template": "list_devices",
       "navigation": {
-        "next": "add_my_devices"
+        "next": "add_devices"
       }
     },
     {
-      "id": "add_my_devices",
+      "id": "manual_pair",
+      "$template": "manual_pair"
+    },
+    {
+      "id": "add_devices",
       "template": "add_devices"
     },
     {
-      "id": "manual_pair",
-      "template": "pair/manual_pair.html"
+      "id": "done",
+      "template": "done"
     }
   ]
 }

@@ -1,6 +1,7 @@
 import Homey from 'homey';
 import {Socket} from "net";
 import {QuattClient} from "../../lib/quatt";
+import PairSession from "homey/lib/PairSession";
 
 class QuattHeatpumpDriver extends Homey.Driver {
 
@@ -8,7 +9,49 @@ class QuattHeatpumpDriver extends Homey.Driver {
         this.log('QuattHeatpumpDriver initialized.');
     }
 
-    async onPairListDevices() {
+    async onPair(session: PairSession) {
+        this.setPairingSession(session);
+    }
+
+    async onRepair(session: PairSession) {
+        this.setPairingSession(session);
+    }
+
+    async setPairingSession(session: PairSession) {
+        // Show list automatic devices first
+        await session.showView("list_devices");
+
+
+
+        session.setHandler('list_devices', async () => {
+            try {
+                return this._devices;
+            } catch (error) {
+                this.homey.app.error(`[Driver] ${this.id} - Error:`, error);
+                this.deviceError = error;
+
+                session.showView('error');
+            }
+        });
+
+        session.setHandler('showView', async (view) => {
+            try {
+                if (view === 'list_devices') {
+
+                }
+
+                if (view === 'manual_pair') {
+                    session.showView('error');
+                    return true;
+                }
+            } catch (error) {
+                this.homey.app.error(`[Driver] ${this.id} - Error:`, error);
+            }
+        });
+
+    }
+
+    async listDevices(session: PairSession) {
         this.log('onPairListDevices called. Starting pairing process...');
         // 1. Try IP from App Settings first
         const settingsIp = this.homey.settings.get('cicIPAddress');
@@ -20,7 +63,7 @@ class QuattHeatpumpDriver extends Homey.Driver {
                     this.log(`Successfully verified Quatt CIC at settings IP ${settingsIp}, hostname: ${hostname}.`);
                     return [
                         {
-                            name: "Quatt CIC (Settings)", // Indicate it's from settings
+                            name: "Quatt CIC (static IP address)", // Indicate it's from settings
                             data: {
                                 id: hostname,
                             },
@@ -42,7 +85,7 @@ class QuattHeatpumpDriver extends Homey.Driver {
         // 2. If settings IP is not available or failed, try automatic discovery
         try {
             this.log("Attempting automatic Quatt CIC discovery...");
-            let {ip, hostname} = await this.findQuattDevice();
+            let {ip, hostname} = await this.autodiscoverQuattDevice();
             this.log(`Automatic discovery successful: Found ${hostname} at ${ip}.`);
             return [
                 {
@@ -136,7 +179,7 @@ class QuattHeatpumpDriver extends Homey.Driver {
      *
      * Therefore, I've setup a simple network scan, which scans the local network for the Quatt CIC, by trying to connect to port 8080 on all IP addresses in the local subnet. If the port is open, we try to fetch data from the candidate device, and if that succeeds, we assume it's the Quatt CIC.
      */
-    private async findQuattDevice(): Promise<QuattDetails> {
+    private async autodiscoverQuattDevice(): Promise<QuattDetails> {
         // Ensure homeyAddress is fetched safely
         let homeyAddress: string | null = null;
         try {
