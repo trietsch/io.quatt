@@ -54,10 +54,19 @@ class QuattHeatpump extends Homey.Device {
     async onInit() {
         this.log('Quatt Heatpump has been initialized');
         this.quattClient = new QuattClient(this.homey.app.manifest.version, this.getStoreValue("address"));
+        await this.initDeviceSettings();
         await this.registerTriggers();
         await this.registerConditionListeners();
         await this.setCapabilityValues();
         await this.setCapabilityValuesInterval(5);
+    }
+
+    async initDeviceSettings() {
+        // @ts-ignore get settings is an extension of the Quatt Homey App
+        const appSettings = this.homey.app.getSettings();
+        await this.setSettings({
+            ipAddress: appSettings.ipAddress
+        });
     }
 
     /**

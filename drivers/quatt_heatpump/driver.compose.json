@@ -123,6 +123,17 @@
     "large": "{{driverAssetsPath}}/images/large.png",
     "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
   },
+  "settings": [
+    {
+      "id": "ipAddress",
+      "type": "label",
+      "label": {
+        "en": "Quatt IP address (override)",
+        "nl": "Quatt IP-adres (override)"
+      },
+      "value": ""
+    }
+  ],
   "pair": [
     {
       "id": "list_devices",

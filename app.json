@@ -2080,6 +2080,17 @@
         "large": "/drivers/quatt_heatpump/assets/images/large.png",
         "xlarge": "/drivers/quatt_heatpump/assets/images/xlarge.png"
       },
+      "settings": [
+        {
+          "id": "ipAddress",
+          "type": "label",
+          "label": {
+            "en": "Quatt IP address (override)",
+            "nl": "Quatt IP-adres (override)"
+          },
+          "value": ""
+        }
+      ],
       "pair": [
         {
           "id": "list_devices",

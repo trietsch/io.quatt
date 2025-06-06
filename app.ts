@@ -45,6 +45,10 @@ class Quatt extends Homey.App {
         }
     }
 
+    getSettings(): any {
+        return this.homey.settings.get(this.settingsKey);
+    }
+
     updateSettings(settings: any) {
         this.debug('updateSettings - New settings:', { ...settings });
 
