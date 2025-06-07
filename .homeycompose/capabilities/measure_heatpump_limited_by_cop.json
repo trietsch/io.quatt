@@ -8,5 +8,14 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/bad-performance.svg"
+  "icon": "assets/icons/bad-performance.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Limited by COP",
+    "nl": "Beperkt door COP"
+  },
+  "insightsTitleFalse": {
+    "en": "Not Limited by COP",
+    "nl": "Niet Beperkt door COP"
+  }
 }

@@ -62,28 +62,33 @@
 <div class="__private__homey-manual-pair" id="manual-pair-wrapper">
     <form id="manual-pair-form" class="__private__homey-manual-pair__form homey-form">
         <div class="__private__homey-manual-pair__center">
-            <h1 id="manual-pair-title" class="homey-title homey-text-align-center">Enter Quatt CIC IP Address</h1>
-            <p id="description">If automatic discovery failed, please enter the IP address of your Quatt CIC device below.</p>
+            <h1 id="manual-pair-title" class="homey-title homey-text-align-center"></h1>
+            <p id="description"></p>
             <div class="homey-form-group-large">
-                <label class="homey-form-label" for="ipAddress" data-i18n="__tmpl.login_credentials.username"></label>
+                <label class="homey-form-label" for="ipAddress" id="ipAddress-label"></label>
                 <input class="homey-form-input-large" id="ipAddress" name="ipAddress" type="text" value=""
-                       data-i18n-placeholder="__tmpl.login_credentials.username" />
+                       placeholder="" />
             </div>
         </div>
         <div class="__private__homey-manual-pair__footer">
             <button tabindex="0" class="homey-button-primary-shadow-full __private__homey-manual-pair__button"
-                    type="submit" data-i18n="__tmpl.login_credentials.login">
-                Connect
+                    type="submit" id="connect-btn">
             </button>
         </div>
     </form>
 </div>
 
-
 <script type="text/javascript">
     (function () {
         // Hide default title bar
         Homey.setTitle(null);
+
+        // Set i18n texts
+        document.getElementById('manual-pair-title').textContent = Homey.__('pair.manual.title');
+        document.getElementById('description').textContent = Homey.__('pair.manual.description');
+        document.getElementById('ipAddress-label').textContent = Homey.__('pair.manual.ipAddressLabel');
+        document.getElementById('ipAddress').placeholder = Homey.__('pair.manual.ipAddressPlaceholder');
+        document.getElementById('connect-btn').textContent = Homey.__('pair.manual.connectButton');
 
         const $form = document.querySelector('#manual-pair-form');
 
@@ -97,7 +102,7 @@
             // }
             //
             // working = true;
-            Homey.showLoadingOverlay(Homey.__('Verifying Quatt CIC Connection...'));
+            Homey.showLoadingOverlay(Homey.__('pair.manual.verifyingMessage'));
 
             const $ipAddress = document.querySelector('input[name="ipAddress"]');
             const ipAddress = $ipAddress.value;

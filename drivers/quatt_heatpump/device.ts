@@ -1,6 +1,13 @@
 import Homey, {FlowCardTrigger} from 'homey';
 import {QuattClient} from "../../lib/quatt";
 import {CicHeatpump} from "../../lib/quatt/cic-stats";
+import { QuattApiError } from "../../lib/quatt/errors"; // DeviceUnavailableError was unused
+
+// Define an interface for device settings for stronger typing
+interface QuattDeviceSettings {
+    ipAddress: string; // This is a label in compose, but used as a setting key
+    enableAutomaticIpDiscovery: boolean;
+}
 
 class QuattHeatpump extends Homey.Device {
     private quattClient!: QuattClient;
@@ -62,11 +69,24 @@ class QuattHeatpump extends Homey.Device {
     }
 
     async initDeviceSettings() {
-        // @ts-ignore get settings is an extension of the Quatt Homey App
-        const appSettings = this.homey.app.getSettings();
-        await this.setSettings({
-            ipAddress: appSettings.ipAddress
-        });
+        // This method is intended to set the display values for settings shown to the user.
+        // The 'ipAddress' setting in driver.compose.json is a 'label'.
+        // We set its value to the IP address stored for this device.
+        const currentIpAddress = this.getStoreValue('address');
+        if (typeof currentIpAddress === 'string' && currentIpAddress) {
+            this.log(`Initializing device settings display. IP Address Label: ${currentIpAddress}`);
+            await this.setSettings({ ipAddress: currentIpAddress })
+                .catch(err => this.error('Error setting ipAddress label in initDeviceSettings:', err));
+        } else {
+            this.log('No stored IP address found to display in settings label during init.');
+            // Optionally set the label to a default or placeholder if no IP is stored yet
+            await this.setSettings({ ipAddress: this.homey.__('pair.manual.ipAddressPlaceholder') })
+                 .catch(err => this.error('Error setting placeholder ipAddress label in initDeviceSettings:', err));
+        }
+        // For 'enableAutomaticIpDiscovery', it's a checkbox with a default value in driver.compose.json.
+        // Homey handles displaying its stored value automatically. We could explicitly set it if needed:
+        // const autoDiscovery = this.getSetting('enableAutomaticIpDiscovery') ?? false; // Get current or default
+        // await this.setSettings({ enableAutomaticIpDiscovery: autoDiscovery });
     }
 
     /**
@@ -76,12 +96,48 @@ class QuattHeatpump extends Homey.Device {
         this.log('Quatt Heatpump has been added');
     }
 
+    // FIXME this method is made up by Jules and does not exist in the Device interface.
+    // async onSettings({ oldSettings, newSettings, changedKeys }: { oldSettings: QuattDeviceSettings; newSettings: QuattDeviceSettings; changedKeys: string[] }) {
+    //     this.log('Quatt Heatpump settings changed');
+    //     // Explicitly check for ipAddress key, which is used to store the current IP for the device by convention
+    //     // even though it's a 'label' type in driver.compose.json.
+    //     // The actual user-editable IP is typically handled during pairing or via a repair-like flow.
+    //     // This onSettings handler is more for if the 'label' value were programmatically changed
+    //     // or if other actual settings were changed.
+    //     if (changedKeys.includes('ipAddress') && newSettings.ipAddress !== oldSettings.ipAddress) {
+    //         this.log(`IP address setting (label) changed from ${oldSettings.ipAddress} to ${newSettings.ipAddress}. Re-initializing client and fetching data.`);
+    //
+    //         if (this.quattClient) {
+    //             this.quattClient.setDeviceAddress(newSettings.ipAddress);
+    //         }
+    //         // It's crucial that the 'address' store value is the source of truth for the client's IP.
+    //         // If ipAddress setting is just a label, changing it here might not be what users expect
+    //         // unless pairing/repair flows also update this setting value.
+    //         // For now, assume this setting change implies the store value should also update.
+    //         await this.setStoreValue('address', newSettings.ipAddress);
+    //
+    //         await this.setAvailable();
+    //         await this.setCapabilityValues();
+    //     }
+    //
+    //     if (changedKeys.includes('enableAutomaticIpDiscovery')) {
+    //         this.log(`Automatic IP Discovery setting changed to: ${newSettings.enableAutomaticIpDiscovery}`);
+    //         // Future implementation for auto-discovery would go here
+    //     }
+    // }
+
     async setCapabilityValues() {
         try {
+            // Ensure client is initialized (e.g. after settings change before onInit completes fully)
+            if (!this.quattClient) {
+                this.log('QuattClient not initialized, re-initializing with address from store:', this.getStoreValue("address"));
+                this.quattClient = new QuattClient(this.homey.app.manifest.version, this.getStoreValue("address"));
+            }
+
             const cicStats = await this.quattClient.getCicStats();
 
             if (!cicStats) {
-                this.log('Unable to fetch data from Quatt CIC');
+                this.log('Unable to fetch data from Quatt CiC');
                 return;
             }
 
@@ -125,8 +181,36 @@ class QuattHeatpump extends Homey.Device {
             )
 
             await Promise.all(promises);
+            // If successful, ensure device is marked as available
+            if (!this.getAvailable()) {
+                await this.setAvailable();
+                this.log('Device became available.');
+            }
         } catch (error) {
-            this.homey.app.error(error);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            const isNetworkError = errorMessage.includes('ECONNREFUSED') ||
+                                   errorMessage.includes('EHOSTUNREACH') ||
+                                   errorMessage.includes('ETIMEDOUT') ||
+                                   errorMessage.includes('ENOTFOUND') || // Added ENOTFOUND
+                                   errorMessage.includes('EAI_AGAIN');   // Added EAI_AGAIN
+
+            if (error instanceof QuattApiError && isNetworkError) {
+                this.log(`Suspected IP address change for device. Current IP: ${this.getStoreValue("address")}. QuattApiError: ${errorMessage}. Automatic re-discovery is not yet implemented. Setting device to unavailable.`);
+                this.setUnavailable(this.homey.__('error.ipChangeSuspected')).catch(this.error);
+            } else if (error instanceof QuattApiError) {
+                this.log(`QuattApiError (not network related): ${errorMessage}`);
+                this.setUnavailable(this.homey.__('error.apiError', { message: errorMessage })).catch(this.error);
+            } else if (isNetworkError) { // Generic error that is a network issue
+                this.log(`Network-related error: ${errorMessage}. Suspected IP address change for device. Current IP: ${this.getStoreValue("address")}. Setting device to unavailable.`);
+                this.setUnavailable(this.homey.__('error.ipChangeSuspected')).catch(this.error);
+            }
+             else if (error instanceof Error) {
+                this.log(`Generic error: ${errorMessage}`);
+                this.setUnavailable(this.homey.__('error.unknownDeviceError', { message: errorMessage })).catch(this.error);
+            } else {
+                this.log('An unknown error occurred during setCapabilityValues');
+                this.setUnavailable(this.homey.__('error.unknownError', { message: errorMessage })).catch(this.error); // Consider a generic unknown error key
+            }
         }
     }
 
@@ -292,61 +376,77 @@ class QuattHeatpump extends Homey.Device {
 
     async setCapabilityValuesInterval(update_interval_seconds: number) {
         try {
-            const refreshInterval = 1000 * update_interval_seconds;
+            const refreshInterval = 1000 * update_interval_seconds; // TODO: Consider making this a setting
 
-            this.log(`[Device] ${this.getName()} - onPollInterval =>`, refreshInterval);
+            this.log(`[Device] ${this.getName()} - Setting up polling interval: ${refreshInterval}ms`);
             this.onPollInterval = setInterval(this.setCapabilityValues.bind(this), refreshInterval);
         } catch (error: unknown) {
-            await this.setUnavailable(JSON.stringify(error));
-            this.log(error);
+            const errorMessage = error instanceof Error ? error.message : this.homey.__('error.unknown');
+            this.error(`Error setting up capability polling interval: ${errorMessage}`);
+            await this.setUnavailable(errorMessage).catch(this.error);
+            // No need to log error separately if this.error already does console.error
         }
     }
 
-    async safeSetCapabilityValue(capability: string | undefined, newValue: any, delay: number = 10) {
-        if (capability === undefined || newValue === undefined) {
+    async safeSetCapabilityValue(capabilityId: string, newValue: string | number | boolean | null | undefined, delay: number = 10) {
+        // Removed undefined check for capabilityId as it should always be provided.
+        // newValue can be null (e.g. when a sensor value is unknown)
+        if (newValue === undefined) {
+            this.log(`[Device] ${this.getName()} - safeSetCapabilityValue - skipping undefined newValue for ${capabilityId}`);
             return;
         }
 
-        // this.log(`[Device] ${this.getName()} - setValue => ${capability} => `, newValue);
+        // this.log(`[Device] ${this.getName()} - safeSetCapabilityValue => ${capabilityId} => `, newValue);
 
-        if (this.hasCapability(capability)) {
-            // @ts-ignore FIXME cannot get the typing correct, since it requires a minimum of 2 elements
-            const [triggerId, heatpump]: [string, string | undefined] = capability.split('.');
-            const heatpumpNumber: string | undefined = heatpump?.replace('heatpump', '');
-            const oldValue = await this.getCapabilityValue(capability);
+        if (this.hasCapability(capabilityId)) {
+            const parts = capabilityId.split('.');
+            const triggerId: string = parts[0];
+            // heatpumpSuffix will be like "heatpump1" or undefined
+            const heatpumpSuffix: string | undefined = parts.length > 1 && parts[parts.length-1].startsWith('heatpump') ? parts[parts.length-1] : undefined;
+            const heatpumpNumber: string | undefined = heatpumpSuffix?.replace('heatpump', '');
 
-            // this.homey.app.log(`[Device] ${this.getName()} - setValue - oldValue => ${capability} => `, oldValue, newValue);
+            const oldValue = this.getCapabilityValue(capabilityId);
 
-            if (delay) {
+            // this.homey.app.log(`[Device] ${this.getName()} - safeSetCapabilityValue - oldValue => ${capabilityId} => `, oldValue, newValue);
+
+            if (delay > 0) { // Only sleep if delay is positive
                 await this.sleep(delay);
             }
 
             try {
-                await this.setCapabilityValue(capability, newValue);
+                await this.setCapabilityValue(capabilityId, newValue);
 
                 // If the trigger is one of the built-in capabilities, we don't need to trigger the event
-                if (triggerId === 'measure_power') return;
+                // Also, ensure triggerId is not undefined (though it shouldn't be from split)
+                if (triggerId && triggerId === 'measure_power') return;
 
-                if (oldValue !== null && oldValue !== newValue) {
-                    const triggerExists = this.triggers.get(`${triggerId}_changed`);
+                if (oldValue !== null && oldValue !== newValue) { // Ensure oldValue is not null before comparing
+                    const flowTriggerId = `${triggerId}_changed`;
+                    const triggerCard = this.triggers.get(flowTriggerId);
 
-                    if (triggerExists) {
-                        await this.homey.flow.getTriggerCard(`${triggerId}_changed`).trigger(undefined, {
-                            value: newValue,
-                            heatpumpNumber: heatpumpNumber
+                    if (triggerCard) {
+                        // this.log(`Triggering flow card: ${flowTriggerId} with value: ${newValue} for heatpump: ${heatpumpNumber || 'N/A'}`);
+                        triggerCard.trigger(undefined, { // First arg is tokens, second is state
+                            value: newValue, // Pass the new value to the flow
+                            heatpumpNumber: heatpumpNumber // Pass heatpumpNumber to the flow state if applicable
                         })
-                            .catch(this.error)
-                            .then(
-                                () => this.homey.app.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Triggered: "${triggerId} | ${newValue}"`),
-                                (error: unknown) => this.homey.app.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Error: "${error} | ${newValue}"`)
-                            );
+                        .then(() => this.log(`[Device] ${this.getName()} - Flow triggered: "${flowTriggerId}" for value "${newValue}"`))
+                        .catch(err => this.error(`[Device] ${this.getName()} - Error triggering flow "${flowTriggerId}":`, err));
                     } else {
-                        this.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Trigger not found: "${triggerId} | ${newValue}"`);
+                        // this.log(`[Device] ${this.getName()} - Flow trigger card not found for: "${flowTriggerId}"`);
                     }
                 }
             } catch (error: unknown) {
-                this.log(`[Device] ${this.getName()} - setValue ${triggerId}_changed - Error: "${error} | ${newValue}"`);
+                const errorMessage = error instanceof Error ? error.message : String(error);
+                this.error(`[Device] ${this.getName()} - Error setting capability value for ${capabilityId}: ${errorMessage}`);
+                // Potentially set unavailable if critical, for now just logging.
+                if (errorMessage.includes('invalid_capability') || errorMessage.includes('capability_not_found')) {
+                    this.log(`Critical error setting capability ${capabilityId}: ${errorMessage}`);
+                    // Example: this.setUnavailable(this.homey.__('error.capabilityError', { capability: capabilityId })).catch(this.error);
+                }
             }
+        } else {
+            this.log(`[Device] ${this.getName()} - Attempted to set value for non-existent capability: ${capabilityId}`);
         }
     }
 

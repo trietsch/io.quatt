@@ -8,5 +8,14 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/central-heating-enabled.svg"
+  "icon": "assets/icons/central-heating-enabled.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "CH Mode Active",
+    "nl": "CV Modus Actief"
+  },
+  "insightsTitleFalse": {
+    "en": "CH Mode Inactive",
+    "nl": "CV Modus Inactief"
+  }
 }

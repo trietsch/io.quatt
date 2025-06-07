@@ -1,5 +1,22 @@
 {
   "pair": {
-    "error_notAQuattDevice": "Er is een handmatig IP-adres ingevoerd, maar dit lijkt geen Quatt apparaat te zijn. Controleer het IP-adres en probeer het opnieuw."
+    "error_notAQuattDevice": "Er is een handmatig IP-adres ingevoerd, maar dit lijkt geen Quatt apparaat te zijn. Controleer het IP-adres en probeer het opnieuw.",
+    "manual": {
+      "title": "Voer Quatt CiC IP-adres in",
+      "description": "Automatische detectie is mislukt, voer hieronder het IP-adres van de Quatt CiC in.",
+      "connectButton": "Verbinden",
+      "verifyingMessage": "Quatt CiC-verbinding verifiëren...",
+      "ipAddressLabel": "Quatt CiC IP-adres",
+      "ipAddressPlaceholder": "bijv. 192.168.1.123"
+    },
+    "errorPage": {
+      "title": "Fout tijdens handmatig koppelen",
+      "message": "We konden het koppelen niet voltooien."
+    }
+  },
+  "error": {
+    "apiError": "API Fout: {{message}}",
+    "unknownDeviceError": "Apparaatfout: {{message}}",
+    "ipChangeSuspected": "Mogelijke IP-adres wijziging. Controleer de apparaatinstellingen als het apparaat onbeschikbaar blijft."
   }
 }

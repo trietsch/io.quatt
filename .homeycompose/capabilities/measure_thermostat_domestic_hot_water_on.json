@@ -8,5 +8,14 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/thermostat-hot-water.svg"
+  "icon": "assets/icons/thermostat-hot-water.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Hot water on",
+    "nl": "Warm water aan"
+  },
+  "insightsTitleFalse": {
+    "en": "Hot water off",
+    "nl": "Warm water uit"
+  }
 }

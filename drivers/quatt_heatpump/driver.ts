@@ -55,7 +55,7 @@ class QuattHeatpumpDriver extends Homey.Driver {
 
                 this.devices = [
                     {
-                        name: "Quatt CIC (manual)",
+                        name: "Quatt CiC (manual)",
                         data: {
                             id: hostname,
                         },
@@ -83,19 +83,18 @@ class QuattHeatpumpDriver extends Homey.Driver {
     async fetchQuattDevicesViaAutodiscovery() {
         try {
             let {ip, hostname} = await this.quattDeviceNetworkScan();
-            // return [
-            //     {
-            //         name: "Quatt CiC",
-            //         data: {
-            //             hostname: hostname,
-            //             ip: ip
-            //         },
-            //         store: {
-            //             address: ip,
-            //         },
-            //     }
-            // ];
-            return [];
+            return [
+                {
+                    name: "Quatt CiC",
+                    data: {
+                        hostname: hostname,
+                        ip: ip
+                    },
+                    store: {
+                        address: ip,
+                    },
+                }
+            ];
         } catch (e) {
             this.homey.log("Error while discovering Quatt CiC, falling back to no devices.", e);
 
@@ -104,10 +103,10 @@ class QuattHeatpumpDriver extends Homey.Driver {
     }
 
     /**
-     * As the Quatt CIC doesn't broadcast its presence through mDNS, nor via SSDP, we need to discover it via MAC address ranges.
-     * However, I've used the MAC address discovery strategy in the past, with all the MAC address prefixes as defined for Sunplus technologies (that's probably the manufacturer of the network card used in the Quatt CIC) (as defined here: https://udger.com/resources/mac-address-vendor-detail?name=sunplus_technology_co-ltd), but one day it stopped detecting the Quatt CIC.
+     * As the Quatt CiC doesn't broadcast its presence through mDNS, nor via SSDP, we need to discover it via MAC address ranges.
+     * However, I've used the MAC address discovery strategy in the past, with all the MAC address prefixes as defined for Sunplus technologies (that's probably the manufacturer of the network card used in the Quatt CiC) (as defined here: https://udger.com/resources/mac-address-vendor-detail?name=sunplus_technology_co-ltd), but one day it stopped detecting the Quatt CiC.
      *
-     * Therefore, I've setup a simple network scan, which scans the local network for the Quatt CIC, by trying to connect to port 8080 on all IP addresses in the local subnet. If the port is open, we try to fetch data from the candidate device, and if that succeeds, we assume it's the Quatt CIC.
+     * Therefore, I've setup a simple network scan, which scans the local network for the Quatt CiC, by trying to connect to port 8080 on all IP addresses in the local subnet. If the port is open, we try to fetch data from the candidate device, and if that succeeds, we assume it's the Quatt CiC.
      */
     private async quattDeviceNetworkScan(): Promise<QuattDetails> {
         let homeyAddress = await this.homey.cloud.getLocalAddress();

@@ -8,5 +8,14 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/thermostat-cooling.svg"
+  "icon": "assets/icons/thermostat-cooling.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Cooling On",
+    "nl": "Koelen Aan"
+  },
+  "insightsTitleFalse": {
+    "en": "Cooling Off",
+    "nl": "Koelen Uit"
+  }
 }

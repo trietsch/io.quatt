@@ -8,5 +8,14 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/thermostat-heating.svg"
+  "icon": "assets/icons/thermostat-heating.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Heating On",
+    "nl": "Verwarmen Aan"
+  },
+  "insightsTitleFalse": {
+    "en": "Heating Off",
+    "nl": "Verwarmen Uit"
+  }
 }

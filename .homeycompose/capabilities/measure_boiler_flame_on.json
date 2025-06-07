@@ -8,5 +8,14 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/boiler-flame.svg"
+  "icon": "assets/icons/boiler-flame.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Flame On",
+    "nl": "Vlam Aan"
+  },
+  "insightsTitleFalse": {
+    "en": "Flame Off",
+    "nl": "Vlam Uit"
+  }
 }

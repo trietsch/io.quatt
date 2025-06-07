@@ -8,5 +8,14 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/silent-mode.svg"
+  "icon": "assets/icons/silent-mode.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Silent Mode Active",
+    "nl": "Stille Modus Actief"
+  },
+  "insightsTitleFalse": {
+    "en": "Silent Mode Inactive",
+    "nl": "Stille Modus Inactief"
+  }
 }

@@ -2089,6 +2089,15 @@
             "nl": "Quatt IP-adres (override)"
           },
           "value": ""
+        },
+        {
+          "id": "enableAutomaticIpDiscovery",
+          "type": "checkbox",
+          "label": {
+            "en": "Enable Automatic IP Discovery (Future Feature)",
+            "nl": "Automatische IP-detectie inschakelen (toekomstige functie)"
+          },
+          "value": false
         }
       ],
       "pair": [
@@ -2131,7 +2140,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/central-heating-enabled.svg"
+      "icon": "assets/icons/central-heating-enabled.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "CH Mode Active",
+        "nl": "CV Modus Actief"
+      },
+      "insightsTitleFalse": {
+        "en": "CH Mode Inactive",
+        "nl": "CV Modus Inactief"
+      }
     },
     "measure_boiler_cic_central_heating_on": {
       "type": "boolean",
@@ -2143,7 +2161,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/central-heating-currently-heating.svg"
+      "icon": "assets/icons/central-heating-currently-heating.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "CH On",
+        "nl": "CV Aan"
+      },
+      "insightsTitleFalse": {
+        "en": "CH Off",
+        "nl": "CV Uit"
+      }
     },
     "measure_boiler_cic_central_heating_onoff_boiler": {
       "type": "boolean",
@@ -2155,7 +2182,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/on-off-boiler.svg"
+      "icon": "assets/icons/on-off-boiler.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Boiler On",
+        "nl": "Boiler Aan"
+      },
+      "insightsTitleFalse": {
+        "en": "Boiler Off",
+        "nl": "Boiler Uit"
+      }
     },
     "measure_boiler_domestic_hot_water_on": {
       "type": "boolean",
@@ -2179,7 +2215,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/boiler-flame.svg"
+      "icon": "assets/icons/boiler-flame.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Flame On",
+        "nl": "Vlam Aan"
+      },
+      "insightsTitleFalse": {
+        "en": "Flame Off",
+        "nl": "Vlam Uit"
+      }
     },
     "measure_boiler_temperature_incoming_water": {
       "type": "number",
@@ -2197,7 +2242,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_boiler_temperature_outgoing_water": {
       "type": "number",
@@ -2215,7 +2261,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_flowmeter_water_flow_speed": {
       "type": "number",
@@ -2233,7 +2280,8 @@
         "nl": "L/u"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_flowmeter_water_supply_temperature": {
       "type": "number",
@@ -2251,7 +2299,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_heatpump_cop": {
       "type": "number",
@@ -2264,7 +2313,8 @@
       "uiComponent": "sensor",
       "icon": "assets/icons/performance.svg",
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_heatpump_limited_by_cop": {
       "type": "boolean",
@@ -2276,7 +2326,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/bad-performance.svg"
+      "icon": "assets/icons/bad-performance.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Limited by COP",
+        "nl": "Beperkt door COP"
+      },
+      "insightsTitleFalse": {
+        "en": "Not Limited by COP",
+        "nl": "Niet Beperkt door COP"
+      }
     },
     "measure_heatpump_silent_mode": {
       "type": "boolean",
@@ -2288,7 +2347,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/silent-mode.svg"
+      "icon": "assets/icons/silent-mode.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Silent Mode Active",
+        "nl": "Stille Modus Actief"
+      },
+      "insightsTitleFalse": {
+        "en": "Silent Mode Inactive",
+        "nl": "Stille Modus Inactief"
+      }
     },
     "measure_heatpump_temperature_delta_water": {
       "type": "number",
@@ -2306,7 +2374,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_heatpump_temperature_incoming_water": {
       "type": "number",
@@ -2324,7 +2393,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_heatpump_temperature_outgoing_water": {
       "type": "number",
@@ -2342,7 +2412,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_heatpump_temperature_outside": {
       "type": "number",
@@ -2360,7 +2431,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_heatpump_thermal_power": {
       "type": "number",
@@ -2378,7 +2450,8 @@
         "nl": "Watt"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_heatpump_working_mode": {
       "type": "enum",
@@ -2406,7 +2479,8 @@
             "nl": "VERWARMEN"
           }
         }
-      ]
+      ],
+      "insights": true
     },
     "measure_quality_control_supervisory_control_mode": {
       "type": "enum",
@@ -2490,7 +2564,8 @@
             "nl": "Inbedrijfstellings modi"
           }
         }
-      ]
+      ],
+      "insights": true
     },
     "measure_thermostat_cooling_on": {
       "type": "boolean",
@@ -2502,7 +2577,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/thermostat-cooling.svg"
+      "icon": "assets/icons/thermostat-cooling.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Cooling On",
+        "nl": "Koelen Aan"
+      },
+      "insightsTitleFalse": {
+        "en": "Cooling Off",
+        "nl": "Koelen Uit"
+      }
     },
     "measure_thermostat_domestic_hot_water_on": {
       "type": "boolean",
@@ -2514,7 +2598,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/thermostat-hot-water.svg"
+      "icon": "assets/icons/thermostat-hot-water.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Hot water on",
+        "nl": "Warm water aan"
+      },
+      "insightsTitleFalse": {
+        "en": "Hot water off",
+        "nl": "Warm water uit"
+      }
     },
     "measure_thermostat_heating_on": {
       "type": "boolean",
@@ -2526,7 +2619,16 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "icon": "assets/icons/thermostat-heating.svg"
+      "icon": "assets/icons/thermostat-heating.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Heating On",
+        "nl": "Verwarmen Aan"
+      },
+      "insightsTitleFalse": {
+        "en": "Heating Off",
+        "nl": "Verwarmen Uit"
+      }
     },
     "measure_thermostat_room_temperature": {
       "type": "number",
@@ -2544,7 +2646,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_thermostat_setpoint_room_temperature": {
       "type": "number",
@@ -2562,7 +2665,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     },
     "measure_thermostat_setpoint_water_supply_temperature": {
       "type": "number",
@@ -2580,7 +2684,8 @@
         "nl": "°C"
       },
       "decimals": 2,
-      "step": 0.01
+      "step": 0.01,
+      "insights": true
     }
   }
 }

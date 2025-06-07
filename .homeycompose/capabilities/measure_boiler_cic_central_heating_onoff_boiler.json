@@ -8,5 +8,14 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/on-off-boiler.svg"
+  "icon": "assets/icons/on-off-boiler.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Boiler On",
+    "nl": "Boiler Aan"
+  },
+  "insightsTitleFalse": {
+    "en": "Boiler Off",
+    "nl": "Boiler Uit"
+  }
 }

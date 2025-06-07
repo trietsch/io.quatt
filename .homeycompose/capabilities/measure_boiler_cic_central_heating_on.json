@@ -8,5 +8,14 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "assets/icons/central-heating-currently-heating.svg"
+  "icon": "assets/icons/central-heating-currently-heating.svg",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "CH On",
+    "nl": "CV Aan"
+  },
+  "insightsTitleFalse": {
+    "en": "CH Off",
+    "nl": "CV Uit"
+  }
 }

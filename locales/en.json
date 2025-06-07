@@ -1,5 +1,23 @@
 {
   "pair": {
-    "error_notAQuattDevice": "A manual IP address has been entered, but this does not appear to be a Quatt device. Please check the IP address and try again."
+    "error_notAQuattDevice": "A manual IP address has been entered, but this does not appear to be a Quatt device. Please check the IP address and try again.",
+    "manual": {
+      "title": "Enter Quatt CiC IP Address",
+      "description": "Automatic discovery failed, please enter the IP address of your Quatt CiC below.",
+      "connectButton": "Connect",
+      "verifyingMessage": "Verifying Quatt CiC Connection...",
+      "ipAddressLabel": "Quatt CiC IP Address",
+      "ipAddressPlaceholder": "e.g. 192.168.1.123"
+    },
+    "errorPage": {
+      "title": "Error while manual pairing",
+      "message": "We couldn't complete the pairing."
+    }
+  },
+  "error": {
+    "apiError": "API Error: {{message}}",
+    "unknownDeviceError": "Device Error: {{message}}",
+    "unknownError": "An unknown error occurred: {{message}}",
+    "ipChangeSuspected": "Suspected IP address change. Please check device settings if it remains unavailable."
   }
 }

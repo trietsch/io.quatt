@@ -132,6 +132,15 @@
         "nl": "Quatt IP-adres (override)"
       },
       "value": ""
+    },
+    {
+      "id": "enableAutomaticIpDiscovery",
+      "type": "checkbox",
+      "label": {
+        "en": "Enable Automatic IP Discovery (Future Feature)",
+        "nl": "Automatische IP-detectie inschakelen (toekomstige functie)"
+      },
+      "value": false
     }
   ],
   "pair": [

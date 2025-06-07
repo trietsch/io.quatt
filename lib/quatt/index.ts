@@ -1,11 +1,12 @@
 import {CicStats} from "./cic-stats";
 import {RestClient} from "typed-rest-client/RestClient";
+import { QuattApiError } from './errors';
 
 type OptionalCicStats = CicStats | null;
 
 /*
  * Look at https://www.pluralsight.com/tech-blog/taming-dynamic-data-in-typescript/ for a way to make this class more type-safe
- * in terms of converting the data from the Quatt CIC to the CicStats interface.
+ * in terms of converting the data from the Quatt CiC to the CicStats interface.
  */
 export class QuattClient {
     private readonly appVersion: string;
@@ -29,7 +30,7 @@ export class QuattClient {
         const response = await this.client.get<OptionalCicStats>(`http://${this.deviceAddress}:${this.port}/${this.dataJson}`);
 
         if (response.statusCode != 200) {
-            throw new Error(`Failed to fetch data from ${this.deviceAddress}: Status code ${response.statusCode}`);
+            throw new QuattApiError(`Failed to fetch data from ${this.deviceAddress}: Status code ${response.statusCode}`);
         }
 
         const result = response.result;
