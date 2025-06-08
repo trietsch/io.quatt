@@ -126,21 +126,15 @@
   "settings": [
     {
       "id": "ipAddress",
-      "type": "label",
+      "type": "text",
       "label": {
         "en": "Quatt IP address (override)",
         "nl": "Quatt IP-adres (override)"
       },
-      "value": ""
-    },
-    {
-      "id": "enableAutomaticIpDiscovery",
-      "type": "checkbox",
-      "label": {
-        "en": "Enable Automatic IP Discovery (Future Feature)",
-        "nl": "Automatische IP-detectie inschakelen (toekomstige functie)"
-      },
-      "value": false
+      "placeholder": {
+        "en": "e.g. 192.168.1.123",
+        "nl": "bv 192.168.1.123"
+      }
     }
   ],
   "pair": [

@@ -79,14 +79,7 @@ class QuattHeatpump extends Homey.Device {
                 .catch(err => this.error('Error setting ipAddress label in initDeviceSettings:', err));
         } else {
             this.log('No stored IP address found to display in settings label during init.');
-            // Optionally set the label to a default or placeholder if no IP is stored yet
-            await this.setSettings({ ipAddress: this.homey.__('pair.manual.ipAddressPlaceholder') })
-                 .catch(err => this.error('Error setting placeholder ipAddress label in initDeviceSettings:', err));
         }
-        // For 'enableAutomaticIpDiscovery', it's a checkbox with a default value in driver.compose.json.
-        // Homey handles displaying its stored value automatically. We could explicitly set it if needed:
-        // const autoDiscovery = this.getSetting('enableAutomaticIpDiscovery') ?? false; // Get current or default
-        // await this.setSettings({ enableAutomaticIpDiscovery: autoDiscovery });
     }
 
     /**
@@ -96,35 +89,36 @@ class QuattHeatpump extends Homey.Device {
         this.log('Quatt Heatpump has been added');
     }
 
-    // FIXME this method is made up by Jules and does not exist in the Device interface.
-    // async onSettings({ oldSettings, newSettings, changedKeys }: { oldSettings: QuattDeviceSettings; newSettings: QuattDeviceSettings; changedKeys: string[] }) {
-    //     this.log('Quatt Heatpump settings changed');
-    //     // Explicitly check for ipAddress key, which is used to store the current IP for the device by convention
-    //     // even though it's a 'label' type in driver.compose.json.
-    //     // The actual user-editable IP is typically handled during pairing or via a repair-like flow.
-    //     // This onSettings handler is more for if the 'label' value were programmatically changed
-    //     // or if other actual settings were changed.
-    //     if (changedKeys.includes('ipAddress') && newSettings.ipAddress !== oldSettings.ipAddress) {
-    //         this.log(`IP address setting (label) changed from ${oldSettings.ipAddress} to ${newSettings.ipAddress}. Re-initializing client and fetching data.`);
-    //
-    //         if (this.quattClient) {
-    //             this.quattClient.setDeviceAddress(newSettings.ipAddress);
-    //         }
-    //         // It's crucial that the 'address' store value is the source of truth for the client's IP.
-    //         // If ipAddress setting is just a label, changing it here might not be what users expect
-    //         // unless pairing/repair flows also update this setting value.
-    //         // For now, assume this setting change implies the store value should also update.
-    //         await this.setStoreValue('address', newSettings.ipAddress);
-    //
-    //         await this.setAvailable();
-    //         await this.setCapabilityValues();
-    //     }
-    //
-    //     if (changedKeys.includes('enableAutomaticIpDiscovery')) {
-    //         this.log(`Automatic IP Discovery setting changed to: ${newSettings.enableAutomaticIpDiscovery}`);
-    //         // Future implementation for auto-discovery would go here
-    //     }
-    // }
+
+    // @ts-ignore typing is different indeed, but this way we have explicit typing
+    async onSettings({ oldSettings, newSettings, changedKeys }: { oldSettings: QuattDeviceSettings; newSettings: QuattDeviceSettings; changedKeys: string[] }) {
+        this.log('Quatt Heatpump settings changed');
+        // Explicitly check for ipAddress key, which is used to store the current IP for the device by convention
+        // even though it's a 'label' type in driver.compose.json.
+        // The actual user-editable IP is typically handled during pairing or via a repair-like flow.
+        // This onSettings handler is more for if the 'label' value were programmatically changed
+        // or if other actual settings were changed.
+        if (changedKeys.includes('ipAddress') && newSettings.ipAddress !== oldSettings.ipAddress) {
+            this.log(`IP address setting (label) changed from ${oldSettings.ipAddress} to ${newSettings.ipAddress}. Re-initializing client and fetching data.`);
+
+            if (this.quattClient) {
+                this.quattClient.setDeviceAddress(newSettings.ipAddress);
+            }
+            // It's crucial that the 'address' store value is the source of truth for the client's IP.
+            // If ipAddress setting is just a label, changing it here might not be what users expect
+            // unless pairing/repair flows also update this setting value.
+            // For now, assume this setting change implies the store value should also update.
+            await this.setStoreValue('address', newSettings.ipAddress);
+
+            await this.setAvailable();
+            await this.setCapabilityValues();
+        }
+
+        if (changedKeys.includes('enableAutomaticIpDiscovery')) {
+            this.log(`Automatic IP Discovery setting changed to: ${newSettings.enableAutomaticIpDiscovery}`);
+            // Future implementation for auto-discovery would go here
+        }
+    }
 
     async setCapabilityValues() {
         try {
