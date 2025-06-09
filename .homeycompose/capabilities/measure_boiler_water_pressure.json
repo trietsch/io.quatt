@@ -1,0 +1,19 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Boiler water pressure",
+    "nl": "Boiler waterdruk"
+  },
+  "description": "otFbWaterPressure: the water pressure to the boiler (in bar).",
+  "uiComponent": "sensor",
+  "icon": "assets/icons/boiler-water-pressure.svg",
+  "getable": true,
+  "setable": false,
+  "units": {
+    "en": "bar",
+    "nl": "bar"
+  },
+  "decimals": 2,
+  "step": 0.01,
+  "insights": true
+}
