@@ -1,7 +1,9 @@
 import Homey, {FlowCardTrigger} from 'homey';
 import {QuattClient} from "../../lib/quatt";
 import {CicHeatpump} from "../../lib/quatt/cic-stats";
-import { QuattApiError } from "../../lib/quatt/errors"; // DeviceUnavailableError was unused
+import {QuattApiError} from "../../lib/quatt/errors"; // DeviceUnavailableError was unused
+import {QuattLocator} from "../../lib/quatt/locator";
+import {AppSettings} from "../../app";
 
 // Define an interface for device settings for stronger typing
 interface QuattDeviceSettings {
@@ -75,7 +77,7 @@ class QuattHeatpump extends Homey.Device {
         const currentIpAddress = this.getStoreValue('address');
         if (typeof currentIpAddress === 'string' && currentIpAddress) {
             this.log(`Initializing device settings display. IP Address Label: ${currentIpAddress}`);
-            await this.setSettings({ ipAddress: currentIpAddress })
+            await this.setSettings({ipAddress: currentIpAddress})
                 .catch(err => this.error('Error setting ipAddress label in initDeviceSettings:', err));
         } else {
             this.log('No stored IP address found to display in settings label during init.');
@@ -91,7 +93,11 @@ class QuattHeatpump extends Homey.Device {
 
 
     // @ts-ignore typing is different indeed, but this way we have explicit typing
-    async onSettings({ oldSettings, newSettings, changedKeys }: { oldSettings: QuattDeviceSettings; newSettings: QuattDeviceSettings; changedKeys: string[] }) {
+    async onSettings({oldSettings, newSettings, changedKeys}: {
+        oldSettings: QuattDeviceSettings;
+        newSettings: QuattDeviceSettings;
+        changedKeys: string[]
+    }) {
         this.log('Quatt Heatpump settings changed');
         // Explicitly check for ipAddress key, which is used to store the current IP for the device by convention
         // even though it's a 'label' type in driver.compose.json.
@@ -183,27 +189,25 @@ class QuattHeatpump extends Homey.Device {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             const isNetworkError = errorMessage.includes('ECONNREFUSED') ||
-                                   errorMessage.includes('EHOSTUNREACH') ||
-                                   errorMessage.includes('ETIMEDOUT') ||
-                                   errorMessage.includes('ENOTFOUND') || // Added ENOTFOUND
-                                   errorMessage.includes('EAI_AGAIN');   // Added EAI_AGAIN
+                errorMessage.includes('EHOSTUNREACH') ||
+                errorMessage.includes('ETIMEDOUT') ||
+                errorMessage.includes('ENOTFOUND') ||
+                errorMessage.includes('EAI_AGAIN');
 
-            if (error instanceof QuattApiError && isNetworkError) {
-                this.log(`Suspected IP address change for device. Current IP: ${this.getStoreValue("address")}. QuattApiError: ${errorMessage}. Automatic re-discovery is not yet implemented. Setting device to unavailable.`);
-                this.setUnavailable(this.homey.__('error.ipChangeSuspected')).catch(this.error);
+            if ((error instanceof QuattApiError && isNetworkError) || isNetworkError) {
+                this.log(`Suspected IP address change for device. Current IP: ${this.getStoreValue("address")}. Attempting re-discovery...`);
+                this.setUnavailable(this.homey.__('error.ipChangeSuspected', {message: errorMessage})).catch(this.error);
+                await this.reconnectOnIpChange();
+
             } else if (error instanceof QuattApiError) {
                 this.log(`QuattApiError (not network related): ${errorMessage}`);
-                this.setUnavailable(this.homey.__('error.apiError', { message: errorMessage })).catch(this.error);
-            } else if (isNetworkError) { // Generic error that is a network issue
-                this.log(`Network-related error: ${errorMessage}. Suspected IP address change for device. Current IP: ${this.getStoreValue("address")}. Setting device to unavailable.`);
-                this.setUnavailable(this.homey.__('error.ipChangeSuspected')).catch(this.error);
-            }
-             else if (error instanceof Error) {
+                this.setUnavailable(this.homey.__('error.apiError', {message: errorMessage})).catch(this.error);
+            } else if (error instanceof Error) {
                 this.log(`Generic error: ${errorMessage}`);
-                this.setUnavailable(this.homey.__('error.unknownDeviceError', { message: errorMessage })).catch(this.error);
+                this.setUnavailable(this.homey.__('error.unknownDeviceError', {message: errorMessage})).catch(this.error);
             } else {
                 this.log('An unknown error occurred during setCapabilityValues');
-                this.setUnavailable(this.homey.__('error.unknownError', { message: errorMessage })).catch(this.error); // Consider a generic unknown error key
+                this.setUnavailable(this.homey.__('error.unknownError', {message: errorMessage})).catch(this.error);
             }
         }
     }
@@ -396,7 +400,7 @@ class QuattHeatpump extends Homey.Device {
             const parts = capabilityId.split('.');
             const triggerId: string = parts[0];
             // heatpumpSuffix will be like "heatpump1" or undefined
-            const heatpumpSuffix: string | undefined = parts.length > 1 && parts[parts.length-1].startsWith('heatpump') ? parts[parts.length-1] : undefined;
+            const heatpumpSuffix: string | undefined = parts.length > 1 && parts[parts.length - 1].startsWith('heatpump') ? parts[parts.length - 1] : undefined;
             const heatpumpNumber: string | undefined = heatpumpSuffix?.replace('heatpump', '');
 
             const oldValue = this.getCapabilityValue(capabilityId);
@@ -424,8 +428,8 @@ class QuattHeatpump extends Homey.Device {
                             value: newValue, // Pass the new value to the flow
                             heatpumpNumber: heatpumpNumber // Pass heatpumpNumber to the flow state if applicable
                         })
-                        .then(() => this.log(`[Device] ${this.getName()} - Flow triggered: "${flowTriggerId}" for value "${newValue}"`))
-                        .catch(err => this.error(`[Device] ${this.getName()} - Error triggering flow "${flowTriggerId}":`, err));
+                            .then(() => this.log(`[Device] ${this.getName()} - Flow triggered: "${flowTriggerId}" for value "${newValue}"`))
+                            .catch(err => this.error(`[Device] ${this.getName()} - Error triggering flow "${flowTriggerId}":`, err));
                     } else {
                         // this.log(`[Device] ${this.getName()} - Flow trigger card not found for: "${flowTriggerId}"`);
                     }
@@ -444,10 +448,6 @@ class QuattHeatpump extends Homey.Device {
         }
     }
 
-    async clearIntervals() {
-        await clearInterval(this.onPollInterval);
-    }
-
     computeWaterTemperatureDelta(hp: CicHeatpump): number | undefined {
         if (hp.temperatureWaterOut < hp.temperatureWaterIn) {
             return undefined;
@@ -461,6 +461,71 @@ class QuattHeatpump extends Homey.Device {
 
     async sleep(ms: number) {
         return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async reconnectOnIpChange() {
+        const newIp = await this.discoverDeviceOnSubnets();
+
+        if (newIp) {
+            this.log(`Device rediscovered at new IP: ${newIp}. Updating device.`);
+            await this.setStoreValue('address', newIp);
+
+            // @ts-ignore updateSettings is an extension of the Quatt Homey App
+            await this.homey.app.updateSettings({ipAddress: newIp});
+            if (this.quattClient) this.quattClient.setDeviceAddress(newIp);
+            await this.setAvailable();
+            await this.setCapabilityValues();
+            return;
+        } else {
+            this.log('Device not found on any subnet. Setting device to unavailable.');
+            this.setUnavailable(this.homey.__('error.ipChangeSuspected')).catch(this.error);
+        }
+    }
+
+    async discoverDeviceOnSubnets() {
+        // @ts-ignore settings is an extension of the Quatt Homey App
+        const settings: AppSettings = this.homey.app.getSettings()
+
+        const currentIp = settings.ipAddress;
+        const subnetBasedOnPreviousIp = currentIp ? currentIp.substring(0, currentIp.lastIndexOf('.')) : null;
+        let homeyAddress = await this.homey.cloud.getLocalAddress();
+        const subnetBasedOnHomeyIp = homeyAddress ? homeyAddress.substring(0, homeyAddress.lastIndexOf('.')) : null;
+
+        const subnets = new Set<string>([subnetBasedOnHomeyIp, subnetBasedOnPreviousIp].filter((x): x is string => x !== null));
+
+        if (subnets.size === 0) {
+            this.log('No valid IP address found for subnet scanning.');
+            return null;
+        } else {
+            for (const subnet of subnets) {
+                this.log(`Scanning subnet: ${subnet}`);
+
+                const newIp = await this.scanSubnetForDevice(subnet);
+
+                if (newIp) {
+                    this.log(`Device rediscovered at new IP: ${newIp}`);
+                    return newIp;
+                } else {
+                    this.log('No device found on the subnet.');
+                }
+            }
+            return null;
+        }
+    }
+
+    async scanSubnetForDevice(subnet: string) {
+        try {
+            const locator = new QuattLocator(this.log.bind(this), this.homey.app.manifest.version);
+            const result = await locator.quattDeviceNetworkScan(subnet);
+            if (result && result.ip) {
+                this.log(`Quatt device found at ${result.ip} (hostname: ${result.hostname}) on subnet ${subnet}`);
+                return result.ip;
+            }
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : String(err);
+            this.log(`No Quatt device found on subnet ${subnet}: ${errorMessage}`);
+        }
+        return null;
     }
 }
 

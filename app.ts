@@ -3,9 +3,8 @@ import Homey from 'homey';
 
 
 // Define an interface for global app settings, even if empty for now
-interface AppSettings {
-    // Example: globalApiKey?: string;
-    // For this app, specific device IP is stored with the device, not globally.
+export interface AppSettings {
+    ipAddress?: string;
 }
 
 class Quatt extends Homey.App {
@@ -64,7 +63,7 @@ class Quatt extends Homey.App {
         this.saveSettings();
     }
 
-    saveSettings() {
+    private saveSettings() {
         // No need to check for undefined, as appSettings is initialized to {}
         this.homey.settings.set(this.settingsKey, this.appSettings);
         this.log('Saved settings.');
