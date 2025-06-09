@@ -1,0 +1,21 @@
+{
+  "title": {
+    "en": "Boiler water pressure is smaller / greater than",
+    "nl": "Boiler waterdruk is kleiner / groter dan"
+  },
+  "titleFormatted": {
+    "en": "Boiler water pressure is !{{greater|smaller}} than [[value]]",
+    "nl": "Boiler water pressure is !{{groter|kleiner}} dan [[value]]"
+  },
+  "args": [
+    {
+      "name": "value",
+      "title": {
+        "en": "Pressure (bar)",
+        "nl": "Druk (bar)"
+      },
+      "type": "number",
+      "step": 0.01
+    }
+  ]
+}

@@ -13,6 +13,7 @@
     "measure_boiler_flame_on",
     "measure_boiler_temperature_incoming_water",
     "measure_boiler_temperature_outgoing_water",
+    "measure_boiler_water_pressure",
     "measure_flowmeter_water_flow_speed",
     "measure_flowmeter_water_supply_temperature",
     "measure_quality_control_supervisory_control_mode",

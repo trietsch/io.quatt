@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "Boiler water pressure has changed",
+    "nl": "Boiler waterdruk is veranderd"
+  },
+  "hint": {
+    "en": "This card starts when the water pressure to the boiler has changed.",
+    "nl": "Deze kaart start wanneer de waterdruk naar de boiler is veranderd."
+  }
+}

@@ -25,6 +25,7 @@ export interface CicBoiler {
     otFbSupplyOutletTemperature: number;
     otTbCH: boolean;
     oTtbTurnOnOffBoilerOn: boolean;
+    otFbWaterPressure: number;
 }
 
 export interface CicFlowMeter {
