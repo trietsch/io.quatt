@@ -488,7 +488,15 @@ class QuattHeatpump extends Homey.Device {
 
         const currentIp = settings.ipAddress;
         const subnetBasedOnPreviousIp = currentIp ? currentIp.substring(0, currentIp.lastIndexOf('.')) : null;
-        let homeyAddress = await this.homey.cloud.getLocalAddress();
+        let homeyAddress: string | null = null;
+
+        try {
+            homeyAddress = await this.homey.cloud.getLocalAddress();
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.error(`Error getting Homey local address: ${errorMessage}`);
+        }
+
         const subnetBasedOnHomeyIp = homeyAddress ? homeyAddress.substring(0, homeyAddress.lastIndexOf('.')) : null;
 
         const subnets = new Set<string>([subnetBasedOnHomeyIp, subnetBasedOnPreviousIp].filter((x): x is string => x !== null));
