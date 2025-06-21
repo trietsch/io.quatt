@@ -5,30 +5,30 @@ Note to Quatt Duo users: this app will show your Quatt heatpumps as a single dev
 are available as separate sensor values.
 
 Available sensor values:
-- CV Currently Heating
-- Water supply temperature setpoint
-- Water flow speed
-- Supervisory Control Mode
-- Outside temperature
-- Thermostat heating
-- Limited by COP
-- Boiler water supply temperature
-- Current room temperature
-- Thermostat cooling on
-- OnOff Boiler On
-- Heatpump outgoing water temperature
-- Room temperature setpoint
-- Hot Water Active
-- Boiler Flame On
+- Central heating mode (boiler)
+- Central heating active (cic)
+- Central heating on/off (cic)
+- Hot water active (boiler)
+- Boiler flame on
+- Boiler incoming water temperature
 - Boiler outgoing water temperature
-- Silent mode
+- Water flow speed (flowmeter)
+- Water supply temperature (flowmeter)
+- Supervisory control mode (quality control)
+- Outside temperature (heatpump)
+- Limited by COP (heatpump)
+- Silent mode (heatpump)
 - Heatpump incoming water temperature
-- Boiler Incoming water temperature
+- Heatpump outgoing water temperature
 - Heatpump working mode
-- Thermostat Hot Water On
-- CV Mode Active
-- Power consumption
-- Thermal power output
+- Thermal power (heatpump)
+- Power consumption (heatpump)
+- Thermostat heating on
+- Thermostat cooling on
+- Thermostat hot water on
+- Room temperature (thermostat)
+- Room temperature setpoint (thermostat)
+- Water supply temperature setpoint (thermostat)
 
 Computed sensor values:
 - Heatpump COP
