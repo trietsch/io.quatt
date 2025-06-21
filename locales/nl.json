@@ -15,8 +15,11 @@
     }
   },
   "error": {
-    "apiError": "API Fout: {{message}}",
-    "unknownDeviceError": "Apparaatfout: {{message}}",
-    "ipChangeSuspected": "Mogelijke IP-adres wijziging. Controleer de apparaatinstellingen als het apparaat onbeschikbaar blijft."
+    "apiError": "API Fout: __message__",
+    "unknownDeviceError": "Apparaatfout: __message__",
+    "unknownError": "Een onbekende fout is opgetreden: __message__",
+    "ipChangeSuspected": "Mogelijke IP-adres wijziging. Controleer de apparaatinstellingen als het apparaat onbeschikbaar blijft.",
+    "unableToConnectToDeviceWithManualIP": "Kan geen verbinding maken met Quatt CiC op IP-adres __ipAddress__. Automatische detectie wordt geprobeerd.",
+    "unableToAutoDiscoverQuattCiC": "Kan Quatt CiC niet automatisch ontdekken. Zorg ervoor dat het apparaat is ingeschakeld en verbonden is met hetzelfde netwerk als je Homey."
   }
 }

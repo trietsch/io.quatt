@@ -131,6 +131,10 @@
         "en": "Quatt IP address (override)",
         "nl": "Quatt IP-adres (override)"
       },
+      "hint": {
+        "en": "Override the IP address of the Quatt heat pump. Note that if your Quatt CiC cannot be found at this IP address, automatic discovery will be attempted to find your Quatt CiC.",
+        "nl": "Overschrijf het IP-adres van de Quatt warmtepomp. Let op dat als je Quatt CiC niet gevonden kan worden op dit IP-adres, er een poging gedaan wordt om je Quatt CiC automatisch te vinden."
+      },
       "placeholder": {
         "en": "e.g. 192.168.1.123",
         "nl": "bv 192.168.1.123"

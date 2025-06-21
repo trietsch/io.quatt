@@ -71,10 +71,8 @@ class QuattHeatpump extends Homey.Device {
     }
 
     async initDeviceSettings() {
-        // This method is intended to set the display values for settings shown to the user.
-        // The 'ipAddress' setting in driver.compose.json is a 'label'.
-        // We set its value to the IP address stored for this device.
-        const currentIpAddress = this.getStoreValue('address');
+        // @ts-ignore
+        const currentIpAddress = this.homey.app.getSettings().ipAddress;
         if (typeof currentIpAddress === 'string' && currentIpAddress) {
             this.log(`Initializing device settings display. IP Address Label: ${currentIpAddress}`);
             await this.setSettings({ipAddress: currentIpAddress})
@@ -99,34 +97,33 @@ class QuattHeatpump extends Homey.Device {
         changedKeys: string[]
     }) {
         this.log('Quatt Heatpump settings changed');
-        // Explicitly check for ipAddress key, which is used to store the current IP for the device by convention
-        // even though it's a 'label' type in driver.compose.json.
-        // The actual user-editable IP is typically handled during pairing or via a repair-like flow.
-        // This onSettings handler is more for if the 'label' value were programmatically changed
-        // or if other actual settings were changed.
+
         if (changedKeys.includes('ipAddress') && newSettings.ipAddress !== oldSettings.ipAddress) {
             this.log(`IP address setting (label) changed from ${oldSettings.ipAddress} to ${newSettings.ipAddress}. Re-initializing client and fetching data.`);
 
             if (this.quattClient) {
                 this.quattClient.setDeviceAddress(newSettings.ipAddress);
             }
-            // It's crucial that the 'address' store value is the source of truth for the client's IP.
-            // If ipAddress setting is just a label, changing it here might not be what users expect
-            // unless pairing/repair flows also update this setting value.
-            // For now, assume this setting change implies the store value should also update.
             await this.setStoreValue('address', newSettings.ipAddress);
 
             await this.setAvailable();
-            await this.setCapabilityValues();
-        }
+            let success = await this.setCapabilityValues();
 
-        if (changedKeys.includes('enableAutomaticIpDiscovery')) {
-            this.log(`Automatic IP Discovery setting changed to: ${newSettings.enableAutomaticIpDiscovery}`);
-            // Future implementation for auto-discovery would go here
+            if (!success) {
+                this.setUnavailable(this.homey.__('error.unableToConnectToDeviceWithManualIP', {ipAddress: newSettings.ipAddress})).catch(this.error);
+            } else {
+                this.log('Capability values set successfully after IP address change.');
+            }
         }
     }
 
-    async setCapabilityValues() {
+    async setCapabilityValues(): Promise<boolean> {
+        if (!this.getAvailable()) {
+            this.log('Device is not available, skipping capability value setting. Rediscovering device...');
+            await this.rediscoverQuattCiC();
+            return false; // If the device is not available, skip setting capability values
+        }
+
         try {
             // Ensure client is initialized (e.g. after settings change before onInit completes fully)
             if (!this.quattClient) {
@@ -138,7 +135,7 @@ class QuattHeatpump extends Homey.Device {
 
             if (!cicStats) {
                 this.log('Unable to fetch data from Quatt CiC');
-                return;
+                return false;
             }
 
             let promises = [];
@@ -186,6 +183,8 @@ class QuattHeatpump extends Homey.Device {
                 await this.setAvailable();
                 this.log('Device became available.');
             }
+
+            return true;
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             const isNetworkError = errorMessage.includes('ECONNREFUSED') ||
@@ -197,7 +196,7 @@ class QuattHeatpump extends Homey.Device {
             if ((error instanceof QuattApiError && isNetworkError) || isNetworkError) {
                 this.log(`Suspected IP address change for device. Current IP: ${this.getStoreValue("address")}. Attempting re-discovery...`);
                 this.setUnavailable(this.homey.__('error.ipChangeSuspected', {message: errorMessage})).catch(this.error);
-                await this.reconnectOnIpChange();
+                await this.rediscoverQuattCiC();
 
             } else if (error instanceof QuattApiError) {
                 this.log(`QuattApiError (not network related): ${errorMessage}`);
@@ -209,6 +208,8 @@ class QuattHeatpump extends Homey.Device {
                 this.log('An unknown error occurred during setCapabilityValues');
                 this.setUnavailable(this.homey.__('error.unknownError', {message: errorMessage})).catch(this.error);
             }
+
+            return false;
         }
     }
 
@@ -463,7 +464,7 @@ class QuattHeatpump extends Homey.Device {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    async reconnectOnIpChange() {
+    async rediscoverQuattCiC() {
         const newIp = await this.discoverDeviceOnSubnets();
 
         if (newIp) {
@@ -473,18 +474,19 @@ class QuattHeatpump extends Homey.Device {
             // @ts-ignore updateSettings is an extension of the Quatt Homey App
             await this.homey.app.updateSettings({ipAddress: newIp});
             if (this.quattClient) this.quattClient.setDeviceAddress(newIp);
+            await this.initDeviceSettings();
             await this.setAvailable();
             await this.setCapabilityValues();
             return;
         } else {
             this.log('Device not found on any subnet. Setting device to unavailable.');
-            this.setUnavailable(this.homey.__('error.ipChangeSuspected')).catch(this.error);
+            this.setUnavailable(this.homey.__('error.unableToAutoDiscoverQuattCiC')).catch(this.error);
         }
     }
 
     async discoverDeviceOnSubnets() {
         // @ts-ignore settings is an extension of the Quatt Homey App
-        const settings: AppSettings = this.homey.app.getSettings()
+        const settings: AppSettings = this.homey.app.getSettings();
 
         const currentIp = settings.ipAddress;
         const subnetBasedOnPreviousIp = currentIp ? currentIp.substring(0, currentIp.lastIndexOf('.')) : null;

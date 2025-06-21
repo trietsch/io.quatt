@@ -27,7 +27,13 @@ export class QuattClient {
     }
 
     async getCicStats(): Promise<OptionalCicStats> {
-        const response = await this.client.get<OptionalCicStats>(`http://${this.deviceAddress}:${this.port}/${this.dataJson}`);
+        const fetchPromise = this.client.get<OptionalCicStats>(
+            `http://${this.deviceAddress}:${this.port}/${this.dataJson}`
+        );
+        const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new QuattApiError(`Connection to ${this.deviceAddress} timed out after 5 seconds`)), 5000)
+        );
+        const response = await Promise.race([fetchPromise, timeoutPromise]);
 
         if (response.statusCode != 200) {
             throw new QuattApiError(`Failed to fetch data from ${this.deviceAddress}: Status code ${response.statusCode}`);
@@ -45,6 +51,5 @@ export class QuattClient {
         }
 
         return result;
-
     }
 }
