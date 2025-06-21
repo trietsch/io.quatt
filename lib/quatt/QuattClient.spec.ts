@@ -52,6 +52,7 @@ const createMockCicStats = (overrides?: DeepPartial<CicStats>): CicStats => {
     otFbSupplyOutletTemperature: 0,
     otTbCH: false,
     oTtbTurnOnOffBoilerOn: false,
+    otFbWaterPressure: 0,
   };
   const defaultFlowMeter: CicFlowMeter = { waterSupplyTemperature: 0 };
   const defaultThermostat: CicThermostat = {
@@ -122,11 +123,12 @@ describe('QuattClient', () => {
   });
 
   describe('getCicStats', () => {
-    it('should return transformed CicStats on successful response (200), including hp2', async () => {
+    it('should return transformed CicStats on successful response (200), including hp2 and otFbWaterPressure', async () => {
       const rawStatsInput: DeepPartial<CicStats> = {
         qc: { supervisoryControlMode: 50 as any, flowRateFiltered: 10.5 },
         hp1: { getMainWorkingMode: 1 as any, powerInput: 1000 },
         hp2: { getMainWorkingMode: 2 as any, powerInput: 1500, modbusSlaveId: 2 },
+        boiler: { otFbWaterPressure: 1.8 },
       };
       const mockFullStats = createMockCicStats(rawStatsInput);
 
@@ -144,6 +146,7 @@ describe('QuattClient', () => {
       expect(result?.hp2?.powerInput).toBe(1500); // From input
       expect(result?.hp2?.modbusSlaveId).toBe(2); // From input
       expect(result?.hp2?.temperatureOutside).toBe(0); // From defaultHpStructure via deepMerge
+      expect(result?.boiler?.otFbWaterPressure).toBe(1.8); // Test new field
     });
 
     it('should handle supervisoryControlMode >= 100 correctly', async () => {

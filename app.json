@@ -302,6 +302,17 @@
       },
       {
         "title": {
+          "en": "Boiler water pressure has changed",
+          "nl": "Boiler waterdruk is veranderd"
+        },
+        "hint": {
+          "en": "This card starts when the water pressure to the boiler has changed.",
+          "nl": "Deze kaart start wanneer de waterdruk naar de boiler is veranderd."
+        },
+        "id": "measure_boiler_water_pressure_changed"
+      },
+      {
+        "title": {
           "en": "Water flow speed changed",
           "nl": "Water doorvoersnelheid is veranderd"
         },
@@ -1146,6 +1157,28 @@
       },
       {
         "title": {
+          "en": "Boiler water pressure is smaller / greater than",
+          "nl": "Boiler waterdruk is kleiner / groter dan"
+        },
+        "titleFormatted": {
+          "en": "Boiler water pressure is !{{greater|smaller}} than [[value]]",
+          "nl": "Boiler water pressure is !{{groter|kleiner}} dan [[value]]"
+        },
+        "args": [
+          {
+            "name": "value",
+            "title": {
+              "en": "Pressure (bar)",
+              "nl": "Druk (bar)"
+            },
+            "type": "number",
+            "step": 0.01
+          }
+        ],
+        "id": "condition_boiler_water_pressure_compare"
+      },
+      {
+        "title": {
           "en": "Water flow speed is smaller / greater than",
           "nl": "Water doorvoersnelheid is kleiner / groter dan"
         },
@@ -1970,6 +2003,7 @@
         "measure_boiler_flame_on",
         "measure_boiler_temperature_incoming_water",
         "measure_boiler_temperature_outgoing_water",
+        "measure_boiler_water_pressure",
         "measure_flowmeter_water_flow_speed",
         "measure_flowmeter_water_supply_temperature",
         "measure_quality_control_supervisory_control_mode",
@@ -2257,6 +2291,25 @@
       "units": {
         "en": "°C",
         "nl": "°C"
+      },
+      "decimals": 2,
+      "step": 0.01,
+      "insights": true
+    },
+    "measure_boiler_water_pressure": {
+      "type": "number",
+      "title": {
+        "en": "Boiler water pressure",
+        "nl": "Boiler waterdruk"
+      },
+      "description": "otFbWaterPressure: the water pressure to the boiler (in bar).",
+      "uiComponent": "sensor",
+      "icon": "assets/icons/boiler-water-pressure.svg",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "bar",
+        "nl": "bar"
       },
       "decimals": 2,
       "step": 0.01,
