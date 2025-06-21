@@ -41,8 +41,8 @@ Computed sensor values:
 
 ## Installation
 
-- [Install the stable version from the Homey App Store](https://homey.app/nl-nl/app/io.quatt/Quatt/)
-- [Install the test version](https://homey.app/nl-nl/app/io.quatt/Quatt/test/)
+- [Install the stable version from the Homey App Store](https://homey.app/a/io.quatt/)
+- [Install the test version](https://homey.app/a/io.quatt/test/)
 
 ## Community & Support
 - [Dutch forum thread](https://community.homey.app/t/app-pro-quatt-nl/91802)
