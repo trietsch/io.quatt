@@ -49,5 +49,8 @@
   },
   "1.3.1": {
     "en": "Improve LAN connectivity check and device rediscovery for Quatt Heatpump"
+  },
+  "1.4.0": {
+    "en": "Update QuattClient tests and driver to support otFbWaterPressure; add new measure_boiler_water_pressure capability; update documentation and README files for consistency and technical clarity"
   }
 }
