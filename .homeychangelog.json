@@ -55,5 +55,8 @@
   },
   "1.4.1": {
     "en": "Add automatic registration of default and heatpump specific capabilities"
+  },
+  "1.4.2": {
+    "en": "ensure up to date capabilities for 1 or 2 heatpumps"
   }
 }
