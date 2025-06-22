@@ -17,6 +17,7 @@ class QuattHeatpump extends Homey.Device {
 
     private capabilitiesAdded = false;
     private multipleHeatpumps = false;
+    private defaultCapabilities = this.driver.manifest.capabilities;
     private singleHeatpumpCapabilities = [
         "measure_heatpump_cop",
         "measure_heatpump_limited_by_cop",
@@ -61,7 +62,7 @@ class QuattHeatpump extends Homey.Device {
      * onInit is called when the device is initialized.
      */
     async onInit() {
-        this.log('Quatt Heatpump has been initialized');
+        this.log('Initialization device: Quatt CiC');
         this.quattClient = new QuattClient(this.homey.app.manifest.version, this.getStoreValue("address"));
         await this.initDeviceSettings();
         await this.registerTriggers();
@@ -142,7 +143,7 @@ class QuattHeatpump extends Homey.Device {
 
             if (!cicStats.hp2) {
                 promises.push(
-                    this.addCapabilities(this.singleHeatpumpCapabilities),
+                    this.addCapabilities(this.defaultCapabilities.concat(this.singleHeatpumpCapabilities)),
                     this.setHeatPumpValues(cicStats.hp1),
                     this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput)
                 );
@@ -150,7 +151,7 @@ class QuattHeatpump extends Homey.Device {
                 this.multipleHeatpumps = true;
 
                 promises.push(
-                    this.addCapabilities(this.multipleHeatpumpCapabilities),
+                    this.addCapabilities(this.defaultCapabilities.concat(this.multipleHeatpumpCapabilities)),
                     this.setHeatPumpValues(cicStats.hp1, 'heatpump1'),
                     this.setHeatPumpValues(cicStats.hp2, 'heatpump2'),
                     this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput + cicStats.hp2.powerInput)
@@ -370,6 +371,7 @@ class QuattHeatpump extends Homey.Device {
 
     async addCapabilityIfNotPresent(capability: string) {
         if (!this.hasCapability(capability)) {
+            this.log(`[Device] ${this.getName()} - Adding capability: ${capability}`);
             await this.addCapability(capability);
         }
     }
@@ -450,22 +452,22 @@ class QuattHeatpump extends Homey.Device {
         }
     }
 
-    computeWaterTemperatureDelta(hp: CicHeatpump): number | undefined {
+    private computeWaterTemperatureDelta(hp: CicHeatpump): number | undefined {
         if (hp.temperatureWaterOut < hp.temperatureWaterIn) {
             return undefined;
         }
         return hp.temperatureWaterOut - hp.temperatureWaterIn
     }
 
-    computeCoefficientOfPerformance(hp: CicHeatpump): number | undefined {
+    private computeCoefficientOfPerformance(hp: CicHeatpump): number | undefined {
         return hp?.power / hp?.powerInput ?? undefined;
     }
 
-    async sleep(ms: number) {
+    private async sleep(ms: number) {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    async rediscoverQuattCiC() {
+    private async rediscoverQuattCiC() {
         const newIp = await this.discoverDeviceOnSubnets();
 
         if (newIp) {
@@ -485,7 +487,7 @@ class QuattHeatpump extends Homey.Device {
         }
     }
 
-    async discoverDeviceOnSubnets() {
+    private async discoverDeviceOnSubnets() {
         // @ts-ignore settings is an extension of the Quatt Homey App
         const settings: AppSettings = this.homey.app.getSettings();
 
@@ -524,7 +526,7 @@ class QuattHeatpump extends Homey.Device {
         }
     }
 
-    async scanSubnetForDevice(subnet: string) {
+    private async scanSubnetForDevice(subnet: string) {
         try {
             const locator = new QuattLocator(this.log.bind(this), this.homey.app.manifest.version);
             const result = await locator.quattDeviceNetworkScan(subnet);
