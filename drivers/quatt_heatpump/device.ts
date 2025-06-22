@@ -15,7 +15,7 @@ class QuattHeatpump extends Homey.Device {
     private quattClient!: QuattClient;
     private onPollInterval!: NodeJS.Timer;
 
-    private capabilitiesAdded = false;
+    private capabilitiesUpdated = false;
     private multipleHeatpumps = false;
     private defaultCapabilities = this.driver.manifest.capabilities;
     private singleHeatpumpCapabilities = [
@@ -65,6 +65,7 @@ class QuattHeatpump extends Homey.Device {
         this.log('Initialization device: Quatt CiC');
         this.quattClient = new QuattClient(this.homey.app.manifest.version, this.getStoreValue("address"));
         await this.initDeviceSettings();
+        await this.initCapabilities();
         await this.registerTriggers();
         await this.registerConditionListeners();
         await this.setCapabilityValues();
@@ -72,14 +73,41 @@ class QuattHeatpump extends Homey.Device {
     }
 
     async initDeviceSettings() {
-        // @ts-ignore
-        const currentIpAddress = this.homey.app.getSettings().ipAddress;
-        if (typeof currentIpAddress === 'string' && currentIpAddress) {
+        try {
+            // @ts-ignore
+            const currentIpAddress = this.homey.app.getSettings().ipAddress;
+
             this.log(`Initializing device settings display. IP Address Label: ${currentIpAddress}`);
-            await this.setSettings({ipAddress: currentIpAddress})
-                .catch(err => this.error('Error setting ipAddress label in initDeviceSettings:', err));
-        } else {
-            this.log('No stored IP address found to display in settings label during init.');
+            await this.setIPAddress(currentIpAddress);
+        } catch (err) {
+            this.log('Error initializing device settings display:', err);
+        }
+    }
+
+    async initCapabilities() {
+        this.log('Initializing capabilities for Quatt Heatpump device');
+
+        const cicStats = await this.quattClient.getCicStats();
+
+        if (!cicStats) {
+            this.log('Unable to fetch data from Quatt CiC for capabilities initialization');
+            this.setUnavailable(this.homey.__('error.unableToConnectToDevice')).catch(this.error);
+            return;
+        }
+
+        if (!this.capabilitiesUpdated) {
+            if (!cicStats.hp2) {
+                this.log('Single heatpump detected, adding single heatpump capabilities');
+                await this.addCapabilities(this.singleHeatpumpCapabilities);
+                await this.removeCapabilities(this.multipleHeatpumpCapabilities);
+            } else {
+                this.log('Multiple heatpumps detected, adding multiple heatpump capabilities');
+                await this.addCapabilities(this.multipleHeatpumpCapabilities);
+                await this.removeCapabilities(this.singleHeatpumpCapabilities);
+            }
+            await this.addCapabilities(this.defaultCapabilities);
+
+            this.capabilitiesUpdated = true;
         }
     }
 
@@ -126,12 +154,6 @@ class QuattHeatpump extends Homey.Device {
         }
 
         try {
-            // Ensure client is initialized (e.g. after settings change before onInit completes fully)
-            if (!this.quattClient) {
-                this.log('QuattClient not initialized, re-initializing with address from store:', this.getStoreValue("address"));
-                this.quattClient = new QuattClient(this.homey.app.manifest.version, this.getStoreValue("address"));
-            }
-
             const cicStats = await this.quattClient.getCicStats();
 
             if (!cicStats) {
@@ -143,7 +165,6 @@ class QuattHeatpump extends Homey.Device {
 
             if (!cicStats.hp2) {
                 promises.push(
-                    this.addCapabilities(this.defaultCapabilities.concat(this.singleHeatpumpCapabilities)),
                     this.setHeatPumpValues(cicStats.hp1),
                     this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput)
                 );
@@ -151,7 +172,6 @@ class QuattHeatpump extends Homey.Device {
                 this.multipleHeatpumps = true;
 
                 promises.push(
-                    this.addCapabilities(this.defaultCapabilities.concat(this.multipleHeatpumpCapabilities)),
                     this.setHeatPumpValues(cicStats.hp1, 'heatpump1'),
                     this.setHeatPumpValues(cicStats.hp2, 'heatpump2'),
                     this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput + cicStats.hp2.powerInput)
@@ -362,9 +382,16 @@ class QuattHeatpump extends Homey.Device {
     }
 
     async addCapabilities(capabilities: string[]) {
-        if (!this.capabilitiesAdded) {
-            for (const capability of capabilities) {
-                await this.addCapabilityIfNotPresent(capability)
+        for (const capability of capabilities) {
+            await this.addCapabilityIfNotPresent(capability)
+        }
+    }
+
+    async removeCapabilities(capabilities: string[]) {
+        for (const capability of capabilities) {
+            if (this.hasCapability(capability)) {
+                this.log(`[Device] ${this.getName()} - Removing capability: ${capability}`);
+                await this.removeCapability(capability);
             }
         }
     }
@@ -472,18 +499,26 @@ class QuattHeatpump extends Homey.Device {
 
         if (newIp) {
             this.log(`Device rediscovered at new IP: ${newIp}. Updating device.`);
-            await this.setStoreValue('address', newIp);
 
-            // @ts-ignore updateSettings is an extension of the Quatt Homey App
-            await this.homey.app.updateSettings({ipAddress: newIp});
-            if (this.quattClient) this.quattClient.setDeviceAddress(newIp);
-            await this.initDeviceSettings();
+            await this.setIPAddress(newIp);
             await this.setAvailable();
             await this.setCapabilityValues();
             return;
         } else {
             this.log('Device not found on any subnet. Setting device to unavailable.');
             this.setUnavailable(this.homey.__('error.unableToAutoDiscoverQuattCiC')).catch(this.error);
+        }
+    }
+
+    private async setIPAddress(newIp: string) {
+        await this.setStoreValue('address', newIp);
+        // @ts-ignore updateSettings is an extension of the Quatt Homey App
+        await this.homey.app.updateSettings({ipAddress: newIp});
+        if (this.quattClient) {
+            this.quattClient.setDeviceAddress(newIp);
+        } else {
+            this.log('QuattClient not initialized, re-initializing with address from store:', newIp);
+            this.quattClient = new QuattClient(this.homey.app.manifest.version, newIp);
         }
     }
 

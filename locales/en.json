@@ -18,6 +18,7 @@
     "apiError": "API Error: __message__",
     "unknownDeviceError": "Device Error: __message__",
     "unknownError": "An unknown error occurred: __message__",
+    "unableToConnectToDevice": "Unable to connect to Quatt CiC. Please check the device settings and ensure it is powered on.",
     "ipChangeSuspected": "Suspected IP address change. Please check device settings if it remains unavailable.",
     "unableToConnectToDeviceWithManualIP": "Unable to connect to Quatt CiC at IP address __ipAddress__. Trying auto-discovery.",
     "unableToAutoDiscoverQuattCiC": "Unable to auto-discover Quatt CiC. Please ensure it is powered on and connected to the same network as your Homey."
