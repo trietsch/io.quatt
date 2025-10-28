@@ -51,9 +51,6 @@ class QuattHeatpumpDriver extends Homey.Driver {
                 this.homey.app.log(`[Driver] ${this.id} - Manually pairing with IP address: ${ipAddress}`);
                 let hostname = await this.quattLocator.getQuattHostname(ipAddress);
 
-                // @ts-ignore updateSettings is an extension of the Quatt Homey App
-                this.homey.app.updateSettings({ipAddress: ipAddress});
-
                 this.devices = [
                     {
                         name: "Quatt CiC (manual)",
@@ -68,7 +65,7 @@ class QuattHeatpumpDriver extends Homey.Driver {
 
                 this.deviceError = false;
 
-                this.homey.app.log(`[Driver] ${this.id} - Successful manual connection with device:`, ipAddress);
+                this.homey.app.log(`[Driver] ${this.id} - Successfully paired with device at ${ipAddress}`);
                 await session.showView('list_devices');
             } catch (error) {
                 this.homey.app.error(`[Driver] ${this.id} - Error while manually pairing:`, JSON.stringify(error));

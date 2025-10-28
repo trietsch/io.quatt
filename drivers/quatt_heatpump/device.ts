@@ -1,6 +1,6 @@
 import Homey, {FlowCardTrigger} from 'homey';
 import {QuattClient} from "../../lib/quatt";
-import {CicHeatpump} from "../../lib/quatt/cic-stats";
+import {CicHeatpump, CicStats} from "../../lib/quatt/cic-stats";
 import {QuattApiError} from "../../lib/quatt/errors"; // DeviceUnavailableError was unused
 import {QuattLocator} from "../../lib/quatt/locator";
 import {AppSettings} from "../../app";
@@ -74,13 +74,11 @@ class QuattHeatpump extends Homey.Device {
 
     async initDeviceSettings() {
         try {
-            // @ts-ignore
-            const currentIpAddress = this.homey.app.getSettings().ipAddress;
-
-            this.log(`Initializing device settings display. IP Address Label: ${currentIpAddress}`);
-            await this.setIPAddress(currentIpAddress);
+            // Each device manages its own IP address in device.store
+            const deviceIpAddress = this.getStoreValue('address');
+            this.log(`Device initialized with IP address: ${deviceIpAddress}`);
         } catch (err) {
-            this.log('Error initializing device settings display:', err);
+            this.log('Error initializing device settings:', err);
         }
     }
 
@@ -128,21 +126,41 @@ class QuattHeatpump extends Homey.Device {
         this.log('Quatt Heatpump settings changed');
 
         if (changedKeys.includes('ipAddress') && newSettings.ipAddress !== oldSettings.ipAddress) {
-            this.log(`IP address setting (label) changed from ${oldSettings.ipAddress} to ${newSettings.ipAddress}. Re-initializing client and fetching data.`);
+            this.log(`IP address changed from ${oldSettings.ipAddress} to ${newSettings.ipAddress}. Trying new IP address directly.`);
 
+            // Update client and device storage with new IP
             if (this.quattClient) {
                 this.quattClient.setDeviceAddress(newSettings.ipAddress);
             }
             await this.setStoreValue('address', newSettings.ipAddress);
 
+            // Try to connect to the manually entered IP address directly (without autodiscovery)
             await this.setAvailable();
-            let success = await this.setCapabilityValues();
+            let success = await this.setCapabilityValuesWithoutAutodiscovery();
 
             if (!success) {
+                this.log(`Unable to connect to manually entered IP ${newSettings.ipAddress}`);
                 this.setUnavailable(this.homey.__('error.unableToConnectToDeviceWithManualIP', {ipAddress: newSettings.ipAddress})).catch(this.error);
             } else {
-                this.log('Capability values set successfully after IP address change.');
+                this.log('Successfully connected to new IP address and updated capability values.');
             }
+        }
+    }
+
+    async setCapabilityValuesWithoutAutodiscovery(): Promise<boolean> {
+        try {
+            const cicStats = await this.quattClient.getCicStats();
+
+            if (!cicStats) {
+                this.log('Unable to fetch data from Quatt CiC');
+                return false;
+            }
+
+            return await this.updateAllCapabilities(cicStats);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            this.log(`Error fetching capability values: ${errorMessage}`);
+            return false;
         }
     }
 
@@ -161,52 +179,7 @@ class QuattHeatpump extends Homey.Device {
                 return false;
             }
 
-            let promises = [];
-
-            if (!cicStats.hp2) {
-                promises.push(
-                    this.setHeatPumpValues(cicStats.hp1),
-                    this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput)
-                );
-            } else {
-                this.multipleHeatpumps = true;
-
-                promises.push(
-                    this.setHeatPumpValues(cicStats.hp1, 'heatpump1'),
-                    this.setHeatPumpValues(cicStats.hp2, 'heatpump2'),
-                    this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput + cicStats.hp2.powerInput)
-                );
-            }
-
-            promises.push(
-                this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature),
-                this.safeSetCapabilityValue('measure_boiler_central_heating_mode', cicStats.boiler.otFbChModeActive),
-                this.safeSetCapabilityValue('measure_boiler_cic_central_heating_on', cicStats.boiler.otTbCH),
-                this.safeSetCapabilityValue('measure_boiler_cic_central_heating_onoff_boiler', cicStats.boiler.oTtbTurnOnOffBoilerOn),
-                this.safeSetCapabilityValue('measure_boiler_domestic_hot_water_on', cicStats.boiler.otFbDhwActive),
-                this.safeSetCapabilityValue('measure_boiler_flame_on', cicStats.boiler.otFbFlameOn),
-                this.safeSetCapabilityValue('measure_boiler_temperature_incoming_water', cicStats.boiler.otFbSupplyInletTemperature),
-                this.safeSetCapabilityValue('measure_boiler_temperature_outgoing_water', cicStats.boiler.otFbSupplyOutletTemperature),
-                this.safeSetCapabilityValue('measure_boiler_water_pressure', cicStats.boiler.otFbWaterPressure),
-                this.safeSetCapabilityValue('measure_flowmeter_water_flow_speed', cicStats.qc.flowRateFiltered),
-                this.safeSetCapabilityValue('measure_flowmeter_water_supply_temperature', cicStats.flowMeter.waterSupplyTemperature),
-                this.safeSetCapabilityValue('measure_quality_control_supervisory_control_mode', cicStats.qc.supervisoryControlMode),
-                this.safeSetCapabilityValue('measure_thermostat_cooling_on', cicStats.thermostat.otFtCoolingEnabled),
-                this.safeSetCapabilityValue('measure_thermostat_domestic_hot_water_on', cicStats.thermostat.otFtDhwEnabled),
-                this.safeSetCapabilityValue('measure_thermostat_heating_on', cicStats.thermostat.otFtChEnabled),
-                this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature),
-                this.safeSetCapabilityValue('measure_thermostat_setpoint_room_temperature', cicStats.thermostat.otFtRoomSetpoint),
-                this.safeSetCapabilityValue('measure_thermostat_setpoint_water_supply_temperature', cicStats.thermostat.otFtControlSetpoint)
-            )
-
-            await Promise.all(promises);
-            // If successful, ensure device is marked as available
-            if (!this.getAvailable()) {
-                await this.setAvailable();
-                this.log('Device became available.');
-            }
-
-            return true;
+            return await this.updateAllCapabilities(cicStats);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             const isNetworkError = errorMessage.includes('ECONNREFUSED') ||
@@ -233,6 +206,56 @@ class QuattHeatpump extends Homey.Device {
 
             return false;
         }
+    }
+
+    async updateAllCapabilities(cicStats: CicStats): Promise<boolean> {
+        let promises = [];
+
+        if (!cicStats.hp2) {
+            promises.push(
+                this.setHeatPumpValues(cicStats.hp1),
+                this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput)
+            );
+        } else {
+            this.multipleHeatpumps = true;
+
+            promises.push(
+                this.setHeatPumpValues(cicStats.hp1, 'heatpump1'),
+                this.setHeatPumpValues(cicStats.hp2, 'heatpump2'),
+                this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput + cicStats.hp2.powerInput)
+            );
+        }
+
+        promises.push(
+            this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature),
+            this.safeSetCapabilityValue('measure_boiler_central_heating_mode', cicStats.boiler.otFbChModeActive),
+            this.safeSetCapabilityValue('measure_boiler_cic_central_heating_on', cicStats.boiler.otTbCH),
+            this.safeSetCapabilityValue('measure_boiler_cic_central_heating_onoff_boiler', cicStats.boiler.oTtbTurnOnOffBoilerOn),
+            this.safeSetCapabilityValue('measure_boiler_domestic_hot_water_on', cicStats.boiler.otFbDhwActive),
+            this.safeSetCapabilityValue('measure_boiler_flame_on', cicStats.boiler.otFbFlameOn),
+            this.safeSetCapabilityValue('measure_boiler_temperature_incoming_water', cicStats.boiler.otFbSupplyInletTemperature),
+            this.safeSetCapabilityValue('measure_boiler_temperature_outgoing_water', cicStats.boiler.otFbSupplyOutletTemperature),
+            this.safeSetCapabilityValue('measure_boiler_water_pressure', cicStats.boiler.otFbWaterPressure),
+            this.safeSetCapabilityValue('measure_flowmeter_water_flow_speed', cicStats.qc.flowRateFiltered),
+            this.safeSetCapabilityValue('measure_flowmeter_water_supply_temperature', cicStats.flowMeter.waterSupplyTemperature),
+            this.safeSetCapabilityValue('measure_quality_control_supervisory_control_mode', cicStats.qc.supervisoryControlMode),
+            this.safeSetCapabilityValue('measure_thermostat_cooling_on', cicStats.thermostat.otFtCoolingEnabled),
+            this.safeSetCapabilityValue('measure_thermostat_domestic_hot_water_on', cicStats.thermostat.otFtDhwEnabled),
+            this.safeSetCapabilityValue('measure_thermostat_heating_on', cicStats.thermostat.otFtChEnabled),
+            this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature),
+            this.safeSetCapabilityValue('measure_thermostat_setpoint_room_temperature', cicStats.thermostat.otFtRoomSetpoint),
+            this.safeSetCapabilityValue('measure_thermostat_setpoint_water_supply_temperature', cicStats.thermostat.otFtControlSetpoint)
+        )
+
+        await Promise.all(promises);
+
+        // If successful, ensure device is marked as available
+        if (!this.getAvailable()) {
+            await this.setAvailable();
+            this.log('Device became available.');
+        }
+
+        return true;
     }
 
     async registerTriggers() {
@@ -511,35 +534,36 @@ class QuattHeatpump extends Homey.Device {
     }
 
     private async setIPAddress(newIp: string) {
+        this.log(`Updating device IP address to: ${newIp}`);
         await this.setStoreValue('address', newIp);
-        // @ts-ignore updateSettings is an extension of the Quatt Homey App
-        await this.homey.app.updateSettings({ipAddress: newIp});
         if (this.quattClient) {
             this.quattClient.setDeviceAddress(newIp);
         } else {
-            this.log('QuattClient not initialized, re-initializing with address from store:', newIp);
+            this.log('QuattClient not initialized, creating new client with IP:', newIp);
             this.quattClient = new QuattClient(this.homey.app.manifest.version, newIp);
         }
     }
 
     private async discoverDeviceOnSubnets() {
-        // @ts-ignore settings is an extension of the Quatt Homey App
-        const settings: AppSettings = this.homey.app.getSettings();
+        // Get this device's last known IP from its own store as fallback
+        const deviceIp = this.getStoreValue('address');
+        const subnetBasedOnDeviceIp = deviceIp ? deviceIp.substring(0, deviceIp.lastIndexOf('.')) : null;
 
-        const currentIp = settings.ipAddress;
-        const subnetBasedOnPreviousIp = currentIp ? currentIp.substring(0, currentIp.lastIndexOf('.')) : null;
         let homeyAddress: string | null = null;
 
         try {
             homeyAddress = await this.homey.cloud.getLocalAddress();
+            this.log(`Homey local address from getLocalAddress(): ${homeyAddress}`);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             this.error(`Error getting Homey local address: ${errorMessage}`);
         }
 
-        const subnetBasedOnHomeyIp = homeyAddress ? homeyAddress.substring(0, homeyAddress.lastIndexOf('.')) : null;
+        // Extract subnet from Homey IP (format is "ip:port", e.g. "10.7.7.5:80")
+        const subnetBasedOnHomeyIp = homeyAddress ? homeyAddress.split(':')[0].substring(0, homeyAddress.split(':')[0].lastIndexOf('.')) : null;
+        this.log(`Subnets to scan - Homey subnet: ${subnetBasedOnHomeyIp}, Device last known subnet: ${subnetBasedOnDeviceIp}`);
 
-        const subnets = new Set<string>([subnetBasedOnHomeyIp, subnetBasedOnPreviousIp].filter((x): x is string => x !== null));
+        const subnets = new Set<string>([subnetBasedOnHomeyIp, subnetBasedOnDeviceIp].filter((x): x is string => x !== null));
 
         if (subnets.size === 0) {
             this.log('No valid IP address found for subnet scanning.');
@@ -563,15 +587,33 @@ class QuattHeatpump extends Homey.Device {
 
     private async scanSubnetForDevice(subnet: string) {
         try {
+            // Get this device's unique hostname/ID to ensure we find the correct CiC
+            const deviceData = this.getData();
+            const deviceHostname = deviceData.id || deviceData.hostname;
+
+            if (!deviceHostname) {
+                this.error('Device has no hostname stored in data, cannot verify correct CiC during rediscovery');
+                return null;
+            }
+
+            this.log(`Scanning subnet ${subnet} for THIS device's CiC with hostname: ${deviceHostname}`);
+
             const locator = new QuattLocator(this.log.bind(this), this.homey.app.manifest.version);
-            const result = await locator.quattDeviceNetworkScan(subnet);
+
+            // Use the new findQuattByHostname method to find the SPECIFIC CiC by hostname
+            // This ensures we don't accidentally connect to a different CiC in multi-device setups
+            const result = await locator.findQuattByHostname(subnet, deviceHostname);
+
             if (result && result.ip) {
-                this.log(`Quatt device found at ${result.ip} (hostname: ${result.hostname}) on subnet ${subnet}`);
+                this.log(`✓ Found the correct CiC at ${result.ip} with matching hostname: ${result.hostname}`);
                 return result.ip;
+            } else {
+                this.log(`✗ Could not find CiC with hostname ${deviceHostname} on subnet ${subnet}`);
+                return null;
             }
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : String(err);
-            this.log(`No Quatt device found on subnet ${subnet}: ${errorMessage}`);
+            this.log(`Error scanning subnet ${subnet}: ${errorMessage}`);
         }
         return null;
     }
