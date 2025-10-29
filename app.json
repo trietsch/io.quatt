@@ -2136,8 +2136,8 @@
           "id": "updateInterval",
           "type": "number",
           "label": {
-            "en": "Data update interval (seconds)",
-            "nl": "Data update interval (seconden)"
+            "en": "Data update interval",
+            "nl": "Data update interval"
           },
           "hint": {
             "en": "How often to refresh data from the Quatt CiC. The Quatt CiC updates data every second. Minimum: 1 second, Maximum: 60 seconds.",
