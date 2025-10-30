@@ -1996,6 +1996,7 @@
       "class": "heater",
       "capabilities": [
         "measure_power",
+        "meter_heating_status",
         "measure_boiler_central_heating_mode",
         "measure_boiler_cic_central_heating_on",
         "measure_boiler_cic_central_heating_onoff_boiler",
@@ -2162,6 +2163,34 @@
     }
   ],
   "capabilities": {
+    "alarm_heating": {
+      "type": "boolean",
+      "title": {
+        "en": "Heating active",
+        "nl": "Verwarming actief"
+      },
+      "titleTrue": {
+        "en": "Heating is on",
+        "nl": "Verwarming is aan"
+      },
+      "titleFalse": {
+        "en": "Heating is off",
+        "nl": "Verwarming is uit"
+      },
+      "desc": {
+        "en": "Shows if the heating is currently active",
+        "nl": "Toont of de verwarming momenteel actief is"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": true,
+      "icon": "./assets/icons/central-heating-currently-heating.svg",
+      "iconObj": {
+        "id": "radiator",
+        "color": "#FF6B00"
+      }
+    },
     "measure_boiler_central_heating_mode": {
       "type": "boolean",
       "title": {
@@ -2666,10 +2695,19 @@
         "en": "Thermostat heating",
         "nl": "Thermostaat verwarmt"
       },
+      "titleTrue": {
+        "en": "🔥",
+        "nl": "🔥"
+      },
+      "titleFalse": {
+        "en": "❄️",
+        "nl": "❄️"
+      },
       "description": "otFtChEnabled: A boolean value representing command from thermostat to switch on heating.",
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
+      "uiQuickAction": true,
       "icon": "assets/icons/thermostat-heating.svg",
       "insights": true,
       "insightsTitleTrue": {
@@ -2737,6 +2775,18 @@
       "decimals": 2,
       "step": 0.01,
       "insights": true
+    },
+    "meter_heating_status": {
+      "type": "string",
+      "title": {
+        "en": "Heating status",
+        "nl": "Verwarmingsstatus"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": true,
+      "icon": "assets/icons/thermostat-heating.svg"
     }
   }
 }

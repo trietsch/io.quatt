@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Heating status",
+    "nl": "Verwarmingsstatus"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "uiQuickAction": true,
+  "icon": "assets/icons/thermostat-heating.svg"
+}

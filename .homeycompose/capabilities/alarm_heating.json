@@ -1,0 +1,28 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Heating active",
+    "nl": "Verwarming actief"
+  },
+  "titleTrue": {
+    "en": "Heating is on",
+    "nl": "Verwarming is aan"
+  },
+  "titleFalse": {
+    "en": "Heating is off",
+    "nl": "Verwarming is uit"
+  },
+  "desc": {
+    "en": "Shows if the heating is currently active",
+    "nl": "Toont of de verwarming momenteel actief is"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "uiQuickAction": true,
+  "icon": "./assets/icons/central-heating-currently-heating.svg",
+  "iconObj": {
+    "id": "radiator",
+    "color": "#FF6B00"
+  }
+}
