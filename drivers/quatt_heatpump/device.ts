@@ -19,6 +19,8 @@ class QuattHeatpump extends Homey.Device {
     private capabilitiesUpdated = false;
     private multipleHeatpumps = false;
     private defaultCapabilities = this.driver.manifest.capabilities;
+    private lastMeterUpdate: number = Date.now();
+    private lastPowerValue: number = 0;
     private singleHeatpumpCapabilities = [
         "measure_heatpump_cop",
         "measure_heatpump_limited_by_cop",
@@ -65,6 +67,16 @@ class QuattHeatpump extends Homey.Device {
     async onInit() {
         this.log('Initialization device: Quatt CiC');
         this.quattClient = new QuattClient(this.homey.app.manifest.version, this.getStoreValue("address"));
+
+        // Initialize meter_power tracking
+        this.lastMeterUpdate = Date.now();
+        this.lastPowerValue = 0;
+
+        // Initialize meter_power capability if not set
+        if (this.hasCapability('meter_power') && this.getCapabilityValue('meter_power') === null) {
+            await this.setCapabilityValue('meter_power', 0).catch(this.error);
+        }
+
         await this.initDeviceSettings();
         await this.initCapabilities();
         await this.registerTriggers();
@@ -224,10 +236,15 @@ class QuattHeatpump extends Homey.Device {
     async updateAllCapabilities(cicStats: CicStats): Promise<boolean> {
         let promises = [];
 
+        // Calculate current power consumption
+        const currentPower = !cicStats.hp2
+            ? cicStats.hp1.powerInput
+            : cicStats.hp1.powerInput + cicStats.hp2.powerInput;
+
         if (!cicStats.hp2) {
             promises.push(
                 this.setHeatPumpValues(cicStats.hp1),
-                this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput)
+                this.safeSetCapabilityValue('measure_power', currentPower)
             );
         } else {
             this.multipleHeatpumps = true;
@@ -235,9 +252,12 @@ class QuattHeatpump extends Homey.Device {
             promises.push(
                 this.setHeatPumpValues(cicStats.hp1, 'heatpump1'),
                 this.setHeatPumpValues(cicStats.hp2, 'heatpump2'),
-                this.safeSetCapabilityValue('measure_power', cicStats.hp1.powerInput + cicStats.hp2.powerInput)
+                this.safeSetCapabilityValue('measure_power', currentPower)
             );
         }
+
+        // Update meter_power (cumulative energy consumption in kWh)
+        promises.push(this.updateMeterPower(currentPower));
 
         promises.push(
             this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature),
@@ -538,6 +558,36 @@ class QuattHeatpump extends Homey.Device {
 
     private computeCoefficientOfPerformance(hp: CicHeatpump): number | undefined {
         return hp?.powerInput ? hp.power / hp.powerInput : undefined;
+    }
+
+    private async updateMeterPower(currentPower: number): Promise<void> {
+        try {
+            const now = Date.now();
+            const timeDiff = (now - this.lastMeterUpdate) / 1000 / 3600; // Convert ms to hours
+
+            // Get current meter_power value, default to 0 if not set
+            let currentMeterValue = this.getCapabilityValue('meter_power') || 0;
+
+            // Only update if we have a valid time difference and previous power reading
+            if (timeDiff > 0 && this.lastMeterUpdate > 0) {
+                // Calculate energy consumed: (current power + last power) / 2 * time in hours / 1000 to convert W to kW
+                const averagePower = (currentPower + this.lastPowerValue) / 2;
+                const energyConsumed = (averagePower * timeDiff) / 1000; // kWh
+
+                // Add to cumulative meter value
+                currentMeterValue += energyConsumed;
+
+                await this.setCapabilityValue('meter_power', currentMeterValue);
+
+                this.log(`meter_power updated: +${energyConsumed.toFixed(4)} kWh, total: ${currentMeterValue.toFixed(4)} kWh (avg power: ${averagePower.toFixed(0)}W, time: ${(timeDiff * 60).toFixed(1)}min)`);
+            }
+
+            // Update tracking variables for next calculation
+            this.lastMeterUpdate = now;
+            this.lastPowerValue = currentPower;
+        } catch (error) {
+            this.error('Error updating meter_power:', error);
+        }
     }
 
     private async sleep(ms: number) {

@@ -1996,6 +1996,7 @@
       "class": "heater",
       "capabilities": [
         "measure_power",
+        "meter_power",
         "meter_heating_status",
         "measure_boiler_central_heating_mode",
         "measure_boiler_cic_central_heating_on",
