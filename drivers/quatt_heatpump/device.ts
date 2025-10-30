@@ -37,6 +37,16 @@ class QuattHeatpump extends Homey.Device {
             this.singleHeatpumpCapabilities.map((capability) => {
                 return `${capability}.${suffix}`
             }));
+    private boilerCapabilities = [
+        "measure_boiler_central_heating_mode",
+        "measure_boiler_cic_central_heating_on",
+        "measure_boiler_cic_central_heating_onoff_boiler",
+        "measure_boiler_domestic_hot_water_on",
+        "measure_boiler_flame_on",
+        "measure_boiler_temperature_incoming_water",
+        "measure_boiler_temperature_outgoing_water",
+        "measure_boiler_water_pressure",
+    ];
 
     private defaultBooleanTriggerMapping = new Map<string, string | boolean>([
         ['argument', 'state'],
@@ -121,6 +131,25 @@ class QuattHeatpump extends Homey.Device {
                 await this.addCapabilities(this.multipleHeatpumpCapabilities);
                 await this.removeCapabilities(this.singleHeatpumpCapabilities);
             }
+
+            // Detect if boiler is present by checking if any boiler properties have non-null values
+            const hasBoiler = cicStats.boiler && (
+                cicStats.boiler.otFbChModeActive !== null ||
+                cicStats.boiler.otFbDhwActive !== null ||
+                cicStats.boiler.otFbFlameOn !== null ||
+                cicStats.boiler.otFbSupplyInletTemperature !== null ||
+                cicStats.boiler.otFbSupplyOutletTemperature !== null ||
+                cicStats.boiler.otFbWaterPressure !== null
+            );
+
+            if (hasBoiler) {
+                this.log('Boiler detected, adding boiler capabilities');
+                await this.addCapabilities(this.boilerCapabilities);
+            } else {
+                this.log('No boiler detected, removing boiler capabilities');
+                await this.removeCapabilities(this.boilerCapabilities);
+            }
+
             await this.addCapabilities(this.defaultCapabilities);
 
             this.capabilitiesUpdated = true;
@@ -259,16 +288,21 @@ class QuattHeatpump extends Homey.Device {
         // Update meter_power (cumulative energy consumption in kWh)
         promises.push(this.updateMeterPower(currentPower));
 
+        // Only update boiler capabilities if they exist on this device
+        if (this.hasCapability('measure_boiler_central_heating_mode')) {
+            promises.push(
+                this.safeSetCapabilityValue('measure_boiler_central_heating_mode', cicStats.boiler.otFbChModeActive),
+                this.safeSetCapabilityValue('measure_boiler_cic_central_heating_on', cicStats.boiler.otTbCH),
+                this.safeSetCapabilityValue('measure_boiler_cic_central_heating_onoff_boiler', cicStats.boiler.oTtbTurnOnOffBoilerOn),
+                this.safeSetCapabilityValue('measure_boiler_domestic_hot_water_on', cicStats.boiler.otFbDhwActive),
+                this.safeSetCapabilityValue('measure_boiler_flame_on', cicStats.boiler.otFbFlameOn),
+                this.safeSetCapabilityValue('measure_boiler_temperature_incoming_water', cicStats.boiler.otFbSupplyInletTemperature),
+                this.safeSetCapabilityValue('measure_boiler_temperature_outgoing_water', cicStats.boiler.otFbSupplyOutletTemperature),
+                this.safeSetCapabilityValue('measure_boiler_water_pressure', cicStats.boiler.otFbWaterPressure),
+            );
+        }
+
         promises.push(
-            this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature),
-            this.safeSetCapabilityValue('measure_boiler_central_heating_mode', cicStats.boiler.otFbChModeActive),
-            this.safeSetCapabilityValue('measure_boiler_cic_central_heating_on', cicStats.boiler.otTbCH),
-            this.safeSetCapabilityValue('measure_boiler_cic_central_heating_onoff_boiler', cicStats.boiler.oTtbTurnOnOffBoilerOn),
-            this.safeSetCapabilityValue('measure_boiler_domestic_hot_water_on', cicStats.boiler.otFbDhwActive),
-            this.safeSetCapabilityValue('measure_boiler_flame_on', cicStats.boiler.otFbFlameOn),
-            this.safeSetCapabilityValue('measure_boiler_temperature_incoming_water', cicStats.boiler.otFbSupplyInletTemperature),
-            this.safeSetCapabilityValue('measure_boiler_temperature_outgoing_water', cicStats.boiler.otFbSupplyOutletTemperature),
-            this.safeSetCapabilityValue('measure_boiler_water_pressure', cicStats.boiler.otFbWaterPressure),
             this.safeSetCapabilityValue('measure_flowmeter_water_flow_speed', cicStats.qc.flowRateFiltered),
             this.safeSetCapabilityValue('measure_flowmeter_water_supply_temperature', cicStats.flowMeter.waterSupplyTemperature),
             this.safeSetCapabilityValue('measure_quality_control_supervisory_control_mode', cicStats.qc.supervisoryControlMode),
