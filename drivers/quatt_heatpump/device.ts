@@ -288,10 +288,6 @@ class QuattHeatpump extends Homey.Device {
         // Update meter_power (cumulative energy consumption in kWh)
         promises.push(this.updateMeterPower(currentPower));
 
-        promises.push(
-            this.safeSetCapabilityValue('measure_thermostat_room_temperature', cicStats.thermostat.otFtRoomTemperature),
-        );
-
         // Only update boiler capabilities if they exist on this device
         if (this.hasCapability('measure_boiler_central_heating_mode')) {
             promises.push(
