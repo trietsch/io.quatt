@@ -76,7 +76,13 @@ class QuattHeatpump extends Homey.Device {
      */
     async onInit() {
         this.log('Initialization device: Quatt CiC');
-        this.quattClient = new QuattClient(this.homey.app.manifest.version, this.getStoreValue("address"));
+        const deviceAddress = this.getStoreValue("address");
+        this.quattClient = new QuattClient(this.homey.app.manifest.version, deviceAddress);
+
+        // Log and update CiC web interface URL
+        const cicWebInterfaceUrl = `http://${deviceAddress}:8080`;
+        this.log(`CiC Web Interface: ${cicWebInterfaceUrl}`);
+        await this.setSettings({ cicWebInterfaceUrl }).catch(this.error);
 
         // Initialize meter_power tracking
         this.lastMeterUpdate = Date.now();
@@ -180,6 +186,10 @@ class QuattHeatpump extends Homey.Device {
                 this.quattClient.setDeviceAddress(newSettings.ipAddress);
             }
             await this.setStoreValue('address', newSettings.ipAddress);
+
+            // Update CiC web interface URL setting
+            const cicWebInterfaceUrl = `http://${newSettings.ipAddress}:8080`;
+            await this.setSettings({ cicWebInterfaceUrl }).catch(this.error);
 
             // Try to connect to the manually entered IP address directly (without autodiscovery)
             await this.setAvailable();
@@ -647,6 +657,12 @@ class QuattHeatpump extends Homey.Device {
     private async setIPAddress(newIp: string) {
         this.log(`Updating device IP address to: ${newIp}`);
         await this.setStoreValue('address', newIp);
+
+        // Update CiC web interface URL setting
+        const cicWebInterfaceUrl = `http://${newIp}:8080`;
+        this.log(`CiC Web Interface: ${cicWebInterfaceUrl}`);
+        await this.setSettings({ cicWebInterfaceUrl }).catch(this.error);
+
         if (this.quattClient) {
             this.quattClient.setDeviceAddress(newIp);
         } else {

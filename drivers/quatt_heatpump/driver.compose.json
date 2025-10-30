@@ -128,6 +128,19 @@
   },
   "settings": [
     {
+      "id": "cicWebInterfaceUrl",
+      "type": "label",
+      "label": {
+        "en": "CiC Web Interface",
+        "nl": "CiC Web Interface"
+      },
+      "hint": {
+        "en": "Click the URL below to open the Quatt CiC web interface in your browser",
+        "nl": "Klik op de onderstaande URL om de Quatt CiC web interface te openen in je browser"
+      },
+      "value": ""
+    },
+    {
       "id": "ipAddress",
       "type": "text",
       "label": {
