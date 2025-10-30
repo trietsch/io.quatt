@@ -2,9 +2,10 @@ import Homey from 'homey';
 
 
 
-// Define an interface for global app settings, even if empty for now
+// Define an interface for global app settings
+// Note: ipAddress was removed as each device manages its own IP in device.store
 export interface AppSettings {
-    ipAddress?: string;
+    // Reserved for future global settings
 }
 
 class Quatt extends Homey.App {
