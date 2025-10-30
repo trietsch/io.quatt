@@ -28,8 +28,9 @@
     "measure_thermostat_cooling_on",
     "measure_boiler_central_heating_mode",
     "measure_boiler_cic_central_heating_on",
-    "measure_boiler_flame_on",
+    "measure_boiler_cic_central_heating_onoff_boiler",
     "measure_boiler_domestic_hot_water_on",
+    "measure_boiler_flame_on",
     "measure_boiler_temperature_incoming_water",
     "measure_boiler_temperature_outgoing_water",
     "measure_boiler_water_pressure"

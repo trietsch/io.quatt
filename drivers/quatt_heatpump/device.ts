@@ -135,60 +135,22 @@ class QuattHeatpump extends Homey.Device {
                               cicStats.boiler !== undefined &&
                               typeof cicStats.boiler === 'object';
 
-            // Check if capabilities have been ordered before (stored in device settings)
-            const capabilitiesOrdered = this.getStoreValue('capabilitiesOrdered') || false;
+            // Capability order is defined in driver.compose.json with ALL possible capabilities
+            // We just need to remove the ones that don't apply to this device configuration
 
-            if (!capabilitiesOrdered) {
-                // First time or after update: remove ALL and re-add in correct order
-                // This ensures proper display order in the UI (Homey forum solution)
-                this.log('First initialization: removing all capabilities to set correct order');
-                const allPossibleCapabilities = [
-                    ...this.defaultCapabilities,
-                    ...this.singleHeatpumpCapabilities,
-                    ...this.multipleHeatpumpCapabilities,
-                    ...this.boilerCapabilities
-                ];
-                await this.removeCapabilities(allPossibleCapabilities);
-
-                // Now add capabilities in the desired order:
-                // 1. Default capabilities (defines the base order from driver.compose.json)
-                this.log('Adding default capabilities in specified order');
-                await this.addCapabilities(this.defaultCapabilities);
-
-                // 2. Heatpump-specific capabilities
-                if (!cicStats.hp2) {
-                    this.log('Single heatpump detected, adding single heatpump capabilities');
-                    await this.addCapabilities(this.singleHeatpumpCapabilities);
-                } else {
-                    this.log('Multiple heatpumps detected, adding multiple heatpump capabilities');
-                    await this.addCapabilities(this.multipleHeatpumpCapabilities);
-                }
-
-                // 3. Boiler capabilities (if present)
-                if (hasBoiler) {
-                    this.log('Boiler configuration detected, adding boiler capabilities');
-                    await this.addCapabilities(this.boilerCapabilities);
-                }
-
-                // Mark as ordered so we don't do this again on every restart
-                await this.setStoreValue('capabilitiesOrdered', true);
+            // Remove heatpump capabilities that don't apply
+            if (!cicStats.hp2) {
+                this.log('Single heatpump detected, removing multiple heatpump capabilities');
+                await this.removeCapabilities(this.multipleHeatpumpCapabilities);
             } else {
-                // Capabilities already ordered, just manage heatpump/boiler specific ones
-                this.log('Capabilities already ordered, managing configuration-specific capabilities');
+                this.log('Multiple heatpumps detected, removing single heatpump capabilities');
+                await this.removeCapabilities(this.singleHeatpumpCapabilities);
+            }
 
-                if (!cicStats.hp2) {
-                    await this.addCapabilities(this.singleHeatpumpCapabilities);
-                    await this.removeCapabilities(this.multipleHeatpumpCapabilities);
-                } else {
-                    await this.addCapabilities(this.multipleHeatpumpCapabilities);
-                    await this.removeCapabilities(this.singleHeatpumpCapabilities);
-                }
-
-                if (hasBoiler) {
-                    await this.addCapabilities(this.boilerCapabilities);
-                } else {
-                    await this.removeCapabilities(this.boilerCapabilities);
-                }
+            // Remove boiler capabilities if no boiler present
+            if (!hasBoiler) {
+                this.log('No boiler detected, removing boiler capabilities');
+                await this.removeCapabilities(this.boilerCapabilities);
             }
 
             this.capabilitiesUpdated = true;
