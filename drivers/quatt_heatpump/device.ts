@@ -128,6 +128,10 @@ class QuattHeatpump extends Homey.Device {
         }
 
         if (!this.capabilitiesUpdated) {
+            // Add default capabilities first (defines the base order from driver.compose.json)
+            await this.addCapabilities(this.defaultCapabilities);
+
+            // Then add heatpump-specific capabilities
             if (!cicStats.hp2) {
                 this.log('Single heatpump detected, adding single heatpump capabilities');
                 await this.addCapabilities(this.singleHeatpumpCapabilities);
@@ -152,8 +156,6 @@ class QuattHeatpump extends Homey.Device {
                 this.log('No boiler configuration detected, removing boiler capabilities');
                 await this.removeCapabilities(this.boilerCapabilities);
             }
-
-            await this.addCapabilities(this.defaultCapabilities);
 
             this.capabilitiesUpdated = true;
         }
