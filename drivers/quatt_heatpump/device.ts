@@ -138,21 +138,16 @@ class QuattHeatpump extends Homey.Device {
                 await this.removeCapabilities(this.singleHeatpumpCapabilities);
             }
 
-            // Detect if boiler is present by checking if any boiler properties have non-null values
-            const hasBoiler = cicStats.boiler && (
-                cicStats.boiler.otFbChModeActive !== null ||
-                cicStats.boiler.otFbDhwActive !== null ||
-                cicStats.boiler.otFbFlameOn !== null ||
-                cicStats.boiler.otFbSupplyInletTemperature !== null ||
-                cicStats.boiler.otFbSupplyOutletTemperature !== null ||
-                cicStats.boiler.otFbWaterPressure !== null
-            );
+            // Detect if boiler is present by checking if boiler object exists
+            // The boiler object exists even when not active (properties will be null)
+            // If the system has no boiler at all, the boiler object itself would be null
+            const hasBoiler = cicStats.boiler !== null && cicStats.boiler !== undefined;
 
             if (hasBoiler) {
-                this.log('Boiler detected, adding boiler capabilities');
+                this.log('Boiler configuration detected, adding boiler capabilities');
                 await this.addCapabilities(this.boilerCapabilities);
             } else {
-                this.log('No boiler detected, removing boiler capabilities');
+                this.log('No boiler configuration detected, removing boiler capabilities');
                 await this.removeCapabilities(this.boilerCapabilities);
             }
 
