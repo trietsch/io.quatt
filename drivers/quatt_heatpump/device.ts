@@ -128,20 +128,6 @@ class QuattHeatpump extends Homey.Device {
         }
 
         if (!this.capabilitiesUpdated) {
-            // Add default capabilities first (defines the base order from driver.compose.json)
-            await this.addCapabilities(this.defaultCapabilities);
-
-            // Then add heatpump-specific capabilities
-            if (!cicStats.hp2) {
-                this.log('Single heatpump detected, adding single heatpump capabilities');
-                await this.addCapabilities(this.singleHeatpumpCapabilities);
-                await this.removeCapabilities(this.multipleHeatpumpCapabilities);
-            } else {
-                this.log('Multiple heatpumps detected, adding multiple heatpump capabilities');
-                await this.addCapabilities(this.multipleHeatpumpCapabilities);
-                await this.removeCapabilities(this.singleHeatpumpCapabilities);
-            }
-
             // Detect if boiler is present by checking if boiler is a valid object
             // The boiler object exists even when not active (properties will be null)
             // If the system has no boiler, the boiler field can be null, 0, or other falsy values
@@ -149,12 +135,35 @@ class QuattHeatpump extends Homey.Device {
                               cicStats.boiler !== undefined &&
                               typeof cicStats.boiler === 'object';
 
+            // Remove ALL existing capabilities first, then re-add in correct order
+            // This ensures proper display order in the UI (Homey forum solution)
+            this.log('Removing all existing capabilities to reorder them');
+            const allPossibleCapabilities = [
+                ...this.defaultCapabilities,
+                ...this.singleHeatpumpCapabilities,
+                ...this.multipleHeatpumpCapabilities,
+                ...this.boilerCapabilities
+            ];
+            await this.removeCapabilities(allPossibleCapabilities);
+
+            // Now add capabilities in the desired order:
+            // 1. Default capabilities (defines the base order from driver.compose.json)
+            this.log('Adding default capabilities in specified order');
+            await this.addCapabilities(this.defaultCapabilities);
+
+            // 2. Heatpump-specific capabilities
+            if (!cicStats.hp2) {
+                this.log('Single heatpump detected, adding single heatpump capabilities');
+                await this.addCapabilities(this.singleHeatpumpCapabilities);
+            } else {
+                this.log('Multiple heatpumps detected, adding multiple heatpump capabilities');
+                await this.addCapabilities(this.multipleHeatpumpCapabilities);
+            }
+
+            // 3. Boiler capabilities (if present)
             if (hasBoiler) {
                 this.log('Boiler configuration detected, adding boiler capabilities');
                 await this.addCapabilities(this.boilerCapabilities);
-            } else {
-                this.log('No boiler configuration detected, removing boiler capabilities');
-                await this.removeCapabilities(this.boilerCapabilities);
             }
 
             this.capabilitiesUpdated = true;
