@@ -141,6 +141,25 @@
         "en": "e.g. 192.168.1.123",
         "nl": "bv 192.168.1.123"
       }
+    },
+    {
+      "id": "updateInterval",
+      "type": "number",
+      "label": {
+        "en": "Data update interval",
+        "nl": "Data update interval"
+      },
+      "hint": {
+        "en": "How often to refresh data from the Quatt CiC. The Quatt CiC updates data every second. Minimum: 1 second, Maximum: 60 seconds.",
+        "nl": "Hoe vaak de data van de Quatt CiC ververst moet worden. De Quatt CiC werkt de data elke seconde bij. Minimum: 1 seconde, Maximum: 60 seconden."
+      },
+      "value": 5,
+      "min": 1,
+      "max": 60,
+      "units": {
+        "en": "seconds",
+        "nl": "seconden"
+      }
     }
   ],
   "pair": [

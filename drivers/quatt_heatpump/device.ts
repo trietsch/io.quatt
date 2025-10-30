@@ -9,6 +9,7 @@ import {AppSettings} from "../../app";
 interface QuattDeviceSettings {
     ipAddress: string; // This is a label in compose, but used as a setting key
     enableAutomaticIpDiscovery: boolean;
+    updateInterval: number; // Update interval in seconds (1-60)
 }
 
 class QuattHeatpump extends Homey.Device {
@@ -69,7 +70,12 @@ class QuattHeatpump extends Homey.Device {
         await this.registerTriggers();
         await this.registerConditionListeners();
         await this.setCapabilityValues();
-        await this.setCapabilityValuesInterval(5);
+
+        // Get update interval from settings, default to 5 seconds if not set
+        const settings = this.getSettings() as QuattDeviceSettings;
+        const updateInterval = typeof settings.updateInterval === 'number' ? settings.updateInterval : 5;
+        this.log(`Using update interval: ${updateInterval} seconds`);
+        await this.setCapabilityValuesInterval(updateInterval);
     }
 
     async initDeviceSettings() {
@@ -144,6 +150,13 @@ class QuattHeatpump extends Homey.Device {
             } else {
                 this.log('Successfully connected to new IP address and updated capability values.');
             }
+        }
+
+        if (changedKeys.includes('updateInterval') && newSettings.updateInterval !== oldSettings.updateInterval) {
+            this.log(`Update interval changed from ${oldSettings.updateInterval} to ${newSettings.updateInterval} seconds. Restarting polling.`);
+
+            // Restart polling with new interval
+            await this.setCapabilityValuesInterval(newSettings.updateInterval);
         }
     }
 
@@ -429,9 +442,22 @@ class QuattHeatpump extends Homey.Device {
 
     async setCapabilityValuesInterval(update_interval_seconds: number) {
         try {
-            const refreshInterval = 1000 * update_interval_seconds; // TODO: Consider making this a setting
+            // Clear existing interval if it exists to prevent multiple intervals
+            if (this.onPollInterval) {
+                this.log(`[Device] ${this.getName()} - Clearing existing polling interval`);
+                clearInterval(this.onPollInterval);
+            }
 
-            this.log(`[Device] ${this.getName()} - Setting up polling interval: ${refreshInterval}ms`);
+            // Validate and clamp the update interval between 1 and 60 seconds
+            const validatedInterval = Math.max(1, Math.min(60, update_interval_seconds));
+
+            if (validatedInterval !== update_interval_seconds) {
+                this.log(`[Device] ${this.getName()} - Update interval ${update_interval_seconds}s is out of range. Clamping to ${validatedInterval}s`);
+            }
+
+            const refreshInterval = 1000 * validatedInterval;
+
+            this.log(`[Device] ${this.getName()} - Setting up polling interval: ${refreshInterval}ms (${validatedInterval} seconds)`);
             this.onPollInterval = setInterval(this.setCapabilityValues.bind(this), refreshInterval);
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : this.homey.__('error.unknown');
@@ -511,7 +537,7 @@ class QuattHeatpump extends Homey.Device {
     }
 
     private computeCoefficientOfPerformance(hp: CicHeatpump): number | undefined {
-        return hp?.power / hp?.powerInput ?? undefined;
+        return hp?.powerInput ? hp.power / hp.powerInput : undefined;
     }
 
     private async sleep(ms: number) {
