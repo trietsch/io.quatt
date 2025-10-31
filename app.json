@@ -1995,9 +1995,27 @@
       },
       "class": "heater",
       "capabilities": [
+        "meter_heating_status",
+        "measure_thermostat_heating_on",
+        "measure_thermostat_room_temperature",
+        "measure_thermostat_setpoint_room_temperature",
+        "measure_heatpump_temperature_outside",
         "measure_power",
         "meter_power",
-        "meter_heating_status",
+        "measure_heatpump_cop",
+        "measure_heatpump_working_mode",
+        "measure_heatpump_thermal_power",
+        "measure_quality_control_supervisory_control_mode",
+        "measure_thermostat_setpoint_water_supply_temperature",
+        "measure_flowmeter_water_supply_temperature",
+        "measure_heatpump_temperature_outgoing_water",
+        "measure_heatpump_temperature_incoming_water",
+        "measure_heatpump_temperature_delta_water",
+        "measure_flowmeter_water_flow_speed",
+        "measure_thermostat_domestic_hot_water_on",
+        "measure_heatpump_silent_mode",
+        "measure_heatpump_limited_by_cop",
+        "measure_thermostat_cooling_on",
         "measure_boiler_central_heating_mode",
         "measure_boiler_cic_central_heating_on",
         "measure_boiler_cic_central_heating_onoff_boiler",
@@ -2005,16 +2023,7 @@
         "measure_boiler_flame_on",
         "measure_boiler_temperature_incoming_water",
         "measure_boiler_temperature_outgoing_water",
-        "measure_boiler_water_pressure",
-        "measure_flowmeter_water_flow_speed",
-        "measure_flowmeter_water_supply_temperature",
-        "measure_quality_control_supervisory_control_mode",
-        "measure_thermostat_cooling_on",
-        "measure_thermostat_domestic_hot_water_on",
-        "measure_thermostat_heating_on",
-        "measure_thermostat_room_temperature",
-        "measure_thermostat_setpoint_room_temperature",
-        "measure_thermostat_setpoint_water_supply_temperature"
+        "measure_boiler_water_pressure"
       ],
       "capabilitiesOptions": {
         "measure_power": {
@@ -2117,6 +2126,19 @@
         "xlarge": "/drivers/quatt_heatpump/assets/images/xlarge.png"
       },
       "settings": [
+        {
+          "id": "cicWebInterfaceUrl",
+          "type": "label",
+          "label": {
+            "en": "CiC Web Interface",
+            "nl": "CiC Web Interface"
+          },
+          "hint": {
+            "en": "Click the URL below to open the Quatt CiC web interface in your browser",
+            "nl": "Klik op de onderstaande URL om de Quatt CiC web interface te openen in je browser"
+          },
+          "value": ""
+        },
         {
           "id": "ipAddress",
           "type": "text",
