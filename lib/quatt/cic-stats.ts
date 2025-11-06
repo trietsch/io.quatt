@@ -18,14 +18,14 @@ export interface CicHeatpump {
 }
 
 export interface CicBoiler {
-    otFbChModeActive: boolean;
-    otFbDhwActive: boolean;
-    otFbFlameOn: boolean;
-    otFbSupplyInletTemperature: number;
-    otFbSupplyOutletTemperature: number;
+    otFbChModeActive: boolean | null;
+    otFbDhwActive: boolean | null;
+    otFbFlameOn: boolean | null;
+    otFbSupplyInletTemperature: number | null;
+    otFbSupplyOutletTemperature: number | null;
     otTbCH: boolean;
     oTtbTurnOnOffBoilerOn: boolean;
-    otFbWaterPressure: number;
+    otFbWaterPressure: number | null;
 }
 
 export interface CicFlowMeter {
