@@ -184,6 +184,7 @@ class QuattHeatpump extends Homey.Device {
             const errorMessage = error instanceof Error ? error.message : String(error);
             const isNetworkError = errorMessage.includes('ECONNREFUSED') ||
                 errorMessage.includes('EHOSTUNREACH') ||
+                errorMessage.includes('ENETUNREACH') ||
                 errorMessage.includes('ETIMEDOUT') ||
                 errorMessage.includes('ENOTFOUND') ||
                 errorMessage.includes('EAI_AGAIN');
