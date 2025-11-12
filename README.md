@@ -69,13 +69,7 @@ For development or testing purposes, you can install the app directly to your Ho
    npm install
    ```
 
-5. Run the app on your Homey:
-   ```bash
-   homey app run
-   ```
-   This will build and install the app on your Homey, showing live logs in your terminal.
-
-6. Alternatively, install the app without logs:
+5. Install the app on your Homey:
    ```bash
    homey app install
    ```
