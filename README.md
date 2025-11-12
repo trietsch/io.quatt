@@ -44,6 +44,44 @@ Computed sensor values:
 - [Install the stable version from the Homey App Store](https://homey.app/a/io.quatt/)
 - [Install the test version](https://homey.app/a/io.quatt/test/)
 
+### Install via Homey CLI
+
+For development or testing purposes, you can install the app directly to your Homey using the Homey CLI:
+
+1. Install the Homey CLI globally:
+   ```bash
+   npm install -g homey
+   ```
+
+2. Login to your Homey account:
+   ```bash
+   homey login
+   ```
+
+3. Clone this repository:
+   ```bash
+   git clone https://github.com/WebBuildsNL/io.quatt.git
+   cd io.quatt
+   ```
+
+4. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+5. Run the app on your Homey:
+   ```bash
+   homey app run
+   ```
+   This will build and install the app on your Homey, showing live logs in your terminal.
+
+6. Alternatively, install the app without logs:
+   ```bash
+   homey app install
+   ```
+
+**Note:** Apps installed via CLI will appear in your Homey apps list. Use `homey app uninstall` to remove them.
+
 ## Community & Support
 - [Dutch forum thread](https://community.homey.app/t/app-pro-quatt-nl/91802)
 - [English forum thread](https://community.homey.app/t/app-pro-quatt/91446)
