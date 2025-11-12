@@ -1,5 +1,8 @@
 # Quatt Homey App
 
+> [!NOTE]
+> This repository is a fork of the original Quatt Homey app. Due to potential inactivity of the original maintainer, this fork was created to continue active development and maintenance of the app.
+
 Adds support for reading Quatt Commander-In-Chief (CiC) data and integrating your Quatt heat pump with Homey. This app exposes a wide range of sensor data and control capabilities for advanced automation and monitoring.
 
 ## Features
