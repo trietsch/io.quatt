@@ -1,5 +1,5 @@
 import Homey, {FlowCardTrigger} from 'homey';
-import {QuattClient} from "../../lib/quatt";
+import {QuattClient, QuattRemoteApiClient, QuattTokens} from "../../lib/quatt";
 import {CicHeatpump, CicStats} from "../../lib/quatt/cic-stats";
 import {QuattApiError} from "../../lib/quatt/errors"; // DeviceUnavailableError was unused
 import {QuattLocator} from "../../lib/quatt/locator";
@@ -14,6 +14,7 @@ interface QuattDeviceSettings {
 
 class QuattHeatpump extends Homey.Device {
     private quattClient!: QuattClient;
+    private remoteClient: QuattRemoteApiClient | null = null;
     private onPollInterval!: NodeJS.Timer;
 
     private capabilitiesUpdated = false;
@@ -79,6 +80,36 @@ class QuattHeatpump extends Homey.Device {
         const deviceAddress = this.getStoreValue("address");
         this.quattClient = new QuattClient(this.homey.app.manifest.version, deviceAddress);
 
+        // Initialize remote API client if tokens are available
+        const remoteTokens = this.getStoreValue("remoteTokens") as QuattTokens | undefined;
+        const remoteCicId = this.getStoreValue("remoteCicId") as string | undefined;
+        const remoteInstallationId = this.getStoreValue("remoteInstallationId") as string | undefined;
+
+        if (remoteTokens && remoteCicId && remoteInstallationId) {
+            this.log('Initializing remote API client');
+            this.remoteClient = new QuattRemoteApiClient(
+                this.homey.app.manifest.version,
+                remoteTokens,
+                remoteCicId,
+                remoteInstallationId
+            );
+
+            // Update settings to show remote is configured (if not already set)
+            const currentStatus = this.getSetting('remoteControlStatus');
+            if (currentStatus === 'Not configured' || !currentStatus) {
+                await this.setSettings({
+                    remoteControlStatus: '✓ Configured'
+                }).catch(this.error);
+            }
+        } else {
+            this.log('Remote API not configured - action cards will not be available');
+
+            // Update settings to show remote is not configured
+            await this.setSettings({
+                remoteControlStatus: '✗ Not configured - Use "Repair Device" to enable'
+            }).catch(this.error);
+        }
+
         // Log and update CiC web interface URL
         const cicWebInterfaceUrl = `http://${deviceAddress}:8080`;
         this.log(`CiC Web Interface: ${cicWebInterfaceUrl}`);
@@ -97,6 +128,7 @@ class QuattHeatpump extends Homey.Device {
         await this.initCapabilities();
         await this.registerTriggers();
         await this.registerConditionListeners();
+        await this.registerActionListeners();
         await this.setCapabilityValues();
 
         // Get update interval from settings, default to 5 seconds if not set
@@ -453,6 +485,112 @@ class QuattHeatpump extends Homey.Device {
                 return false;
             })
         }
+    }
+
+    async registerActionListeners() {
+        this.log('[Action] Registering action listeners');
+
+        // Register "Set day sound level" action
+        const setDaySoundLevelAction = this.homey.flow.getActionCard('set_day_sound_level');
+        setDaySoundLevelAction.registerRunListener(async (args) => {
+            if (!this.remoteClient) {
+                throw new Error('Remote API not configured. Please re-pair the device.');
+            }
+
+            this.log(`[Action] Setting day sound level to: ${args.level}`);
+
+            try {
+                const success = await this.remoteClient.updateCicSettings({
+                    dayMaxSoundLevel: args.level
+                });
+
+                if (!success) {
+                    throw new Error('Failed to update day sound level');
+                }
+
+                this.log(`[Action] Successfully set day sound level to ${args.level}`);
+
+                // Update stored tokens in case they were refreshed
+                const tokens = this.remoteClient.getTokens();
+                if (tokens) {
+                    await this.setStoreValue('remoteTokens', tokens);
+                }
+
+                return true;
+            } catch (error) {
+                this.error('[Action] Error setting day sound level:', error);
+                throw error;
+            }
+        });
+
+        // Register "Set night sound level" action
+        const setNightSoundLevelAction = this.homey.flow.getActionCard('set_night_sound_level');
+        setNightSoundLevelAction.registerRunListener(async (args) => {
+            if (!this.remoteClient) {
+                throw new Error('Remote API not configured. Please re-pair the device.');
+            }
+
+            this.log(`[Action] Setting night sound level to: ${args.level}`);
+
+            try {
+                const success = await this.remoteClient.updateCicSettings({
+                    nightMaxSoundLevel: args.level
+                });
+
+                if (!success) {
+                    throw new Error('Failed to update night sound level');
+                }
+
+                this.log(`[Action] Successfully set night sound level to ${args.level}`);
+
+                // Update stored tokens in case they were refreshed
+                const tokens = this.remoteClient.getTokens();
+                if (tokens) {
+                    await this.setStoreValue('remoteTokens', tokens);
+                }
+
+                return true;
+            } catch (error) {
+                this.error('[Action] Error setting night sound level:', error);
+                throw error;
+            }
+        });
+
+        // Register "Set pricing limit" action
+        const setPricingLimitAction = this.homey.flow.getActionCard('set_pricing_limit');
+        setPricingLimitAction.registerRunListener(async (args) => {
+            if (!this.remoteClient) {
+                throw new Error('Remote API not configured. Please re-pair the device.');
+            }
+
+            const enabled = args.enabled === 'on';
+            this.log(`[Action] Setting pricing limit to: ${enabled}`);
+
+            try {
+                const success = await this.remoteClient.updateCicSettings({
+                    usePricingLimitingHeatPump: enabled
+                });
+
+                if (!success) {
+                    throw new Error('Failed to update pricing limit');
+                }
+
+                this.log(`[Action] Successfully set pricing limit to ${enabled}`);
+
+                // Update stored tokens in case they were refreshed
+                const tokens = this.remoteClient.getTokens();
+                if (tokens) {
+                    await this.setStoreValue('remoteTokens', tokens);
+                }
+
+                return true;
+            } catch (error) {
+                this.error('[Action] Error setting pricing limit:', error);
+                throw error;
+            }
+        });
+
+        this.log('[Action] Action listeners registered successfully');
     }
 
     async setHeatPumpValues(hp: CicHeatpump, name?: string) {

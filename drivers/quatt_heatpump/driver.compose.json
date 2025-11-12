@@ -137,6 +137,19 @@
   },
   "settings": [
     {
+      "id": "remoteControlStatus",
+      "type": "label",
+      "label": {
+        "en": "Remote Control Status",
+        "nl": "Bediening op afstand status"
+      },
+      "hint": {
+        "en": "Shows whether remote control via Quatt Cloud is configured. Use 'Repair Device' to enable or reconfigure remote control for action flow cards.",
+        "nl": "Toont of bediening op afstand via Quatt Cloud is geconfigureerd. Gebruik 'Repareer apparaat' om bediening op afstand in of uit te schakelen voor actie flow kaarten."
+      },
+      "value": "Not configured"
+    },
+    {
       "id": "cicWebInterfaceUrl",
       "type": "label",
       "label": {
@@ -207,6 +220,18 @@
     {
       "id": "add_devices",
       "template": "add_devices"
+    },
+    {
+      "id": "done",
+      "template": "done"
+    }
+  ],
+  "repair": [
+    {
+      "id": "remote_pair",
+      "navigation": {
+        "next": "done"
+      }
     },
     {
       "id": "done",
