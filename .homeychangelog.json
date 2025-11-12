@@ -58,5 +58,8 @@
   },
   "1.4.2": {
     "en": "ensure up to date capabilities for 1 or 2 heatpumps"
+  },
+  "1.5.0": {
+    "en": "Add remote control via Quatt Cloud with 3 action flow cards (set day/night sound level, pricing limit). Configure via device settings > Repair Device. Also includes: ENETUNREACH error handling, dynamic boiler capability management, configurable polling interval, heating status indicator, energy consumption tracking, and multi-device IP management improvements"
   }
 }

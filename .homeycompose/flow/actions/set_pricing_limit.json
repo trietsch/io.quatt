@@ -1,0 +1,40 @@
+{
+  "title": {
+    "en": "Set pricing-based heat pump limiting",
+    "nl": "Stel prijsgebaseerde warmtepomp beperking in"
+  },
+  "titleFormatted": {
+    "en": "Turn pricing-based limiting [[enabled]]",
+    "nl": "Zet prijsgebaseerde beperking [[enabled]]"
+  },
+  "hint": {
+    "en": "Enable or disable pricing-based heat pump limiting",
+    "nl": "Schakel prijsgebaseerde warmtepomp beperking in of uit"
+  },
+  "args": [
+    {
+      "type": "dropdown",
+      "name": "enabled",
+      "title": {
+        "en": "State",
+        "nl": "Status"
+      },
+      "values": [
+        {
+          "id": "on",
+          "label": {
+            "en": "On",
+            "nl": "Aan"
+          }
+        },
+        {
+          "id": "off",
+          "label": {
+            "en": "Off",
+            "nl": "Uit"
+          }
+        }
+      ]
+    }
+  ]
+}

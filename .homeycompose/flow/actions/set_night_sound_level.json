@@ -1,0 +1,54 @@
+{
+  "title": {
+    "en": "Set night sound level",
+    "nl": "Stel nacht geluidsniveau in"
+  },
+  "titleFormatted": {
+    "en": "Set night sound level to [[level]]",
+    "nl": "Stel nacht geluidsniveau in op [[level]]"
+  },
+  "hint": {
+    "en": "Set the maximum sound level during the night",
+    "nl": "Stel het maximale geluidsniveau tijdens de nacht in"
+  },
+  "args": [
+    {
+      "type": "dropdown",
+      "name": "level",
+      "title": {
+        "en": "Sound level",
+        "nl": "Geluidsniveau"
+      },
+      "values": [
+        {
+          "id": "normal",
+          "label": {
+            "en": "Normal",
+            "nl": "Normaal"
+          }
+        },
+        {
+          "id": "library",
+          "label": {
+            "en": "Library (quiet)",
+            "nl": "Bibliotheek (stil)"
+          }
+        },
+        {
+          "id": "silent",
+          "label": {
+            "en": "Silent",
+            "nl": "Stil"
+          }
+        },
+        {
+          "id": "building87",
+          "label": {
+            "en": "Building 87 (very quiet)",
+            "nl": "Gebouw 87 (zeer stil)"
+          }
+        }
+      ]
+    }
+  ]
+}

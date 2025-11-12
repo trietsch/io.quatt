@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .container {
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        .info {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .steps {
+            text-align: left;
+            margin: 15px 0;
+        }
+        .steps ol {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        .steps li {
+            margin: 8px 0;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .cic-id {
+            font-family: monospace;
+            font-size: 14px;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .device-image {
+            max-width: 180px;
+            margin: 15px auto 0 auto;
+            display: block;
+        }
+        .form-group {
+            margin: 15px 0;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input[type="text"].error {
+            border-color: #ff0000;
+        }
+        .error-message {
+            color: #ff0000;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .button-container {
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        #startPairingButton {
+            background: linear-gradient(135deg, #00a3ff 0%, #0088ff 100%) !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 16px 32px !important;
+            border-radius: 12px !important;
+            font-size: 17px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            width: 100% !important;
+            box-shadow: 0 3px 12px rgba(0, 136, 255, 0.35) !important;
+            transition: all 0.2s ease !important;
+            text-align: center !important;
+            letter-spacing: 0.3px !important;
+        }
+        #startPairingButton:hover {
+            background: linear-gradient(135deg, #0099ee 0%, #0077dd 100%) !important;
+            box-shadow: 0 5px 16px rgba(0, 136, 255, 0.45) !important;
+            transform: translateY(-2px) !important;
+        }
+        #startPairingButton:active {
+            transform: translateY(0) !important;
+            box-shadow: 0 2px 8px rgba(0, 136, 255, 0.3) !important;
+        }
+        #startPairingButton:disabled {
+            background: #cccccc !important;
+            color: #888888 !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            position: relative;
+        }
+        .status.info {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .status.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .status.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .cancel-link {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+            text-decoration: underline;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        .cancel-link:hover {
+            opacity: 1;
+        }
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .button-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 data-i18n="pair.remote_pair.title">Pair with Quatt Cloud</h2>
+
+        <div class="info">
+            <p><strong>Set up remote control via Quatt Cloud</strong></p>
+            <div class="steps">
+                <ol>
+                    <li>Enter your <strong>first name</strong> and <strong>last name</strong> below</li>
+                    <li>Press the <strong>Start Pairing</strong> button</li>
+                    <li>Press the <strong>button on your CiC device</strong> (shown below)</li>
+                    <li>Wait for the pairing to complete</li>
+                </ol>
+            </div>
+            <p style="font-size: 14px; margin-top: 10px;"><strong>Your CiC ID:</strong></p>
+            <div class="cic-id" id="cicIdDisplay"></div>
+            <img src="../assets/quatt-cic-button.png" alt="Quatt CIC Device - Press the button" class="device-image" id="deviceImage">
+        </div>
+
+        <div class="form-group">
+            <label for="firstName" data-i18n="pair.remote_pair.first_name">First name *</label>
+            <input type="text" id="firstName" name="firstName" required>
+            <div class="error-message" id="firstNameError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="lastName" data-i18n="pair.remote_pair.last_name">Last name *</label>
+            <input type="text" id="lastName" name="lastName" required>
+            <div class="error-message" id="lastNameError"></div>
+        </div>
+
+        <div class="button-container">
+            <button type="button" id="startPairingButton">Start Pairing</button>
+        </div>
+
+        <div id="status" class="status" style="display: none;"></div>
+    </div>
+
+    <script>
+        const status = document.getElementById('status');
+        const cicIdDisplay = document.getElementById('cicIdDisplay');
+        const startButton = document.getElementById('startPairingButton');
+
+        // Get CIC ID from Homey
+        Homey.ready();
+
+        // Hide the Homey "Ga door" button since we have our own
+        Homey.setNavigationClose({
+            title: 'Cancel',
+            callback: () => true // Allow closing with X button
+        });
+
+        Homey.emit('get_cic_id', null, (err, cicId) => {
+            if (!err && cicId) {
+                cicIdDisplay.textContent = cicId;
+            }
+        });
+
+        // Try to prefill user info from Homey account
+        Homey.emit('get_user_info', null, (err, userInfo) => {
+            if (!err && userInfo) {
+                if (userInfo.firstName) {
+                    document.getElementById('firstName').value = userInfo.firstName;
+                }
+                if (userInfo.lastName) {
+                    document.getElementById('lastName').value = userInfo.lastName;
+                }
+            }
+        });
+
+        // Handle the Start Pairing button click
+        startButton.addEventListener('click', async () => {
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+
+            // Validation
+            let hasError = false;
+            if (!firstName) {
+                document.getElementById('firstNameError').textContent = 'First name is required';
+                document.getElementById('firstName').classList.add('error');
+                hasError = true;
+            } else {
+                document.getElementById('firstNameError').textContent = '';
+                document.getElementById('firstName').classList.remove('error');
+            }
+
+            if (!lastName) {
+                document.getElementById('lastNameError').textContent = 'Last name is required';
+                document.getElementById('lastName').classList.add('error');
+                hasError = true;
+            } else {
+                document.getElementById('lastNameError').textContent = '';
+                document.getElementById('lastName').classList.remove('error');
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            // Disable button and show loading
+            startButton.disabled = true;
+            startButton.innerHTML = '<div class="button-content"><span class="spinner"></span><span>Pairing...</span></div>';
+
+            // Track if user cancelled
+            let cancelled = false;
+
+            // Show status with cancel link
+            status.className = 'status info';
+            status.style.display = 'block';
+            status.innerHTML = 'Please press the button on your CIC device now. Waiting for confirmation... (60 seconds)<br><a class="cancel-link">Cancel</a>';
+
+            // Add cancel handler
+            const cancelLink = status.querySelector('.cancel-link');
+            cancelLink.addEventListener('click', () => {
+                cancelled = true;
+                status.style.display = 'none';
+                startButton.disabled = false;
+                startButton.innerHTML = 'Start Pairing';
+            });
+
+            // Scroll to status message so it's visible
+            setTimeout(() => {
+                status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+
+            try {
+                const result = await new Promise((resolve, reject) => {
+                    Homey.emit('remote_pair', {firstName, lastName}, (err, result) => {
+                        if (err) reject(err);
+                        else resolve(result);
+                    });
+                });
+
+                // Ignore result if user cancelled
+                if (cancelled) return;
+
+                status.className = 'status success';
+                status.innerHTML = 'Successfully paired with Quatt Cloud!';
+
+                setTimeout(() => {
+                    Homey.done();
+                }, 1500);
+
+            } catch (error) {
+                // Ignore error if user cancelled
+                if (cancelled) return;
+
+                status.className = 'status error';
+                status.textContent = error.message || 'Pairing failed. Please try again.';
+
+                // Re-enable button
+                startButton.disabled = false;
+                startButton.innerHTML = 'Start Pairing';
+            }
+        });
+    </script>
+</body>
+</html>
