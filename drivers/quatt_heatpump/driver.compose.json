@@ -3,7 +3,8 @@
     "en": "Quatt",
     "nl": "Quatt"
   },
-  "class": "heater",
+  "class": "socket",
+  "energy": {},
   "capabilities": [
     "meter_heating_status",
     "measure_thermostat_heating_on",
