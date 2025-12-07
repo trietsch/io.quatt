@@ -44,9 +44,6 @@ Computed sensor values:
 
 ## Installation
 
-- [Install the stable version from the Homey App Store](https://homey.app/a/io.quatt/)
-- [Install the test version](https://homey.app/a/io.quatt/test/)
-
 ### Install via Homey CLI
 
 For development or testing purposes, you can install the app directly to your Homey using the Homey CLI:
@@ -78,6 +75,8 @@ For development or testing purposes, you can install the app directly to your Ho
    ```
 
 **Note:** Apps installed via CLI will appear in your Homey apps list. Use `homey app uninstall` to remove them.
+
+- [Install the official version from the Homey App Store, might be abandoned](https://homey.app/a/io.quatt/)
 
 ## Community & Support
 - [Dutch forum thread](https://community.homey.app/t/app-pro-quatt-nl/91802)
