@@ -22,6 +22,11 @@ class QuattHeatpump extends Homey.Device {
     private defaultCapabilities = this.driver.manifest.capabilities;
     private lastMeterUpdate: number = Date.now();
     private lastPowerValue: number = 0;
+
+    // Daily COP tracking
+    private dailyCopSum: number = 0;
+    private dailyCopCount: number = 0;
+    private dailyCopDate: string = new Date().toDateString();
     private singleHeatpumpCapabilities = [
         "measure_heatpump_cop",
         "measure_heatpump_limited_by_cop",
@@ -175,7 +180,10 @@ class QuattHeatpump extends Homey.Device {
                 this.log('Single heatpump detected, removing multiple heatpump capabilities');
                 await this.removeCapabilities(this.multipleHeatpumpCapabilities);
             } else {
-                this.log('Multiple heatpumps detected, removing single heatpump capabilities');
+                this.log('Multiple heatpumps detected, adding dual heatpump capabilities and removing single ones');
+                // First add the dual heatpump capabilities (they're not in driver.compose.json by default)
+                await this.addCapabilities(this.multipleHeatpumpCapabilities);
+                // Then remove the single heatpump capabilities
                 await this.removeCapabilities(this.singleHeatpumpCapabilities);
             }
 
@@ -603,8 +611,14 @@ class QuattHeatpump extends Homey.Device {
             suffix = `.${name}`;
         }
 
+        // Calculate COP and update daily tracking
+        const cop = this.computeCoefficientOfPerformance(hp);
+        if (cop !== undefined) {
+            this.updateDailyCop(cop);
+        }
+
         return Promise.all([
-            this.safeSetCapabilityValue(`measure_heatpump_cop${suffix}`, this.computeCoefficientOfPerformance(hp)),
+            this.safeSetCapabilityValue(`measure_heatpump_cop${suffix}`, cop),
             this.safeSetCapabilityValue(`measure_heatpump_limited_by_cop${suffix}`, hp.limitedByCop),
             this.safeSetCapabilityValue(`measure_heatpump_thermal_power${suffix}`, hp.power),
             this.safeSetCapabilityValue(`measure_heatpump_silent_mode${suffix}`, hp.silentModeStatus),
@@ -735,7 +749,45 @@ class QuattHeatpump extends Homey.Device {
     }
 
     private computeCoefficientOfPerformance(hp: CicHeatpump): number | undefined {
-        return hp?.powerInput ? hp.power / hp.powerInput : undefined;
+        // Return COP calculation if we have valid powerInput
+        // When not heating, power=0 so COP=0, which is technically correct
+        if (hp?.powerInput && hp.powerInput > 0) {
+            return hp.power / hp.powerInput;
+        }
+        return 0; // Return 0 instead of undefined when idle
+    }
+
+    /**
+     * Update daily COP tracking with a new COP value.
+     * Only counts values when actually heating (COP > 0).
+     * Resets at midnight.
+     */
+    public updateDailyCop(cop: number): void {
+        const today = new Date().toDateString();
+
+        // Reset if it's a new day
+        if (today !== this.dailyCopDate) {
+            this.dailyCopSum = 0;
+            this.dailyCopCount = 0;
+            this.dailyCopDate = today;
+        }
+
+        // Only track when actually heating (COP > 0)
+        if (cop > 0) {
+            this.dailyCopSum += cop;
+            this.dailyCopCount += 1;
+        }
+    }
+
+    /**
+     * Get the average COP for today.
+     * Returns null if no heating has occurred today.
+     */
+    public getDailyCop(): number | null {
+        if (this.dailyCopCount === 0) {
+            return null;
+        }
+        return this.dailyCopSum / this.dailyCopCount;
     }
 
     private async updateMeterPower(currentPower: number): Promise<void> {
