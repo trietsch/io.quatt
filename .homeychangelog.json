@@ -61,5 +61,8 @@
   },
   "1.5.0": {
     "en": "Add remote control via Quatt Cloud with 3 action flow cards (set day/night sound level, pricing limit). Configure via device settings > Repair Device. Also includes: ENETUNREACH error handling, dynamic boiler capability management, configurable polling interval, heating status indicator, energy consumption tracking, and multi-device IP management improvements"
+  },
+  "1.6.0": {
+    "en": "Quatt mobile API, Energy tab, various bugfixes and improvements"
   }
 }
