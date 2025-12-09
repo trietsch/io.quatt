@@ -4,10 +4,19 @@
     "en": "Thermostat heating",
     "nl": "Thermostaat verwarmt"
   },
+  "titleTrue": {
+    "en": "🔥",
+    "nl": "🔥"
+  },
+  "titleFalse": {
+    "en": "❄️",
+    "nl": "❄️"
+  },
   "description": "otFtChEnabled: A boolean value representing command from thermostat to switch on heating.",
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
+  "uiQuickAction": true,
   "icon": "assets/icons/thermostat-heating.svg",
   "insights": true,
   "insightsTitleTrue": {

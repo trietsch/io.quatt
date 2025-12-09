@@ -89,4 +89,72 @@ export class QuattLocator {
 
         return stats?.system.hostName
     }
+
+    /**
+     * Scan the network for a specific Quatt CiC by hostname
+     * This is useful when you have multiple CiCs and need to find the correct one after IP change
+     */
+    async findQuattByHostname(subnet: string, targetHostname: string): Promise<QuattDeviceDetails | null> {
+        let lan = subnet.split('.').slice(0, 3).join('.');
+        this.logger(`[QuattHelper] Searching for specific CiC with hostname ${targetHostname} on subnet:`, lan);
+
+        let quattCandidates: string[] = [];
+        let foundDevices: QuattDeviceDetails[] = [];
+
+        for (let i = 1; i <= 255; i++) {
+            let host = `${lan}.${i}`;
+
+            let socket = new Socket();
+            let status: string | null = null;
+
+            socket.on('connect', function () {
+                status = 'open';
+                socket.end();
+            });
+            socket.setTimeout(1500);
+            socket.on('timeout', function () {
+                status = 'closed';
+                quattCandidates.splice(quattCandidates.indexOf(host), 1);
+                socket.destroy();
+            });
+            socket.on('error', (exception) => {
+                status = 'closed';
+                quattCandidates.splice(quattCandidates.indexOf(host), 1);
+            });
+            socket.on('close', async (exception) => {
+                if (status == 'open') {
+                    try {
+                        let hostname = await this.getQuattHostname(host);
+                        if (hostname !== undefined) {
+                            foundDevices.push({ip: host, hostname: hostname});
+                            this.logger(`[QuattHelper] Found CiC at ${host} with hostname: ${hostname}`);
+                        }
+                    } catch (error) {
+                        // Not a Quatt device or unreachable
+                    }
+                }
+
+                quattCandidates.splice(quattCandidates.indexOf(host), 1);
+            });
+
+            quattCandidates.push(host);
+            socket.connect(8080, host);
+        }
+
+        // Wait for all scans to complete
+        while (quattCandidates.length > 0) {
+            await new Promise(resolve => setTimeout(resolve, 25));
+        }
+
+        // Find the device with matching hostname
+        const matchingDevice = foundDevices.find(device => device.hostname === targetHostname);
+
+        if (matchingDevice) {
+            this.logger(`[QuattHelper] Found matching CiC: ${matchingDevice.hostname} at ${matchingDevice.ip}`);
+            return matchingDevice;
+        } else {
+            this.logger(`[QuattHelper] No CiC found with hostname ${targetHostname}. Found ${foundDevices.length} other CiC(s).`);
+            return null;
+        }
+    }
 }

@@ -1,11 +1,13 @@
 import Homey from 'homey';
 import PairSession from "homey/lib/PairSession";
 import {QuattLocator} from "../../lib/quatt/locator";
+import {QuattRemoteApiClient, QuattTokens} from "../../lib/quatt";
 
 class QuattHeatpumpDriver extends Homey.Driver {
     private type: string = '';
     private deviceError: any = false;
     private devices: any[] | null = null;
+    private remotePairData: {tokens?: QuattTokens, installationId?: string} | null = null;
 
     private quattLocator: QuattLocator = new QuattLocator(this.homey.log, this.homey.app.manifest.version);
 
@@ -51,9 +53,6 @@ class QuattHeatpumpDriver extends Homey.Driver {
                 this.homey.app.log(`[Driver] ${this.id} - Manually pairing with IP address: ${ipAddress}`);
                 let hostname = await this.quattLocator.getQuattHostname(ipAddress);
 
-                // @ts-ignore updateSettings is an extension of the Quatt Homey App
-                this.homey.app.updateSettings({ipAddress: ipAddress});
-
                 this.devices = [
                     {
                         name: "Quatt CiC (manual)",
@@ -68,7 +67,7 @@ class QuattHeatpumpDriver extends Homey.Driver {
 
                 this.deviceError = false;
 
-                this.homey.app.log(`[Driver] ${this.id} - Successful manual connection with device:`, ipAddress);
+                this.homey.app.log(`[Driver] ${this.id} - Successfully paired with device at ${ipAddress}`);
                 await session.showView('list_devices');
             } catch (error) {
                 this.homey.app.error(`[Driver] ${this.id} - Error while manually pairing:`, JSON.stringify(error));
@@ -77,6 +76,83 @@ class QuattHeatpumpDriver extends Homey.Driver {
                 await session.showView('error');
                 this.homey.app.log(`[Driver] ${this.id} - Error while manually pairing, showing error view.`);
                 return false;
+            }
+        });
+    }
+
+    async onRepair(session: PairSession, device: any) {
+        this.homey.app.log(`[Driver] ${this.id} - Starting repair session for device: ${device.getName()}`);
+
+        session.setHandler('get_cic_id', async () => {
+            // Get CIC ID from device data
+            const hostname = device.getData().hostname || device.getData().id;
+            this.homey.app.log(`[Driver] ${this.id} - Repair: CIC ID is ${hostname}`);
+            return hostname;
+        });
+
+        session.setHandler('get_user_info', async () => {
+            // Try to get previously stored name from settings, or return empty
+            try {
+                const remoteControlStatus = device.getSetting('remoteControlStatus');
+                this.homey.app.log(`[Driver] ${this.id} - Repair: Remote control status: ${remoteControlStatus}`);
+
+                // Parse the status string like "✓ Configured (John Doe)" to extract names
+                if (remoteControlStatus && remoteControlStatus.includes('(') && remoteControlStatus.includes(')')) {
+                    const match = remoteControlStatus.match(/\(([^)]+)\)/);
+                    if (match && match[1]) {
+                        const fullName = match[1].trim();
+                        const parts = fullName.split(' ');
+                        if (parts.length >= 2) {
+                            const firstName = parts[0];
+                            const lastName = parts.slice(1).join(' ');
+                            this.homey.app.log(`[Driver] ${this.id} - Repair: Prefilling with previous names: ${firstName} ${lastName}`);
+                            return { firstName, lastName };
+                        }
+                    }
+                }
+
+                // No previous pairing found, return empty
+                return { firstName: '', lastName: '' };
+            } catch (error) {
+                this.homey.app.log(`[Driver] ${this.id} - Repair: Could not get user info:`, error);
+                return { firstName: '', lastName: '' };
+            }
+        });
+
+        session.setHandler('remote_pair', async (data) => {
+            try {
+                const {firstName, lastName} = data;
+                this.homey.app.log(`[Driver] ${this.id} - Repair: Remote pairing with first name: ${firstName}, last name: ${lastName}`);
+
+                const cicId = device.getData().hostname || device.getData().id;
+
+                // Create remote API client and authenticate
+                const remoteClient = new QuattRemoteApiClient(this.homey.app.manifest.version);
+
+                this.homey.app.log(`[Driver] ${this.id} - Repair: Starting authentication with CIC ID: ${cicId}`);
+                const result = await remoteClient.authenticate(firstName, lastName, cicId);
+
+                this.homey.app.log(`[Driver] ${this.id} - Repair: Successfully authenticated and paired with remote API`);
+
+                // Store the remote data in device
+                await device.setStoreValue('remoteTokens', result.tokens);
+                await device.setStoreValue('remoteInstallationId', result.installationId);
+                await device.setStoreValue('remoteCicId', cicId);
+
+                // Update settings to show remote control is configured
+                await device.setSettings({
+                    remoteControlStatus: `✓ Configured (${firstName} ${lastName})`
+                });
+
+                // Initialize the remote client on the device immediately
+                device.remoteClient = remoteClient;
+
+                this.homey.app.log(`[Driver] ${this.id} - Repair: Remote data stored and remote client initialized`);
+
+                return true;
+            } catch (error: any) {
+                this.homey.app.error(`[Driver] ${this.id} - Repair: Error during remote pairing:`, error);
+                throw new Error(error.message || 'Remote pairing failed');
             }
         });
     }

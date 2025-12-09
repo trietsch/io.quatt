@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "io.quatt",
-  "version": "1.4.2",
+  "version": "1.6.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -1985,6 +1985,159 @@
         ],
         "id": "condition_thermostat_setpoint_water_supply_temperature_compare"
       }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Set day sound level",
+          "nl": "Stel dag geluidsniveau in"
+        },
+        "titleFormatted": {
+          "en": "Set day sound level to [[level]]",
+          "nl": "Stel dag geluidsniveau in op [[level]]"
+        },
+        "hint": {
+          "en": "Set the maximum sound level during the day",
+          "nl": "Stel het maximale geluidsniveau tijdens de dag in"
+        },
+        "args": [
+          {
+            "type": "dropdown",
+            "name": "level",
+            "title": {
+              "en": "Sound level",
+              "nl": "Geluidsniveau"
+            },
+            "values": [
+              {
+                "id": "normal",
+                "label": {
+                  "en": "Normal",
+                  "nl": "Normaal"
+                }
+              },
+              {
+                "id": "library",
+                "label": {
+                  "en": "Library (quiet)",
+                  "nl": "Bibliotheek (stil)"
+                }
+              },
+              {
+                "id": "silent",
+                "label": {
+                  "en": "Silent",
+                  "nl": "Stil"
+                }
+              },
+              {
+                "id": "building87",
+                "label": {
+                  "en": "Building 87 (very quiet)",
+                  "nl": "Gebouw 87 (zeer stil)"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "set_day_sound_level"
+      },
+      {
+        "title": {
+          "en": "Set night sound level",
+          "nl": "Stel nacht geluidsniveau in"
+        },
+        "titleFormatted": {
+          "en": "Set night sound level to [[level]]",
+          "nl": "Stel nacht geluidsniveau in op [[level]]"
+        },
+        "hint": {
+          "en": "Set the maximum sound level during the night",
+          "nl": "Stel het maximale geluidsniveau tijdens de nacht in"
+        },
+        "args": [
+          {
+            "type": "dropdown",
+            "name": "level",
+            "title": {
+              "en": "Sound level",
+              "nl": "Geluidsniveau"
+            },
+            "values": [
+              {
+                "id": "normal",
+                "label": {
+                  "en": "Normal",
+                  "nl": "Normaal"
+                }
+              },
+              {
+                "id": "library",
+                "label": {
+                  "en": "Library (quiet)",
+                  "nl": "Bibliotheek (stil)"
+                }
+              },
+              {
+                "id": "silent",
+                "label": {
+                  "en": "Silent",
+                  "nl": "Stil"
+                }
+              },
+              {
+                "id": "building87",
+                "label": {
+                  "en": "Building 87 (very quiet)",
+                  "nl": "Gebouw 87 (zeer stil)"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "set_night_sound_level"
+      },
+      {
+        "title": {
+          "en": "Set pricing-based heat pump limiting",
+          "nl": "Stel prijsgebaseerde warmtepomp beperking in"
+        },
+        "titleFormatted": {
+          "en": "Turn pricing-based limiting [[enabled]]",
+          "nl": "Zet prijsgebaseerde beperking [[enabled]]"
+        },
+        "hint": {
+          "en": "Enable or disable pricing-based heat pump limiting",
+          "nl": "Schakel prijsgebaseerde warmtepomp beperking in of uit"
+        },
+        "args": [
+          {
+            "type": "dropdown",
+            "name": "enabled",
+            "title": {
+              "en": "State",
+              "nl": "Status"
+            },
+            "values": [
+              {
+                "id": "on",
+                "label": {
+                  "en": "On",
+                  "nl": "Aan"
+                }
+              },
+              {
+                "id": "off",
+                "label": {
+                  "en": "Off",
+                  "nl": "Uit"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "set_pricing_limit"
+      }
     ]
   },
   "drivers": [
@@ -1993,9 +2146,30 @@
         "en": "Quatt",
         "nl": "Quatt"
       },
-      "class": "heater",
+      "class": "socket",
+      "energy": {},
       "capabilities": [
+        "meter_heating_status",
+        "measure_thermostat_heating_on",
+        "measure_thermostat_room_temperature",
+        "measure_thermostat_setpoint_room_temperature",
+        "measure_heatpump_temperature_outside",
         "measure_power",
+        "meter_power",
+        "measure_heatpump_cop",
+        "measure_heatpump_working_mode",
+        "measure_heatpump_thermal_power",
+        "measure_quality_control_supervisory_control_mode",
+        "measure_thermostat_setpoint_water_supply_temperature",
+        "measure_flowmeter_water_supply_temperature",
+        "measure_heatpump_temperature_outgoing_water",
+        "measure_heatpump_temperature_incoming_water",
+        "measure_heatpump_temperature_delta_water",
+        "measure_flowmeter_water_flow_speed",
+        "measure_thermostat_domestic_hot_water_on",
+        "measure_heatpump_silent_mode",
+        "measure_heatpump_limited_by_cop",
+        "measure_thermostat_cooling_on",
         "measure_boiler_central_heating_mode",
         "measure_boiler_cic_central_heating_on",
         "measure_boiler_cic_central_heating_onoff_boiler",
@@ -2003,16 +2177,7 @@
         "measure_boiler_flame_on",
         "measure_boiler_temperature_incoming_water",
         "measure_boiler_temperature_outgoing_water",
-        "measure_boiler_water_pressure",
-        "measure_flowmeter_water_flow_speed",
-        "measure_flowmeter_water_supply_temperature",
-        "measure_quality_control_supervisory_control_mode",
-        "measure_thermostat_cooling_on",
-        "measure_thermostat_domestic_hot_water_on",
-        "measure_thermostat_heating_on",
-        "measure_thermostat_room_temperature",
-        "measure_thermostat_setpoint_room_temperature",
-        "measure_thermostat_setpoint_water_supply_temperature"
+        "measure_boiler_water_pressure"
       ],
       "capabilitiesOptions": {
         "measure_power": {
@@ -2116,6 +2281,32 @@
       },
       "settings": [
         {
+          "id": "remoteControlStatus",
+          "type": "label",
+          "label": {
+            "en": "Remote Control Status",
+            "nl": "Bediening op afstand status"
+          },
+          "hint": {
+            "en": "Shows whether remote control via Quatt Cloud is configured. Use 'Repair Device' to enable or reconfigure remote control for action flow cards.",
+            "nl": "Toont of bediening op afstand via Quatt Cloud is geconfigureerd. Gebruik 'Repareer apparaat' om bediening op afstand in of uit te schakelen voor actie flow kaarten."
+          },
+          "value": "Not configured"
+        },
+        {
+          "id": "cicWebInterfaceUrl",
+          "type": "label",
+          "label": {
+            "en": "CiC Web Interface",
+            "nl": "CiC Web Interface"
+          },
+          "hint": {
+            "en": "Click the URL below to open the Quatt CiC web interface in your browser",
+            "nl": "Klik op de onderstaande URL om de Quatt CiC web interface te openen in je browser"
+          },
+          "value": ""
+        },
+        {
           "id": "ipAddress",
           "type": "text",
           "label": {
@@ -2129,6 +2320,25 @@
           "placeholder": {
             "en": "e.g. 192.168.1.123",
             "nl": "bv 192.168.1.123"
+          }
+        },
+        {
+          "id": "updateInterval",
+          "type": "number",
+          "label": {
+            "en": "Data update interval",
+            "nl": "Data update interval"
+          },
+          "hint": {
+            "en": "How often to refresh data from the Quatt CiC. The Quatt CiC updates data every second. Minimum: 1 second, Maximum: 60 seconds.",
+            "nl": "Hoe vaak de data van de Quatt CiC ververst moet worden. De Quatt CiC werkt de data elke seconde bij. Minimum: 1 seconde, Maximum: 60 seconden."
+          },
+          "value": 5,
+          "min": 1,
+          "max": 60,
+          "units": {
+            "en": "seconds",
+            "nl": "seconden"
           }
         }
       ],
@@ -2158,10 +2368,50 @@
           "template": "done"
         }
       ],
+      "repair": [
+        {
+          "id": "remote_pair",
+          "navigation": {
+            "next": "done"
+          }
+        },
+        {
+          "id": "done",
+          "template": "done"
+        }
+      ],
       "id": "quatt_heatpump"
     }
   ],
   "capabilities": {
+    "alarm_heating": {
+      "type": "boolean",
+      "title": {
+        "en": "Heating active",
+        "nl": "Verwarming actief"
+      },
+      "titleTrue": {
+        "en": "Heating is on",
+        "nl": "Verwarming is aan"
+      },
+      "titleFalse": {
+        "en": "Heating is off",
+        "nl": "Verwarming is uit"
+      },
+      "desc": {
+        "en": "Shows if the heating is currently active",
+        "nl": "Toont of de verwarming momenteel actief is"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": true,
+      "icon": "./assets/icons/central-heating-currently-heating.svg",
+      "iconObj": {
+        "id": "radiator",
+        "color": "#FF6B00"
+      }
+    },
     "measure_boiler_central_heating_mode": {
       "type": "boolean",
       "title": {
@@ -2666,10 +2916,19 @@
         "en": "Thermostat heating",
         "nl": "Thermostaat verwarmt"
       },
+      "titleTrue": {
+        "en": "🔥",
+        "nl": "🔥"
+      },
+      "titleFalse": {
+        "en": "❄️",
+        "nl": "❄️"
+      },
       "description": "otFtChEnabled: A boolean value representing command from thermostat to switch on heating.",
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
+      "uiQuickAction": true,
       "icon": "assets/icons/thermostat-heating.svg",
       "insights": true,
       "insightsTitleTrue": {
@@ -2737,6 +2996,18 @@
       "decimals": 2,
       "step": 0.01,
       "insights": true
+    },
+    "meter_heating_status": {
+      "type": "string",
+      "title": {
+        "en": "Heating status",
+        "nl": "Verwarmingsstatus"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": true,
+      "icon": "assets/icons/thermostat-heating.svg"
     }
   }
 }

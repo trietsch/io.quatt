@@ -3,9 +3,30 @@
     "en": "Quatt",
     "nl": "Quatt"
   },
-  "class": "heater",
+  "class": "socket",
+  "energy": {},
   "capabilities": [
+    "meter_heating_status",
+    "measure_thermostat_heating_on",
+    "measure_thermostat_room_temperature",
+    "measure_thermostat_setpoint_room_temperature",
+    "measure_heatpump_temperature_outside",
     "measure_power",
+    "meter_power",
+    "measure_heatpump_cop",
+    "measure_heatpump_working_mode",
+    "measure_heatpump_thermal_power",
+    "measure_quality_control_supervisory_control_mode",
+    "measure_thermostat_setpoint_water_supply_temperature",
+    "measure_flowmeter_water_supply_temperature",
+    "measure_heatpump_temperature_outgoing_water",
+    "measure_heatpump_temperature_incoming_water",
+    "measure_heatpump_temperature_delta_water",
+    "measure_flowmeter_water_flow_speed",
+    "measure_thermostat_domestic_hot_water_on",
+    "measure_heatpump_silent_mode",
+    "measure_heatpump_limited_by_cop",
+    "measure_thermostat_cooling_on",
     "measure_boiler_central_heating_mode",
     "measure_boiler_cic_central_heating_on",
     "measure_boiler_cic_central_heating_onoff_boiler",
@@ -13,16 +34,7 @@
     "measure_boiler_flame_on",
     "measure_boiler_temperature_incoming_water",
     "measure_boiler_temperature_outgoing_water",
-    "measure_boiler_water_pressure",
-    "measure_flowmeter_water_flow_speed",
-    "measure_flowmeter_water_supply_temperature",
-    "measure_quality_control_supervisory_control_mode",
-    "measure_thermostat_cooling_on",
-    "measure_thermostat_domestic_hot_water_on",
-    "measure_thermostat_heating_on",
-    "measure_thermostat_room_temperature",
-    "measure_thermostat_setpoint_room_temperature",
-    "measure_thermostat_setpoint_water_supply_temperature"
+    "measure_boiler_water_pressure"
   ],
   "capabilitiesOptions": {
     "measure_power": {
@@ -126,6 +138,32 @@
   },
   "settings": [
     {
+      "id": "remoteControlStatus",
+      "type": "label",
+      "label": {
+        "en": "Remote Control Status",
+        "nl": "Bediening op afstand status"
+      },
+      "hint": {
+        "en": "Shows whether remote control via Quatt Cloud is configured. Use 'Repair Device' to enable or reconfigure remote control for action flow cards.",
+        "nl": "Toont of bediening op afstand via Quatt Cloud is geconfigureerd. Gebruik 'Repareer apparaat' om bediening op afstand in of uit te schakelen voor actie flow kaarten."
+      },
+      "value": "Not configured"
+    },
+    {
+      "id": "cicWebInterfaceUrl",
+      "type": "label",
+      "label": {
+        "en": "CiC Web Interface",
+        "nl": "CiC Web Interface"
+      },
+      "hint": {
+        "en": "Click the URL below to open the Quatt CiC web interface in your browser",
+        "nl": "Klik op de onderstaande URL om de Quatt CiC web interface te openen in je browser"
+      },
+      "value": ""
+    },
+    {
       "id": "ipAddress",
       "type": "text",
       "label": {
@@ -139,6 +177,25 @@
       "placeholder": {
         "en": "e.g. 192.168.1.123",
         "nl": "bv 192.168.1.123"
+      }
+    },
+    {
+      "id": "updateInterval",
+      "type": "number",
+      "label": {
+        "en": "Data update interval",
+        "nl": "Data update interval"
+      },
+      "hint": {
+        "en": "How often to refresh data from the Quatt CiC. The Quatt CiC updates data every second. Minimum: 1 second, Maximum: 60 seconds.",
+        "nl": "Hoe vaak de data van de Quatt CiC ververst moet worden. De Quatt CiC werkt de data elke seconde bij. Minimum: 1 seconde, Maximum: 60 seconden."
+      },
+      "value": 5,
+      "min": 1,
+      "max": 60,
+      "units": {
+        "en": "seconds",
+        "nl": "seconden"
       }
     }
   ],
@@ -164,6 +221,18 @@
     {
       "id": "add_devices",
       "template": "add_devices"
+    },
+    {
+      "id": "done",
+      "template": "done"
+    }
+  ],
+  "repair": [
+    {
+      "id": "remote_pair",
+      "navigation": {
+        "next": "done"
+      }
     },
     {
       "id": "done",
