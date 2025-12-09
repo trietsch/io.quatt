@@ -1,7 +1,5 @@
 # Quatt Homey App
 
-> **Note:** This is an actively maintained fork of the [original Quatt Homey app](https://github.com/trietsch/io.quatt). The original maintainer appears to be inactive, so this fork continues development with new features and bug fixes.
->
 > **This app is not yet available in the Homey App Store.** See [Installation](#installation) for how to install it manually.
 
 Integrate your Quatt heat pump with Homey for monitoring, automation, and energy tracking. This app reads data from the Quatt Commander-In-Chief (CiC) and exposes it as Homey capabilities.
@@ -115,7 +113,6 @@ To enable remote control:
 
 - [Dutch forum thread](https://community.homey.app/t/app-pro-quatt-nl/91802)
 - [English forum thread](https://community.homey.app/t/app-pro-quatt/91446)
-- [GitHub Issues](https://github.com/WebBuildsNL/io.quatt/issues)
 
 ## Contributing
 
@@ -132,8 +129,9 @@ homey app run    # Run with live logs
 ## Credits
 
 - Original app by [@trietsch](https://github.com/trietsch)
-- Nice PR's on the original repository [@jvmenen](https://github.com/jvmenen)
-- Continued development by [Dennis](https://github.com/cannonb4ll)
+- Additions by [@jvmenen](https://github.com/jvmenen)
+- Additions by [@cannonb4ll](https://github.com/cannonb4ll)
+
 
 ## License
 
