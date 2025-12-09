@@ -1,7 +1,5 @@
 # Quatt Homey App
 
-> **This app is not yet available in the Homey App Store.** See [Installation](#installation) for how to install it manually.
-
 Integrate your Quatt heat pump with Homey for monitoring, automation, and energy tracking. This app reads data from the Quatt Commander-In-Chief (CiC) and exposes it as Homey capabilities.
 
 ## Features
