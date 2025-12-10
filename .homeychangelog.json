@@ -64,5 +64,8 @@
   },
   "1.6.0": {
     "en": "Quatt mobile API, Energy tab, various bugfixes and improvements"
+  },
+  "1.7.0": {
+    "en": "Change device class to heatpump, update homey version compatibility, data fetching bug fix for Quatt Duo setup, add widget"
   }
 }
