@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* CSS Custom Properties for theming */
+    :root {
+      /* Dark mode (default) */
+      --bg-primary: linear-gradient(135deg, #071413 0%, #0a1f1c 100%);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.5);
+      --text-muted: rgba(255, 255, 255, 0.4);
+      --accent-green: #D9FF5C;
+      --accent-orange: #ff6933;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover-bg: rgba(255, 255, 255, 0.08);
+      --bar-bg: rgba(255, 255, 255, 0.1);
+      --bar-fill: linear-gradient(90deg, #8EBF92 0%, #D9FF5C 100%);
+      --status-idle-bg: rgba(217, 255, 92, 0.1);
+      --status-idle-color: #D9FF5C;
+      --status-heat-bg: rgba(255, 105, 51, 0.15);
+      --status-heat-color: #ff6933;
+    }
+
+    /* Light mode - Quatt natural/wooden aesthetic */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-primary: #ffffff;
+        --text-primary: #2c2418;
+        --text-secondary: #5c4d3a;
+        --text-muted: #8a7a64;
+        --accent-green: #3d7a4a;
+        --accent-orange: #c45a2c;
+        --card-bg: rgba(139, 119, 91, 0.08);
+        --card-border: rgba(139, 119, 91, 0.15);
+        --card-hover-bg: rgba(139, 119, 91, 0.12);
+        --bar-bg: rgba(139, 119, 91, 0.2);
+        --bar-fill: linear-gradient(90deg, #6b9e72 0%, #3d7a4a 100%);
+        --status-idle-bg: rgba(61, 122, 74, 0.12);
+        --status-idle-color: #3d7a4a;
+        --status-heat-bg: rgba(196, 90, 44, 0.12);
+        --status-heat-color: #c45a2c;
+      }
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .widget-container {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .temp-section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main-temp {
+      display: flex;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .temp-value {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-primary);
+      letter-spacing: -1px;
+    }
+
+    .temp-unit {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--accent-green);
+      margin-top: 6px;
+    }
+
+    .temp-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-indicator.heating {
+      background: var(--status-heat-bg);
+      color: var(--status-heat-color);
+    }
+
+    .status-indicator.idle {
+      background: var(--status-idle-bg);
+      color: var(--status-idle-color);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-indicator.heating .status-dot {
+      background: var(--status-heat-color);
+    }
+
+    .status-indicator.idle .status-dot {
+      background: var(--status-idle-color);
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.1); }
+    }
+
+    .metrics-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    /* Single unit: metrics row fills available space */
+    .single-unit .metrics-row {
+      flex: 1;
+    }
+
+    .metric-card {
+      flex: 1;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border: 1px solid var(--card-border);
+      transition: all 0.2s ease;
+    }
+
+    /* Single unit: larger cards with centered content */
+    .single-unit .metric-card {
+      padding: 14px 10px;
+      justify-content: center;
+    }
+
+    .metric-card:hover {
+      background: var(--card-hover-bg);
+      border-color: var(--card-border);
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Single unit: larger font */
+    .single-unit .metric-value {
+      font-size: 22px;
+    }
+
+    .metric-value .unit {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-left: 2px;
+    }
+
+    /* Single unit: larger unit font */
+    .single-unit .metric-value .unit {
+      font-size: 15px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* Single unit: larger label font */
+    .single-unit .metric-label {
+      font-size: 12px;
+    }
+
+    .metric-card.highlight {
+      background: var(--status-idle-bg);
+      border-color: var(--accent-green);
+    }
+
+    .metric-card.highlight .metric-value {
+      color: var(--accent-green);
+    }
+
+    .power-section {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .power-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .power-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .power-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    .power-bar {
+      height: 8px;
+      background: var(--bar-bg);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .power-bar-fill {
+      height: 100%;
+      background: var(--bar-fill);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 240px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .error {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 240px;
+      color: var(--text-secondary);
+      text-align: center;
+      gap: 8px;
+    }
+
+    .error-icon {
+      font-size: 32px;
+      opacity: 0.5;
+    }
+
+    /* Tabs for dual heatpump */
+    .tabs-container {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tab:hover {
+      background: var(--card-hover-bg);
+    }
+
+    .tab.active {
+      background: var(--status-idle-bg);
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .tab-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .tab-indicator.active {
+      background: var(--accent-green);
+    }
+
+    .tab-indicator.idle {
+      background: var(--text-muted);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="widget-container" id="content">
+    <div class="loading">Loading...</div>
+  </div>
+
+  <script>
+    function onHomeyReady(Homey) {
+      const contentEl = document.getElementById('content');
+      const deviceIds = Homey.getDeviceIds();
+      const settings = Homey.getSettings();
+
+      Homey.ready({ height: 280 });
+
+      // Detect language early for error messages
+      const langEarly = (navigator.language || 'en').substring(0, 2);
+      const noDeviceMsg = langEarly === 'nl' ? 'Geen apparaat geselecteerd' : 'No device selected';
+      const configureMsg = langEarly === 'nl' ? 'Configureer widget om een Quatt apparaat te selecteren' : 'Configure widget to select a Quatt device';
+
+      if (!deviceIds || deviceIds.length === 0) {
+        showError(noDeviceMsg, configureMsg);
+        return;
+      }
+
+      const deviceId = deviceIds[0];
+
+      // Get metric settings with defaults
+      const metric1 = settings.metric1 || 'setpoint';
+      const metric2 = settings.metric2 || 'outsideTemp';
+      const metric3 = settings.metric3 || 'waterSupplyTemp';
+
+      // Detect language (defaults to English)
+      const lang = (navigator.language || 'en').substring(0, 2);
+
+      // Translations
+      const i18n = {
+        en: {
+          roomTemp: 'Room Temperature',
+          heating: 'Heating',
+          standby: 'Standby',
+          powerConsumption: 'Power Consumption',
+          noDevice: 'No device selected',
+          configureWidget: 'Configure widget to select a Quatt device',
+          connectionError: 'Connection error',
+          couldNotReach: 'Could not reach device',
+          combined: 'Combined',
+          heatpump1: 'Pump 1',
+          heatpump2: 'Pump 2'
+        },
+        nl: {
+          roomTemp: 'Kamertemperatuur',
+          heating: 'Verwarmen',
+          standby: 'Stand-by',
+          powerConsumption: 'Stroomverbruik',
+          noDevice: 'Geen apparaat geselecteerd',
+          configureWidget: 'Configureer widget om een Quatt apparaat te selecteren',
+          connectionError: 'Verbindingsfout',
+          couldNotReach: 'Kon apparaat niet bereiken',
+          combined: 'Gecombineerd',
+          heatpump1: 'Pomp 1',
+          heatpump2: 'Pomp 2'
+        }
+      };
+      const t = i18n[lang] || i18n.en;
+
+      // Track active tab
+      let activeTab = 'combined';
+
+      async function fetchAndRender() {
+        try {
+          const data = await Homey.api('GET', `/${deviceId}`);
+          render(data);
+        } catch (err) {
+          console.error('Failed to fetch status:', err);
+          showError(t.connectionError, err.message || t.couldNotReach);
+        }
+      }
+
+      function getMetricDisplay(metricId, data, lang, heatpumpData = null) {
+        const labels = {
+          en: {
+            setpoint: 'Setpoint',
+            outsideTemp: 'Outside',
+            waterSupplyTemp: 'Water Temp',
+            thermalPower: 'Thermal',
+            flowRate: 'Flow',
+            cop: 'COP'
+          },
+          nl: {
+            setpoint: 'Setpoint',
+            outsideTemp: 'Buiten',
+            waterSupplyTemp: 'Watertemp',
+            thermalPower: 'Thermisch',
+            flowRate: 'Flow Rate',
+            cop: 'COP'
+          }
+        };
+        const l = labels[lang] || labels.en;
+
+        // If heatpumpData is provided, use per-heatpump values for applicable metrics
+        const metrics = {
+          setpoint: { value: formatTemp(data.setpoint), unit: '°C', label: l.setpoint },
+          outsideTemp: { value: formatTemp(heatpumpData ? heatpumpData.outsideTemp : data.outsideTemp), unit: '°C', label: l.outsideTemp },
+          waterSupplyTemp: { value: formatTemp(data.waterSupplyTemp), unit: '°C', label: l.waterSupplyTemp },
+          thermalPower: { value: formatNumber(heatpumpData ? heatpumpData.thermalPower : data.thermalPower), unit: 'W', label: l.thermalPower },
+          flowRate: { value: formatFlow(data.flowRate), unit: 'L/m', label: l.flowRate },
+          cop: { value: formatCop(heatpumpData ? heatpumpData.cop : data.cop), unit: '', label: l.cop }
+        };
+        return metrics[metricId] || metrics.setpoint;
+      }
+
+      function render(data) {
+        const isHeating = data.heatingStatus === 'heating';
+        const statusClass = isHeating ? 'heating' : 'idle';
+        const statusText = isHeating ? t.heating : t.standby;
+        const powerPercent = Math.min(100, (data.power / 3000) * 100);
+
+        const m1 = getMetricDisplay(metric1, data, lang);
+        const m2 = getMetricDisplay(metric2, data, lang);
+        const m3 = getMetricDisplay(metric3, data, lang);
+
+        // Build tabs HTML for dual heatpump
+        const hp1Status = data.heatpump1?.isActive ? 'active' : 'idle';
+        const hp2Status = data.heatpump2?.isActive ? 'active' : 'idle';
+
+        const tabsHtml = data.isDualHeatpump ? `
+          <div class="tabs-container">
+            <div class="tab ${activeTab === 'combined' ? 'active' : ''}" data-tab="combined">${t.combined}</div>
+            <div class="tab ${activeTab === 'hp1' ? 'active' : ''}" data-tab="hp1"><span class="tab-indicator ${hp1Status}"></span>${t.heatpump1}</div>
+            <div class="tab ${activeTab === 'hp2' ? 'active' : ''}" data-tab="hp2"><span class="tab-indicator ${hp2Status}"></span>${t.heatpump2}</div>
+          </div>
+        ` : '';
+
+        // Build metrics for each tab
+        const combinedMetrics = `
+          <div class="metrics-row">
+            <div class="metric-card">
+              <div class="metric-value">${m1.value}${m1.unit ? `<span class="unit">${m1.unit}</span>` : ''}</div>
+              <div class="metric-label">${m1.label}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">${m2.value}${m2.unit ? `<span class="unit">${m2.unit}</span>` : ''}</div>
+              <div class="metric-label">${m2.label}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">${m3.value}${m3.unit ? `<span class="unit">${m3.unit}</span>` : ''}</div>
+              <div class="metric-label">${m3.label}</div>
+            </div>
+          </div>
+        `;
+
+        const renderHpMetrics = (hp) => {
+          if (!hp) return '<div class="metrics-row"><div class="metric-card"><div class="metric-value">--</div><div class="metric-label">N/A</div></div></div>';
+
+          // Use the same configured metrics but with per-heatpump values
+          const hpM1 = getMetricDisplay(metric1, data, lang, hp);
+          const hpM2 = getMetricDisplay(metric2, data, lang, hp);
+          const hpM3 = getMetricDisplay(metric3, data, lang, hp);
+
+          return `
+            <div class="metrics-row">
+              <div class="metric-card">
+                <div class="metric-value">${hpM1.value}${hpM1.unit ? `<span class="unit">${hpM1.unit}</span>` : ''}</div>
+                <div class="metric-label">${hpM1.label}</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">${hpM2.value}${hpM2.unit ? `<span class="unit">${hpM2.unit}</span>` : ''}</div>
+                <div class="metric-label">${hpM2.label}</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">${hpM3.value}${hpM3.unit ? `<span class="unit">${hpM3.unit}</span>` : ''}</div>
+                <div class="metric-label">${hpM3.label}</div>
+              </div>
+            </div>
+          `;
+        };
+
+        // For single heatpump, just show combined metrics
+        const metricsContent = data.isDualHeatpump ? `
+          <div class="tab-content ${activeTab === 'combined' ? 'active' : ''}" data-content="combined">${combinedMetrics}</div>
+          <div class="tab-content ${activeTab === 'hp1' ? 'active' : ''}" data-content="hp1">${renderHpMetrics(data.heatpump1)}</div>
+          <div class="tab-content ${activeTab === 'hp2' ? 'active' : ''}" data-content="hp2">${renderHpMetrics(data.heatpump2)}</div>
+        ` : combinedMetrics;
+
+        // Add class based on unit type
+        contentEl.className = data.isDualHeatpump ? 'widget-container dual-unit' : 'widget-container single-unit';
+
+        contentEl.innerHTML = `
+          <div class="header">
+            <div class="temp-section">
+              <div class="main-temp">
+                <span class="temp-value">${formatTemp(data.roomTemp)}</span>
+                <span class="temp-unit">°C</span>
+              </div>
+              <div class="temp-label">${t.roomTemp}</div>
+            </div>
+            <div class="status-indicator ${statusClass}">
+              <div class="status-dot"></div>
+              ${statusText}
+            </div>
+          </div>
+
+          <div class="power-section">
+            <div class="power-header">
+              <span class="power-label">${t.powerConsumption}</span>
+              <span class="power-value">${formatNumber(data.power)} W</span>
+            </div>
+            <div class="power-bar">
+              <div class="power-bar-fill" style="width: ${powerPercent}%"></div>
+            </div>
+          </div>
+
+          ${tabsHtml}
+          ${metricsContent}
+        `;
+
+        // Attach tab click handlers for dual heatpump
+        if (data.isDualHeatpump) {
+          document.querySelectorAll('.tab').forEach(tabEl => {
+            tabEl.addEventListener('click', () => {
+              const tabId = tabEl.getAttribute('data-tab');
+              activeTab = tabId;
+
+              // Update tab styles
+              document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+              tabEl.classList.add('active');
+
+              // Update content visibility
+              document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+              document.querySelector(`.tab-content[data-content="${tabId}"]`).classList.add('active');
+            });
+          });
+        }
+      }
+
+      function showError(title, message) {
+        contentEl.innerHTML = `
+          <div class="error">
+            <div class="error-icon">⚠</div>
+            <div><strong>${title}</strong></div>
+            <div>${message}</div>
+          </div>
+        `;
+      }
+
+      function formatTemp(value) {
+        if (value === null || value === undefined) return '--';
+        return Number(value).toFixed(1);
+      }
+
+      function formatNumber(value) {
+        if (value === null || value === undefined) return '--';
+        return Math.round(value);
+      }
+
+      function formatFlow(value) {
+        if (value === null || value === undefined) return '--';
+        return Number(value).toFixed(1);
+      }
+
+      function formatCop(value) {
+        if (value === null || value === undefined || value === 0) return '--';
+        return Number(value).toFixed(1);
+      }
+
+      fetchAndRender();
+      setInterval(fetchAndRender, 10000);
+    }
+  </script>
+</body>
+</html>
