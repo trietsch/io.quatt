@@ -24,7 +24,7 @@
         { "id": "outsideTemp", "label": { "en": "Outside Temp", "nl": "Buitentemperatuur" } },
         { "id": "waterSupplyTemp", "label": { "en": "Water Supply Temp", "nl": "Aanvoertemperatuur" } },
         { "id": "thermalPower", "label": { "en": "Thermal Power", "nl": "Thermisch vermogen" } },
-        { "id": "flowRate", "label": { "en": "Flow Rate", "nl": "Debiet" } },
+        { "id": "flowRate", "label": { "en": "Flow Rate", "nl": "Flow Rate" } },
         { "id": "cop", "label": { "en": "COP", "nl": "COP" } }
       ]
     },
@@ -41,7 +41,7 @@
         { "id": "outsideTemp", "label": { "en": "Outside Temp", "nl": "Buitentemperatuur" } },
         { "id": "waterSupplyTemp", "label": { "en": "Water Supply Temp", "nl": "Aanvoertemperatuur" } },
         { "id": "thermalPower", "label": { "en": "Thermal Power", "nl": "Thermisch vermogen" } },
-        { "id": "flowRate", "label": { "en": "Flow Rate", "nl": "Debiet" } },
+        { "id": "flowRate", "label": { "en": "Flow Rate", "nl": "Flow Rate" } },
         { "id": "cop", "label": { "en": "COP", "nl": "COP" } }
       ]
     },
@@ -58,7 +58,7 @@
         { "id": "outsideTemp", "label": { "en": "Outside Temp", "nl": "Buitentemperatuur" } },
         { "id": "waterSupplyTemp", "label": { "en": "Water Supply Temp", "nl": "Aanvoertemperatuur" } },
         { "id": "thermalPower", "label": { "en": "Thermal Power", "nl": "Thermisch vermogen" } },
-        { "id": "flowRate", "label": { "en": "Flow Rate", "nl": "Debiet" } },
+        { "id": "flowRate", "label": { "en": "Flow Rate", "nl": "Flow Rate" } },
         { "id": "cop", "label": { "en": "COP", "nl": "COP" } }
       ]
     }

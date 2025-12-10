@@ -52,18 +52,21 @@
       }
     }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
-      min-height: 100%;
     }
 
     .widget-container {
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       height: 100%;
     }
 
@@ -85,18 +88,18 @@
     }
 
     .temp-value {
-      font-size: 56px;
+      font-size: 40px;
       font-weight: 700;
       line-height: 1;
       color: var(--text-primary);
-      letter-spacing: -2px;
+      letter-spacing: -1px;
     }
 
     .temp-unit {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 500;
       color: var(--accent-green);
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
     .temp-label {
@@ -151,18 +154,18 @@
 
     .metrics-row {
       display: flex;
-      gap: 12px;
+      gap: 6px;
       margin-top: auto;
     }
 
     .metric-card {
       flex: 1;
       background: var(--card-bg);
-      border-radius: 16px;
-      padding: 14px;
+      border-radius: 12px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       border: 1px solid var(--card-border);
       transition: all 0.2s ease;
     }
@@ -173,7 +176,7 @@
     }
 
     .metric-value {
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--text-primary);
     }
@@ -204,8 +207,8 @@
 
     .power-section {
       background: var(--card-bg);
-      border-radius: 16px;
-      padding: 14px;
+      border-radius: 12px;
+      padding: 10px 12px;
       border: 1px solid var(--card-border);
     }
 
@@ -213,7 +216,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
     .power-label {
@@ -268,6 +271,63 @@
       font-size: 32px;
       opacity: 0.5;
     }
+
+    /* Tabs for dual heatpump */
+    .tabs-container {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tab:hover {
+      background: var(--card-hover-bg);
+    }
+
+    .tab.active {
+      background: var(--status-idle-bg);
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .tab-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .tab-indicator.active {
+      background: var(--accent-green);
+    }
+
+    .tab-indicator.idle {
+      background: var(--text-muted);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -313,7 +373,10 @@
           noDevice: 'No device selected',
           configureWidget: 'Configure widget to select a Quatt device',
           connectionError: 'Connection error',
-          couldNotReach: 'Could not reach device'
+          couldNotReach: 'Could not reach device',
+          combined: 'Combined',
+          heatpump1: 'Pump 1',
+          heatpump2: 'Pump 2'
         },
         nl: {
           roomTemp: 'Kamertemperatuur',
@@ -323,10 +386,16 @@
           noDevice: 'Geen apparaat geselecteerd',
           configureWidget: 'Configureer widget om een Quatt apparaat te selecteren',
           connectionError: 'Verbindingsfout',
-          couldNotReach: 'Kon apparaat niet bereiken'
+          couldNotReach: 'Kon apparaat niet bereiken',
+          combined: 'Gecombineerd',
+          heatpump1: 'Pomp 1',
+          heatpump2: 'Pomp 2'
         }
       };
       const t = i18n[lang] || i18n.en;
+
+      // Track active tab
+      let activeTab = 'combined';
 
       async function fetchAndRender() {
         try {
@@ -353,7 +422,7 @@
             outsideTemp: 'Buiten',
             waterSupplyTemp: 'Watertemp',
             thermalPower: 'Thermisch',
-            flowRate: 'Debiet',
+            flowRate: 'Flow Rate',
             cop: 'COP'
           }
         };
@@ -380,6 +449,69 @@
         const m2 = getMetricDisplay(metric2, data, lang);
         const m3 = getMetricDisplay(metric3, data, lang);
 
+        // Build tabs HTML for dual heatpump
+        const hp1Status = data.heatpump1?.isActive ? 'active' : 'idle';
+        const hp2Status = data.heatpump2?.isActive ? 'active' : 'idle';
+
+        const tabsHtml = data.isDualHeatpump ? `
+          <div class="tabs-container">
+            <div class="tab ${activeTab === 'combined' ? 'active' : ''}" data-tab="combined">${t.combined}</div>
+            <div class="tab ${activeTab === 'hp1' ? 'active' : ''}" data-tab="hp1"><span class="tab-indicator ${hp1Status}"></span>${t.heatpump1}</div>
+            <div class="tab ${activeTab === 'hp2' ? 'active' : ''}" data-tab="hp2"><span class="tab-indicator ${hp2Status}"></span>${t.heatpump2}</div>
+          </div>
+        ` : '';
+
+        // Build metrics for each tab
+        const combinedMetrics = `
+          <div class="metrics-row">
+            <div class="metric-card">
+              <div class="metric-value">${m1.value}${m1.unit ? `<span class="unit">${m1.unit}</span>` : ''}</div>
+              <div class="metric-label">${m1.label}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">${m2.value}${m2.unit ? `<span class="unit">${m2.unit}</span>` : ''}</div>
+              <div class="metric-label">${m2.label}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">${m3.value}${m3.unit ? `<span class="unit">${m3.unit}</span>` : ''}</div>
+              <div class="metric-label">${m3.label}</div>
+            </div>
+          </div>
+        `;
+
+        const hpLabels = {
+          en: { cop: 'COP', thermal: 'Thermal', waterIn: 'Water In', waterOut: 'Water Out' },
+          nl: { cop: 'COP', thermal: 'Thermisch', waterIn: 'Water In', waterOut: 'Water Uit' }
+        };
+        const hpL = hpLabels[lang] || hpLabels.en;
+
+        const renderHpMetrics = (hp) => {
+          if (!hp) return '<div class="metrics-row"><div class="metric-card"><div class="metric-value">--</div><div class="metric-label">N/A</div></div></div>';
+          return `
+            <div class="metrics-row">
+              <div class="metric-card">
+                <div class="metric-value">${formatCop(hp.cop)}</div>
+                <div class="metric-label">${hpL.cop}</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">${formatNumber(hp.thermalPower)}<span class="unit">W</span></div>
+                <div class="metric-label">${hpL.thermal}</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">${formatTemp(hp.temperatureOutgoing)}<span class="unit">°C</span></div>
+                <div class="metric-label">${hpL.waterOut}</div>
+              </div>
+            </div>
+          `;
+        };
+
+        // For single heatpump, just show combined metrics
+        const metricsContent = data.isDualHeatpump ? `
+          <div class="tab-content ${activeTab === 'combined' ? 'active' : ''}" data-content="combined">${combinedMetrics}</div>
+          <div class="tab-content ${activeTab === 'hp1' ? 'active' : ''}" data-content="hp1">${renderHpMetrics(data.heatpump1)}</div>
+          <div class="tab-content ${activeTab === 'hp2' ? 'active' : ''}" data-content="hp2">${renderHpMetrics(data.heatpump2)}</div>
+        ` : combinedMetrics;
+
         contentEl.innerHTML = `
           <div class="header">
             <div class="temp-section">
@@ -405,21 +537,27 @@
             </div>
           </div>
 
-          <div class="metrics-row">
-            <div class="metric-card">
-              <div class="metric-value">${m1.value}${m1.unit ? `<span class="unit">${m1.unit}</span>` : ''}</div>
-              <div class="metric-label">${m1.label}</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-value">${m2.value}${m2.unit ? `<span class="unit">${m2.unit}</span>` : ''}</div>
-              <div class="metric-label">${m2.label}</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-value">${m3.value}${m3.unit ? `<span class="unit">${m3.unit}</span>` : ''}</div>
-              <div class="metric-label">${m3.label}</div>
-            </div>
-          </div>
+          ${tabsHtml}
+          ${metricsContent}
         `;
+
+        // Attach tab click handlers for dual heatpump
+        if (data.isDualHeatpump) {
+          document.querySelectorAll('.tab').forEach(tabEl => {
+            tabEl.addEventListener('click', () => {
+              const tabId = tabEl.getAttribute('data-tab');
+              activeTab = tabId;
+
+              // Update tab styles
+              document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+              tabEl.classList.add('active');
+
+              // Update content visibility
+              document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+              document.querySelector(`.tab-content[data-content="${tabId}"]`).classList.add('active');
+            });
+          });
+        }
       }
 
       function showError(title, message) {
