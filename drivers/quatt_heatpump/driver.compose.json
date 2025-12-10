@@ -3,7 +3,7 @@
     "en": "Quatt",
     "nl": "Quatt"
   },
-  "class": "socket",
+  "class": "heatpump",
   "energy": {},
   "capabilities": [
     "meter_heating_status",
