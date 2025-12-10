@@ -155,7 +155,11 @@
     .metrics-row {
       display: flex;
       gap: 6px;
-      margin-top: auto;
+    }
+
+    /* Single unit: metrics row fills available space */
+    .single-unit .metrics-row {
+      flex: 1;
     }
 
     .metric-card {
@@ -170,6 +174,12 @@
       transition: all 0.2s ease;
     }
 
+    /* Single unit: larger cards with centered content */
+    .single-unit .metric-card {
+      padding: 14px 10px;
+      justify-content: center;
+    }
+
     .metric-card:hover {
       background: var(--card-hover-bg);
       border-color: var(--card-border);
@@ -181,11 +191,21 @@
       color: var(--text-primary);
     }
 
+    /* Single unit: larger font */
+    .single-unit .metric-value {
+      font-size: 22px;
+    }
+
     .metric-value .unit {
       font-size: 14px;
       font-weight: 500;
       color: var(--text-secondary);
       margin-left: 2px;
+    }
+
+    /* Single unit: larger unit font */
+    .single-unit .metric-value .unit {
+      font-size: 15px;
     }
 
     .metric-label {
@@ -194,6 +214,11 @@
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.8px;
+    }
+
+    /* Single unit: larger label font */
+    .single-unit .metric-label {
+      font-size: 12px;
     }
 
     .metric-card.highlight {
@@ -407,7 +432,7 @@
         }
       }
 
-      function getMetricDisplay(metricId, data, lang) {
+      function getMetricDisplay(metricId, data, lang, heatpumpData = null) {
         const labels = {
           en: {
             setpoint: 'Setpoint',
@@ -428,13 +453,14 @@
         };
         const l = labels[lang] || labels.en;
 
+        // If heatpumpData is provided, use per-heatpump values for applicable metrics
         const metrics = {
           setpoint: { value: formatTemp(data.setpoint), unit: '°C', label: l.setpoint },
-          outsideTemp: { value: formatTemp(data.outsideTemp), unit: '°C', label: l.outsideTemp },
+          outsideTemp: { value: formatTemp(heatpumpData ? heatpumpData.outsideTemp : data.outsideTemp), unit: '°C', label: l.outsideTemp },
           waterSupplyTemp: { value: formatTemp(data.waterSupplyTemp), unit: '°C', label: l.waterSupplyTemp },
-          thermalPower: { value: formatNumber(data.thermalPower), unit: 'W', label: l.thermalPower },
+          thermalPower: { value: formatNumber(heatpumpData ? heatpumpData.thermalPower : data.thermalPower), unit: 'W', label: l.thermalPower },
           flowRate: { value: formatFlow(data.flowRate), unit: 'L/m', label: l.flowRate },
-          cop: { value: formatCop(data.cop), unit: '', label: l.cop }
+          cop: { value: formatCop(heatpumpData ? heatpumpData.cop : data.cop), unit: '', label: l.cop }
         };
         return metrics[metricId] || metrics.setpoint;
       }
@@ -479,27 +505,27 @@
           </div>
         `;
 
-        const hpLabels = {
-          en: { cop: 'COP', thermal: 'Thermal', waterIn: 'Water In', waterOut: 'Water Out' },
-          nl: { cop: 'COP', thermal: 'Thermisch', waterIn: 'Water In', waterOut: 'Water Uit' }
-        };
-        const hpL = hpLabels[lang] || hpLabels.en;
-
         const renderHpMetrics = (hp) => {
           if (!hp) return '<div class="metrics-row"><div class="metric-card"><div class="metric-value">--</div><div class="metric-label">N/A</div></div></div>';
+
+          // Use the same configured metrics but with per-heatpump values
+          const hpM1 = getMetricDisplay(metric1, data, lang, hp);
+          const hpM2 = getMetricDisplay(metric2, data, lang, hp);
+          const hpM3 = getMetricDisplay(metric3, data, lang, hp);
+
           return `
             <div class="metrics-row">
               <div class="metric-card">
-                <div class="metric-value">${formatCop(hp.cop)}</div>
-                <div class="metric-label">${hpL.cop}</div>
+                <div class="metric-value">${hpM1.value}${hpM1.unit ? `<span class="unit">${hpM1.unit}</span>` : ''}</div>
+                <div class="metric-label">${hpM1.label}</div>
               </div>
               <div class="metric-card">
-                <div class="metric-value">${formatNumber(hp.thermalPower)}<span class="unit">W</span></div>
-                <div class="metric-label">${hpL.thermal}</div>
+                <div class="metric-value">${hpM2.value}${hpM2.unit ? `<span class="unit">${hpM2.unit}</span>` : ''}</div>
+                <div class="metric-label">${hpM2.label}</div>
               </div>
               <div class="metric-card">
-                <div class="metric-value">${formatTemp(hp.temperatureOutgoing)}<span class="unit">°C</span></div>
-                <div class="metric-label">${hpL.waterOut}</div>
+                <div class="metric-value">${hpM3.value}${hpM3.unit ? `<span class="unit">${hpM3.unit}</span>` : ''}</div>
+                <div class="metric-label">${hpM3.label}</div>
               </div>
             </div>
           `;
@@ -511,6 +537,9 @@
           <div class="tab-content ${activeTab === 'hp1' ? 'active' : ''}" data-content="hp1">${renderHpMetrics(data.heatpump1)}</div>
           <div class="tab-content ${activeTab === 'hp2' ? 'active' : ''}" data-content="hp2">${renderHpMetrics(data.heatpump2)}</div>
         ` : combinedMetrics;
+
+        // Add class based on unit type
+        contentEl.className = data.isDualHeatpump ? 'widget-container dual-unit' : 'widget-container single-unit';
 
         contentEl.innerHTML = `
           <div class="header">
