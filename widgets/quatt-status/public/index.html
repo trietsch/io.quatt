@@ -54,6 +54,8 @@
 
     html, body {
       height: 100%;
+      overflow: hidden;
+      touch-action: pan-y;
     }
 
     body {
@@ -68,6 +70,7 @@
       flex-direction: column;
       gap: 12px;
       height: 100%;
+      overflow: hidden;
     }
 
     .header {
@@ -374,6 +377,10 @@
       const langEarly = (navigator.language || 'en').substring(0, 2);
       const noDeviceMsg = langEarly === 'nl' ? 'Geen apparaat geselecteerd' : 'No device selected';
       const configureMsg = langEarly === 'nl' ? 'Configureer widget om een Quatt apparaat te selecteren' : 'Configure widget to select a Quatt device';
+      const loadingMsg = langEarly === 'nl' ? 'Laden...' : 'Loading...';
+
+      // Update loading text with translation
+      contentEl.innerHTML = `<div class="loading">${loadingMsg}</div>`;
 
       if (!deviceIds || deviceIds.length === 0) {
         showError(noDeviceMsg, configureMsg);
@@ -403,7 +410,8 @@
           couldNotReach: 'Could not reach device',
           combined: 'Combined',
           heatpump1: 'Pump 1',
-          heatpump2: 'Pump 2'
+          heatpump2: 'Pump 2',
+          loading: 'Loading...'
         },
         nl: {
           roomTemp: 'Kamertemperatuur',
@@ -414,9 +422,10 @@
           configureWidget: 'Configureer widget om een Quatt apparaat te selecteren',
           connectionError: 'Verbindingsfout',
           couldNotReach: 'Kon apparaat niet bereiken',
-          combined: 'Gecombineerd',
+          combined: 'Gecomb.',
           heatpump1: 'Pomp 1',
-          heatpump2: 'Pomp 2'
+          heatpump2: 'Pomp 2',
+          loading: 'Laden...'
         }
       };
       const t = i18n[lang] || i18n.en;
