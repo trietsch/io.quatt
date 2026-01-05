@@ -70,5 +70,8 @@
   },
   "1.8.0": {
     "en": "Add Dennis to contributors, update widget preview image"
+  },
+  "1.8.1": {
+    "en": "Widget styling and COP calculation fix"
   }
 }
