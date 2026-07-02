@@ -1,0 +1,121 @@
+{
+  "actions": [
+    {
+      "id": "set_chill_fan_mode",
+      "title": {
+        "en": "Set Chill fan mode",
+        "nl": "Zet Chill ventilatorstand"
+      },
+      "titleFormatted": {
+        "en": "Set fan mode to [[fanMode]]",
+        "nl": "Zet ventilatorstand op [[fanMode]]"
+      },
+      "hint": {
+        "en": "Set the fan mode of this Quatt Chill device.",
+        "nl": "Zet de ventilatorstand van dit Quatt Chill-device."
+      },
+      "args": [
+        {
+          "type": "dropdown",
+          "name": "fanMode",
+          "title": {
+            "en": "Fan mode",
+            "nl": "Ventilatorstand"
+          },
+          "values": [
+            {
+              "id": "LOW",
+              "label": {
+                "en": "Low",
+                "nl": "Laag"
+              }
+            },
+            {
+              "id": "MEDIUM",
+              "label": {
+                "en": "Medium",
+                "nl": "Middel"
+              }
+            },
+            {
+              "id": "HIGH",
+              "label": {
+                "en": "High",
+                "nl": "Hoog"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "set_chill_mode",
+      "title": {
+        "en": "Set Chill mode",
+        "nl": "Zet Chill modus"
+      },
+      "titleFormatted": {
+        "en": "Set mode to [[mode]]",
+        "nl": "Zet modus op [[mode]]"
+      },
+      "hint": {
+        "en": "Set the mode of this Quatt Chill device.",
+        "nl": "Zet de modus van dit Quatt Chill-device."
+      },
+      "args": [
+        {
+          "type": "dropdown",
+          "name": "mode",
+          "title": {
+            "en": "Mode",
+            "nl": "Modus"
+          },
+          "values": [
+            {
+              "id": "COOLING",
+              "label": {
+                "en": "Cooling",
+                "nl": "Koelen"
+              }
+            },
+            {
+              "id": "HEATING",
+              "label": {
+                "en": "Heating",
+                "nl": "Verwarmen"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "set_chill_target_temperature",
+      "title": {
+        "en": "Set Chill target temperature",
+        "nl": "Zet Chill doeltemperatuur"
+      },
+      "titleFormatted": {
+        "en": "Set target temperature to [[temperature]] °C",
+        "nl": "Zet doeltemperatuur op [[temperature]] °C"
+      },
+      "hint": {
+        "en": "Set the target temperature of this Quatt Chill device. The current Chill mode determines whether the cooling or heating target is updated.",
+        "nl": "Zet de doeltemperatuur van dit Quatt Chill-device. De huidige Chill-modus bepaalt of het koel- of verwarmdoel wordt aangepast."
+      },
+      "args": [
+        {
+          "type": "number",
+          "name": "temperature",
+          "title": {
+            "en": "Temperature",
+            "nl": "Temperatuur"
+          },
+          "min": 16,
+          "max": 30,
+          "step": 1
+        }
+      ]
+    }
+  ]
+}

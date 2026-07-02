@@ -1,0 +1,96 @@
+{
+  "name": {
+    "en": "Quatt Chill",
+    "nl": "Quatt Chill"
+  },
+  "class": "thermostat",
+  "energy": {},
+  "capabilities": [
+    "onoff",
+    "measure_temperature",
+    "target_temperature",
+    "chill_mode",
+    "chill_fan_mode",
+    "measure_chill_mode",
+    "measure_chill_status"
+  ],
+  "capabilitiesOptions": {
+    "onoff": {
+      "title": {
+        "en": "Quatt Chill on/off",
+        "nl": "Quatt Chill aan/uit"
+      },
+      "uiQuickAction": true
+    },
+    "measure_temperature": {
+      "title": {
+        "en": "Room temperature",
+        "nl": "Kamertemperatuur"
+      }
+    },
+    "target_temperature": {
+      "title": {
+        "en": "Target temperature",
+        "nl": "Doeltemperatuur"
+      },
+      "min": 16,
+      "max": 30,
+      "step": 1
+    },
+    "chill_mode": {
+      "title": {
+        "en": "Chill mode",
+        "nl": "Chill modus"
+      }
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "cloud"
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "settings": [
+    {
+      "id": "updateInterval",
+      "type": "number",
+      "label": {
+        "en": "Data update interval",
+        "nl": "Data update interval"
+      },
+      "hint": {
+        "en": "How often to refresh data from the Quatt remote API.",
+        "nl": "Hoe vaak de data via de Quatt remote API ververst moet worden."
+      },
+      "value": 30,
+      "min": 5,
+      "max": 300,
+      "units": {
+        "en": "seconds",
+        "nl": "seconden"
+      }
+    }
+  ],
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    },
+    {
+      "id": "done",
+      "template": "done"
+    }
+  ]
+}
