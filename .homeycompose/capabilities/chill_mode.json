@@ -1,0 +1,28 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Chill mode",
+    "nl": "Chill modus"
+  },
+  "description": "Set the Quatt Chill mode.",
+  "getable": true,
+  "setable": true,
+  "uiComponent": "picker",
+  "icon": "assets/icons/thermostat-cooling.svg",
+  "values": [
+    {
+      "id": "HEATING",
+      "title": {
+        "en": "Heating",
+        "nl": "Verwarmen"
+      }
+    },
+    {
+      "id": "COOLING",
+      "title": {
+        "en": "Cooling",
+        "nl": "Koelen"
+      }
+    }
+  ]
+}
