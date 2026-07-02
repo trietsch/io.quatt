@@ -62,6 +62,29 @@ export interface QuattRemoteSettings {
     usePricingLimitingHeatPump?: boolean;
 }
 
+export type QuattChillMode = 'COOLING' | 'HEATING' | string;
+export type QuattChillFanMode = 'LOW' | 'NORMAL' | 'HIGH' | string;
+
+export interface QuattChill {
+    uuid: string;
+    name?: string;
+    status?: string;
+    mode?: QuattChillMode;
+    fanMode?: QuattChillFanMode;
+    ambientTemperature?: number;
+    coolingTargetTemperature?: number;
+    heatingTargetTemperature?: number;
+    isOn?: { value?: boolean } | boolean;
+    [key: string]: unknown;
+}
+
+export type QuattChillAction =
+    | { type: 'SET_ON_OFF'; on: boolean }
+    | { type: 'SET_MODE'; mode: QuattChillMode }
+    | { type: 'SET_FAN_MODE'; fanMode: QuattChillFanMode }
+    | { type: 'SET_COOLING_TARGET_TEMPERATURE'; coolingTargetTemperature: number }
+    | { type: 'SET_HEATING_TARGET_TEMPERATURE'; heatingTargetTemperature: number };
+
 /**
  * Client for interacting with the Quatt Remote API
  */
@@ -217,6 +240,72 @@ export class QuattRemoteApiClient {
         }
 
         return response.result;
+    }
+
+
+    private async _ensureAuthenticated(): Promise<void> {
+        if (!this.tokens) {
+            throw new QuattApiError('Not authenticated');
+        }
+
+        if (Date.now() >= this.tokens.expiresAt) {
+            await this._refreshToken();
+        }
+    }
+
+    /**
+     * Get Quatt Chill devices from the remote API.
+     */
+    async getChills(): Promise<QuattChill[]> {
+        if (!this.installationId) {
+            throw new QuattApiError('No installation ID available');
+        }
+
+        await this._ensureAuthenticated();
+
+        const response = await this.client.get<any>(
+            `${QUATT_API_BASE_URL}/me/installation/${this.installationId}/devices/chills`,
+            {
+                additionalHeaders: {
+                    'Authorization': `Bearer ${this.tokens!.idToken}`
+                }
+            }
+        );
+
+        if (response.statusCode !== 200 || !response.result) {
+            throw new QuattApiError(`Failed to get Quatt Chill devices: Status ${response.statusCode}`);
+        }
+
+        const body: any = response.result;
+        if (Array.isArray(body?.result?.chills)) return body.result.chills;
+        if (Array.isArray(body?.chills)) return body.chills;
+        if (Array.isArray(body?.result)) return body.result;
+
+        return [];
+    }
+
+    /**
+     * Send an action to a Quatt Chill device.
+     */
+    async updateChillAction(chillUuid: string, action: QuattChillAction): Promise<boolean> {
+        if (!this.installationId) {
+            throw new QuattApiError('No installation ID available');
+        }
+
+        await this._ensureAuthenticated();
+
+        const response = await this.client.create<any>(
+            `${QUATT_API_BASE_URL}/me/installation/${this.installationId}/devices/chills/${chillUuid}/actions`,
+            action,
+            {
+                additionalHeaders: {
+                    'Authorization': `Bearer ${this.tokens!.idToken}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        return response.statusCode === 200 || response.statusCode === 201 || response.statusCode === 204;
     }
 
     private async _getFirebaseInstallation(): Promise<FirebaseInstallationResponse> {
