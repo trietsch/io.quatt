@@ -1,0 +1,37 @@
+{
+  "id": "quatt-chill",
+  "name": {
+    "en": "Quatt Chill",
+    "nl": "Quatt Chill"
+  },
+  "devices": {
+    "type": "app",
+    "singular": true,
+    "filter": {
+      "capabilities": "chill_mode"
+    }
+  },
+  "api": {
+    "getStatus": {
+      "method": "GET",
+      "path": "/:deviceId"
+    },
+    "setOnOff": {
+      "method": "POST",
+      "path": "/:deviceId/onoff"
+    },
+    "setTargetTemperature": {
+      "method": "POST",
+      "path": "/:deviceId/target-temperature"
+    },
+    "setFanMode": {
+      "method": "POST",
+      "path": "/:deviceId/fan-mode"
+    },
+    "setMode": {
+      "method": "POST",
+      "path": "/:deviceId/mode"
+    }
+  },
+  "height": 240
+}
