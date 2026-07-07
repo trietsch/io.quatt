@@ -1,0 +1,24 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Water tank full",
+    "nl": "Waterbak vol"
+  },
+  "titleTrue": {
+    "en": "Water tank is full",
+    "nl": "Waterbak is vol"
+  },
+  "titleFalse": {
+    "en": "Water tank is not full",
+    "nl": "Waterbak is niet vol"
+  },
+  "desc": {
+    "en": "Shows when the Quatt Chill water tank is full.",
+    "nl": "Toont wanneer de waterbak van de Quatt Chill vol is."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "uiQuickAction": true,
+  "icon": "assets/icons/hot-water.svg"
+}
