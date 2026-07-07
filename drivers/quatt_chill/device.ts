@@ -62,7 +62,7 @@ class QuattChillDevice extends Homey.Device {
     }
 
     private async migrateCapabilities() {
-        const requiredCapabilities = ['measure_temperature', 'target_temperature'];
+        const requiredCapabilities = ['measure_temperature', 'target_temperature', 'chill_water_tank_status', 'alarm_chill_disconnected'];
         for (const capability of requiredCapabilities) {
             if (!this.hasCapability(capability)) {
                 await this.addCapability(capability).catch(this.error);
@@ -76,6 +76,8 @@ class QuattChillDevice extends Homey.Device {
             'target_temperature.chill_heating',
             'measure_chill_fan_mode',
             'measure_power',
+            'alarm_chill_tank_full',
+            'alarm_chill_tank_missing',
         ];
         for (const capability of oldCapabilities) {
             if (this.hasCapability(capability)) {
@@ -218,6 +220,8 @@ class QuattChillDevice extends Homey.Device {
                 ? currentChill.heatingTargetTemperature
                 : currentChill.coolingTargetTemperature;
 
+            const normalizedStatus = String(currentChill.status || '').toUpperCase();
+
             await Promise.all([
                 this.safeSetCapabilityValue('measure_temperature', currentChill.ambientTemperature),
                 this.safeSetCapabilityValue('target_temperature', targetTemperature),
@@ -226,6 +230,8 @@ class QuattChillDevice extends Homey.Device {
                 this.safeSetCapabilityValue('chill_mode', currentChill.mode),
                 this.safeSetCapabilityValue('chill_fan_mode', this.normalizeFanModeForCapability(currentChill.fanMode)),
                 this.safeSetCapabilityValue('onoff', this.getChillIsOn(currentChill)),
+                this.safeSetCapabilityValue('chill_water_tank_status', this.getWaterTankStatus(normalizedStatus)),
+                this.safeSetCapabilityValue('alarm_chill_disconnected', normalizedStatus === 'WARNING_DISCONNECTED'),
             ]);
 
             await this.triggerChillStatusChanged(currentChill.status);
@@ -250,6 +256,12 @@ class QuattChillDevice extends Homey.Device {
         return Boolean(chill?.isOn?.value);
     }
 
+
+    private getWaterTankStatus(status: string): string {
+        if (status === 'WARNING_TANK_FULL') return 'FULL';
+        if (status === 'WARNING_TANK_MISSING') return 'MISSING';
+        return 'OK';
+    }
 
     private normalizeFanModeForCapability(fanMode: unknown): string | undefined {
         if (fanMode === undefined || fanMode === null) return undefined;
@@ -291,7 +303,11 @@ class QuattChillDevice extends Homey.Device {
     }
 
     private isChillErrorStatus(status: string): boolean {
-        return status.includes('ERROR') || status.includes('FAULT') || status.includes('ALARM');
+        return status === 'ERROR'
+            || status.includes('FAULT')
+            || status.includes('ALARM')
+            || status === 'WARNING_DISCONNECTED'
+            || status === 'WARNING_TANK_MISSING';
     }
 
     private isChillTankFullStatus(status: string): boolean {

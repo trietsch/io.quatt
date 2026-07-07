@@ -117,5 +117,106 @@
         }
       ]
     }
+  ],
+  "triggers": [
+    {
+      "id": "chill_status_changed",
+      "title": {
+        "en": "Chill status changed",
+        "nl": "Chill status gewijzigd"
+      },
+      "titleFormatted": {
+        "en": "Chill status changed",
+        "nl": "Chill status gewijzigd"
+      },
+      "hint": {
+        "en": "This card starts when the status of this Quatt Chill device changes.",
+        "nl": "Deze kaart start wanneer de status van dit Quatt Chill-device wijzigt."
+      },
+      "tokens": [
+        {
+          "name": "status",
+          "type": "string",
+          "title": {
+            "en": "Status",
+            "nl": "Status"
+          }
+        },
+        {
+          "name": "previous_status",
+          "type": "string",
+          "title": {
+            "en": "Previous status",
+            "nl": "Vorige status"
+          }
+        }
+      ]
+    },
+    {
+      "id": "chill_error_detected",
+      "title": {
+        "en": "Chill error detected",
+        "nl": "Chill foutmelding gedetecteerd"
+      },
+      "titleFormatted": {
+        "en": "Chill has an error",
+        "nl": "Chill heeft een foutmelding"
+      },
+      "hint": {
+        "en": "This card starts when this Quatt Chill device reports an error status.",
+        "nl": "Deze kaart start wanneer dit Quatt Chill-device een foutstatus meldt."
+      },
+      "tokens": [
+        {
+          "name": "status",
+          "type": "string",
+          "title": {
+            "en": "Status",
+            "nl": "Status"
+          }
+        },
+        {
+          "name": "previous_status",
+          "type": "string",
+          "title": {
+            "en": "Previous status",
+            "nl": "Vorige status"
+          }
+        }
+      ]
+    },
+    {
+      "id": "chill_tank_full_detected",
+      "title": {
+        "en": "Chill tank full detected",
+        "nl": "Chill tank vol gedetecteerd"
+      },
+      "titleFormatted": {
+        "en": "Chill tank is full",
+        "nl": "Chill tank is vol"
+      },
+      "hint": {
+        "en": "This card starts when this Quatt Chill device reports WARNING_TANK_FULL or another tank-full status.",
+        "nl": "Deze kaart start wanneer dit Quatt Chill-device WARNING_TANK_FULL of een andere tank-vol status meldt."
+      },
+      "tokens": [
+        {
+          "name": "status",
+          "type": "string",
+          "title": {
+            "en": "Status",
+            "nl": "Status"
+          }
+        },
+        {
+          "name": "previous_status",
+          "type": "string",
+          "title": {
+            "en": "Previous status",
+            "nl": "Vorige status"
+          }
+        }
+      ]
+    }
   ]
 }

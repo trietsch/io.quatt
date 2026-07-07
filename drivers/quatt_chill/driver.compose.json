@@ -12,7 +12,9 @@
     "chill_mode",
     "chill_fan_mode",
     "measure_chill_mode",
-    "measure_chill_status"
+    "measure_chill_status",
+    "chill_water_tank_status",
+    "alarm_chill_disconnected"
   ],
   "capabilitiesOptions": {
     "onoff": {
@@ -42,6 +44,20 @@
         "en": "Chill mode",
         "nl": "Chill modus"
       }
+    },
+    "chill_water_tank_status": {
+      "title": {
+        "en": "Water tank",
+        "nl": "Waterbak"
+      },
+      "uiQuickAction": true
+    },
+    "alarm_chill_disconnected": {
+      "title": {
+        "en": "Connection lost",
+        "nl": "Verbinding verbroken"
+      },
+      "uiQuickAction": true
     }
   },
   "platforms": [

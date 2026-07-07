@@ -14,6 +14,10 @@ interface ChillStatusResponse {
   fanMode: string | null;
   status: string | null;
   isOn: boolean;
+  waterTankStatus: string;
+  tankFull: boolean;
+  tankMissing: boolean;
+  disconnected: boolean;
 }
 
 function normalizeFanMode(value: string): string {
@@ -236,6 +240,14 @@ module.exports = {
         fanMode: device.hasCapability('chill_fan_mode') ? device.getCapabilityValue('chill_fan_mode') : null,
         status: device.hasCapability('measure_chill_status') ? device.getCapabilityValue('measure_chill_status') : null,
         isOn: device.hasCapability('onoff') ? !!device.getCapabilityValue('onoff') : false,
+        waterTankStatus: device.hasCapability('chill_water_tank_status') ? String(device.getCapabilityValue('chill_water_tank_status') || 'OK') : 'OK',
+        tankFull: device.hasCapability('chill_water_tank_status')
+          ? String(device.getCapabilityValue('chill_water_tank_status') || '').toUpperCase() === 'FULL'
+          : device.hasCapability('alarm_chill_tank_full') ? !!device.getCapabilityValue('alarm_chill_tank_full') : false,
+        tankMissing: device.hasCapability('chill_water_tank_status')
+          ? String(device.getCapabilityValue('chill_water_tank_status') || '').toUpperCase() === 'MISSING'
+          : device.hasCapability('alarm_chill_tank_missing') ? !!device.getCapabilityValue('alarm_chill_tank_missing') : false,
+        disconnected: device.hasCapability('alarm_chill_disconnected') ? !!device.getCapabilityValue('alarm_chill_disconnected') : false,
       };
     } catch (error: any) {
       throw new Error(`Chill widget API error: ${error.message}`);
