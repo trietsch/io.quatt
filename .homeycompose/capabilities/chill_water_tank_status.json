@@ -1,0 +1,36 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Water tank",
+    "nl": "Waterbak"
+  },
+  "description": "Shows the Quatt Chill water tank status.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "uiQuickAction": true,
+  "icon": "assets/icons/watertank.svg",
+  "values": [
+    {
+      "id": "OK",
+      "title": {
+        "en": "OK",
+        "nl": "OK"
+      }
+    },
+    {
+      "id": "FULL",
+      "title": {
+        "en": "Full",
+        "nl": "Vol"
+      }
+    },
+    {
+      "id": "MISSING",
+      "title": {
+        "en": "Missing",
+        "nl": "Ontbreekt"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Connection",
+    "nl": "Verbinding status"
+  },
+  "titleTrue": {
+    "en": "Connection lost",
+    "nl": "Verbinding verbroken"
+  },
+  "titleFalse": {
+    "en": "Connected",
+    "nl": "Verbonden"
+  },
+  "desc": {
+    "en": "Shows when the Quatt Chill connection is lost.",
+    "nl": "Toont wanneer de verbinding met de Quatt Chill verbroken is."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "uiQuickAction": true,
+  "icon": "assets/icons/wifi.svg"
+}

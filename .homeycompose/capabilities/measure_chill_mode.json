@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Chill mode",
+    "nl": "Chill modus"
+  },
+  "description": "Current Quatt Chill mode.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/thermostat-cooling.svg"
+}

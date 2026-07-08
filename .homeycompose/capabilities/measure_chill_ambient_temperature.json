@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Chill room temperature",
+    "nl": "Chill kamertemperatuur"
+  },
+  "description": "Ambient temperature reported by Quatt Chill.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "units": {
+    "en": "\u00b0C",
+    "nl": "\u00b0C"
+  },
+  "decimals": 1,
+  "icon": "assets/icons/thermostat-cooling.svg",
+  "insights": true
+}

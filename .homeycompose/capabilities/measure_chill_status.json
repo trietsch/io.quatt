@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Chill status",
+    "nl": "Chill status"
+  },
+  "description": "Status reported by Quatt Chill.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/thermostat-cooling.svg"
+}

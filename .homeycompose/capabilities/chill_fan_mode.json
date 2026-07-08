@@ -1,0 +1,35 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Chill fan mode",
+    "nl": "Chill ventilatorstand"
+  },
+  "description": "Set the Quatt Chill fan mode.",
+  "getable": true,
+  "setable": true,
+  "uiComponent": "picker",
+  "icon": "assets/icons/thermostat-cooling.svg",
+  "values": [
+    {
+      "id": "LOW",
+      "title": {
+        "en": "Low",
+        "nl": "Laag"
+      }
+    },
+    {
+      "id": "MEDIUM",
+      "title": {
+        "en": "Medium",
+        "nl": "Middel"
+      }
+    },
+    {
+      "id": "HIGH",
+      "title": {
+        "en": "High",
+        "nl": "Hoog"
+      }
+    }
+  ]
+}

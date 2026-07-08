@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Chill fan mode",
+    "nl": "Chill ventilatorstand"
+  },
+  "description": "Current Quatt Chill fan mode.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/thermostat-cooling.svg"
+}

@@ -1,0 +1,24 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Water tank missing",
+    "nl": "Waterbak ontbreekt"
+  },
+  "titleTrue": {
+    "en": "Water tank is missing",
+    "nl": "Waterbak ontbreekt"
+  },
+  "titleFalse": {
+    "en": "Water tank is present",
+    "nl": "Waterbak aanwezig"
+  },
+  "desc": {
+    "en": "Shows when the Quatt Chill water tank is missing.",
+    "nl": "Toont wanneer de waterbak van de Quatt Chill ontbreekt."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "uiQuickAction": true,
+  "icon": "assets/icons/hot-water.svg"
+}
