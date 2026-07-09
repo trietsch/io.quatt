@@ -1,0 +1,39 @@
+      {
+        "title": {
+          "en": "Chill status changed",
+          "nl": "Chill status gewijzigd"
+        },
+        "titleFormatted": {
+          "en": "Chill status changed",
+          "nl": "Chill status gewijzigd"
+        },
+        "hint": {
+          "en": "This card starts when the status of this Quatt Chill device changes.",
+          "nl": "Deze kaart start wanneer de status van dit Quatt Chill-device wijzigt."
+        },
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status"
+            }
+          },
+          {
+            "name": "previous_status",
+            "type": "string",
+            "title": {
+              "en": "Previous status",
+              "nl": "Vorige status"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          }
+        ]
+      }
