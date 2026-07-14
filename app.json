@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "io.quatt",
-  "version": "1.9.0",
+  "version": "1.8.1",
   "compatibility": ">=12.3.0",
   "sdk": 3,
   "platforms": [
@@ -72,6 +72,126 @@
   },
   "flow": {
     "triggers": [
+      {
+        "title": {
+          "en": "Chill error detected",
+          "nl": "Chill foutmelding gedetecteerd"
+        },
+        "titleFormatted": {
+          "en": "Chill has an error",
+          "nl": "Chill heeft een foutmelding"
+        },
+        "hint": {
+          "en": "This card starts when this Quatt Chill device reports an error status.",
+          "nl": "Deze kaart start wanneer dit Quatt Chill-device een foutstatus meldt."
+        },
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status"
+            }
+          },
+          {
+            "name": "previous_status",
+            "type": "string",
+            "title": {
+              "en": "Previous status",
+              "nl": "Vorige status"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          }
+        ],
+        "id": "chill_error_detected"
+      },
+      {
+        "title": {
+          "en": "Chill status changed",
+          "nl": "Chill status gewijzigd"
+        },
+        "titleFormatted": {
+          "en": "Chill status changed",
+          "nl": "Chill status gewijzigd"
+        },
+        "hint": {
+          "en": "This card starts when the status of this Quatt Chill device changes.",
+          "nl": "Deze kaart start wanneer de status van dit Quatt Chill-device wijzigt."
+        },
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status"
+            }
+          },
+          {
+            "name": "previous_status",
+            "type": "string",
+            "title": {
+              "en": "Previous status",
+              "nl": "Vorige status"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          }
+        ],
+        "id": "chill_status_changed"
+      },
+      {
+        "title": {
+          "en": "Chill tank full detected",
+          "nl": "Chill tank vol gedetecteerd"
+        },
+        "titleFormatted": {
+          "en": "Chill tank is full",
+          "nl": "Chill tank is vol"
+        },
+        "hint": {
+          "en": "This card starts when this Quatt Chill device reports WARNING_TANK_FULL or another tank-full status.",
+          "nl": "Deze kaart start wanneer dit Quatt Chill-device WARNING_TANK_FULL of een andere tank-vol status meldt."
+        },
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status"
+            }
+          },
+          {
+            "name": "previous_status",
+            "type": "string",
+            "title": {
+              "en": "Previous status",
+              "nl": "Vorige status"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          }
+        ],
+        "id": "chill_tank_full_detected"
+      },
       {
         "title": {
           "en": "CV is (not) heating",
@@ -1037,6 +1157,126 @@
           "nl": "Deze kaart start wanneer de ingestelde watertoevoer temperatuur zoals ingesteld door je centrale thermostaat is veranderd."
         },
         "id": "measure_thermostat_setpoint_water_supply_temperature_changed"
+      },
+      {
+        "id": "chill_status_changed",
+        "title": {
+          "en": "Chill status changed",
+          "nl": "Chill status gewijzigd"
+        },
+        "titleFormatted": {
+          "en": "Chill status changed",
+          "nl": "Chill status gewijzigd"
+        },
+        "hint": {
+          "en": "This card starts when the status of this Quatt Chill device changes.",
+          "nl": "Deze kaart start wanneer de status van dit Quatt Chill-device wijzigt."
+        },
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status"
+            }
+          },
+          {
+            "name": "previous_status",
+            "type": "string",
+            "title": {
+              "en": "Previous status",
+              "nl": "Vorige status"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          }
+        ]
+      },
+      {
+        "id": "chill_error_detected",
+        "title": {
+          "en": "Chill error detected",
+          "nl": "Chill foutmelding gedetecteerd"
+        },
+        "titleFormatted": {
+          "en": "Chill has an error",
+          "nl": "Chill heeft een foutmelding"
+        },
+        "hint": {
+          "en": "This card starts when this Quatt Chill device reports an error status.",
+          "nl": "Deze kaart start wanneer dit Quatt Chill-device een foutstatus meldt."
+        },
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status"
+            }
+          },
+          {
+            "name": "previous_status",
+            "type": "string",
+            "title": {
+              "en": "Previous status",
+              "nl": "Vorige status"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          }
+        ]
+      },
+      {
+        "id": "chill_tank_full_detected",
+        "title": {
+          "en": "Chill tank full detected",
+          "nl": "Chill tank vol gedetecteerd"
+        },
+        "titleFormatted": {
+          "en": "Chill tank is full",
+          "nl": "Chill tank is vol"
+        },
+        "hint": {
+          "en": "This card starts when this Quatt Chill device reports WARNING_TANK_FULL or another tank-full status.",
+          "nl": "Deze kaart start wanneer dit Quatt Chill-device WARNING_TANK_FULL of een andere tank-vol status meldt."
+        },
+        "tokens": [
+          {
+            "name": "status",
+            "type": "string",
+            "title": {
+              "en": "Status",
+              "nl": "Status"
+            }
+          },
+          {
+            "name": "previous_status",
+            "type": "string",
+            "title": {
+              "en": "Previous status",
+              "nl": "Vorige status"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          }
+        ]
       }
     ],
     "conditions": [
@@ -1993,6 +2233,138 @@
     "actions": [
       {
         "title": {
+          "en": "Set Chill fan mode",
+          "nl": "Zet Chill ventilatorstand"
+        },
+        "titleFormatted": {
+          "en": "Set fan mode to [[fanMode]]",
+          "nl": "Zet ventilatorstand op [[fanMode]]"
+        },
+        "hint": {
+          "en": "Set the fan mode of this Quatt Chill device.",
+          "nl": "Zet de ventilatorstand van dit Quatt Chill-device."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          },
+          {
+            "type": "dropdown",
+            "name": "fanMode",
+            "title": {
+              "en": "Fan mode",
+              "nl": "Ventilatorstand"
+            },
+            "values": [
+              {
+                "id": "LOW",
+                "label": {
+                  "en": "Low",
+                  "nl": "Laag"
+                }
+              },
+              {
+                "id": "MEDIUM",
+                "label": {
+                  "en": "Medium",
+                  "nl": "Middel"
+                }
+              },
+              {
+                "id": "HIGH",
+                "label": {
+                  "en": "High",
+                  "nl": "Hoog"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "set_chill_fan_mode"
+      },
+      {
+        "title": {
+          "en": "Set Chill mode",
+          "nl": "Zet Chill modus"
+        },
+        "titleFormatted": {
+          "en": "Set mode to [[mode]]",
+          "nl": "Zet modus op [[mode]]"
+        },
+        "hint": {
+          "en": "Set the mode of this Quatt Chill device.",
+          "nl": "Zet de modus van dit Quatt Chill-device."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          },
+          {
+            "type": "dropdown",
+            "name": "mode",
+            "title": {
+              "en": "Mode",
+              "nl": "Modus"
+            },
+            "values": [
+              {
+                "id": "COOLING",
+                "label": {
+                  "en": "Cooling",
+                  "nl": "Koelen"
+                }
+              },
+              {
+                "id": "HEATING",
+                "label": {
+                  "en": "Heating",
+                  "nl": "Verwarmen"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "set_chill_mode"
+      },
+      {
+        "title": {
+          "en": "Set Chill target temperature",
+          "nl": "Zet Chill doeltemperatuur"
+        },
+        "titleFormatted": {
+          "en": "Set target temperature to [[temperature]] °C",
+          "nl": "Zet doeltemperatuur op [[temperature]] °C"
+        },
+        "hint": {
+          "en": "Set the target temperature of this Quatt Chill device. The current Chill mode determines whether the cooling or heating target is updated.",
+          "nl": "Zet de doeltemperatuur van dit Quatt Chill-device. De huidige Chill-modus bepaalt of het koel- of verwarmdoel wordt aangepast."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          },
+          {
+            "type": "number",
+            "name": "temperature",
+            "title": {
+              "en": "Temperature",
+              "nl": "Temperatuur"
+            },
+            "min": 16,
+            "max": 30,
+            "step": 1
+          }
+        ],
+        "id": "set_chill_target_temperature"
+      },
+      {
+        "title": {
           "en": "Set day sound level",
           "nl": "Stel dag geluidsniveau in"
         },
@@ -2291,7 +2663,9 @@
         "chill_mode",
         "chill_fan_mode",
         "measure_chill_mode",
-        "measure_chill_status"
+        "measure_chill_status",
+        "chill_water_tank_status",
+        "alarm_chill_disconnected"
       ],
       "capabilitiesOptions": {
         "onoff": {
@@ -2321,6 +2695,20 @@
             "en": "Chill mode",
             "nl": "Chill modus"
           }
+        },
+        "chill_water_tank_status": {
+          "title": {
+            "en": "Water tank",
+            "nl": "Waterbak"
+          },
+          "uiQuickAction": true
+        },
+        "alarm_chill_disconnected": {
+          "title": {
+            "en": "Connection status",
+            "nl": "Verbinding status"
+          },
+          "uiQuickAction": true
         }
       },
       "platforms": [
@@ -2839,6 +3227,78 @@
     }
   },
   "capabilities": {
+    "alarm_chill_disconnected": {
+      "type": "boolean",
+      "title": {
+        "en": "Connection",
+        "nl": "Verbinding status"
+      },
+      "titleTrue": {
+        "en": "Connection lost",
+        "nl": "Verbinding verbroken"
+      },
+      "titleFalse": {
+        "en": "Connected",
+        "nl": "Verbonden"
+      },
+      "desc": {
+        "en": "Shows when the Quatt Chill connection is lost.",
+        "nl": "Toont wanneer de verbinding met de Quatt Chill verbroken is."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": true,
+      "icon": "assets/icons/wifi.svg"
+    },
+    "alarm_chill_tank_full": {
+      "type": "boolean",
+      "title": {
+        "en": "Water tank full",
+        "nl": "Waterbak vol"
+      },
+      "titleTrue": {
+        "en": "Water tank is full",
+        "nl": "Waterbak is vol"
+      },
+      "titleFalse": {
+        "en": "Water tank is not full",
+        "nl": "Waterbak is niet vol"
+      },
+      "desc": {
+        "en": "Shows when the Quatt Chill water tank is full.",
+        "nl": "Toont wanneer de waterbak van de Quatt Chill vol is."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": true,
+      "icon": "assets/icons/hot-water.svg"
+    },
+    "alarm_chill_tank_missing": {
+      "type": "boolean",
+      "title": {
+        "en": "Water tank missing",
+        "nl": "Waterbak ontbreekt"
+      },
+      "titleTrue": {
+        "en": "Water tank is missing",
+        "nl": "Waterbak ontbreekt"
+      },
+      "titleFalse": {
+        "en": "Water tank is present",
+        "nl": "Waterbak aanwezig"
+      },
+      "desc": {
+        "en": "Shows when the Quatt Chill water tank is missing.",
+        "nl": "Toont wanneer de waterbak van de Quatt Chill ontbreekt."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": true,
+      "icon": "assets/icons/hot-water.svg"
+    },
     "alarm_heating": {
       "type": "boolean",
       "title": {
@@ -2926,6 +3386,42 @@
           "title": {
             "en": "Cooling",
             "nl": "Koelen"
+          }
+        }
+      ]
+    },
+    "chill_water_tank_status": {
+      "type": "enum",
+      "title": {
+        "en": "Water tank",
+        "nl": "Waterbak"
+      },
+      "description": "Shows the Quatt Chill water tank status.",
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": true,
+      "icon": "assets/icons/watertank.svg",
+      "values": [
+        {
+          "id": "OK",
+          "title": {
+            "en": "OK",
+            "nl": "OK"
+          }
+        },
+        {
+          "id": "FULL",
+          "title": {
+            "en": "Full",
+            "nl": "Vol"
+          }
+        },
+        {
+          "id": "MISSING",
+          "title": {
+            "en": "Missing",
+            "nl": "Ontbreekt"
           }
         }
       ]
