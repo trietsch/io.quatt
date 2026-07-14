@@ -1,0 +1,45 @@
+{
+        "title": {
+          "en": "Set Chill mode",
+          "nl": "Zet Chill modus"
+        },
+        "titleFormatted": {
+          "en": "Set mode to [[mode]]",
+          "nl": "Zet modus op [[mode]]"
+        },
+        "hint": {
+          "en": "Set the mode of this Quatt Chill device.",
+          "nl": "Zet de modus van dit Quatt Chill-device."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          },
+          {
+            "type": "dropdown",
+            "name": "mode",
+            "title": {
+              "en": "Mode",
+              "nl": "Modus"
+            },
+            "values": [
+              {
+                "id": "COOLING",
+                "label": {
+                  "en": "Cooling",
+                  "nl": "Koelen"
+                }
+              },
+              {
+                "id": "HEATING",
+                "label": {
+                  "en": "Heating",
+                  "nl": "Verwarmen"
+                }
+              }
+            ]
+          }
+        ]
+      }

@@ -1,0 +1,52 @@
+ {
+        "title": {
+          "en": "Set Chill fan mode",
+          "nl": "Zet Chill ventilatorstand"
+        },
+        "titleFormatted": {
+          "en": "Set fan mode to [[fanMode]]",
+          "nl": "Zet ventilatorstand op [[fanMode]]"
+        },
+        "hint": {
+          "en": "Set the fan mode of this Quatt Chill device.",
+          "nl": "Zet de ventilatorstand van dit Quatt Chill-device."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=quatt_chill"
+          },
+          {
+            "type": "dropdown",
+            "name": "fanMode",
+            "title": {
+              "en": "Fan mode",
+              "nl": "Ventilatorstand"
+            },
+            "values": [
+              {
+                "id": "LOW",
+                "label": {
+                  "en": "Low",
+                  "nl": "Laag"
+                }
+              },
+              {
+                "id": "MEDIUM",
+                "label": {
+                  "en": "Medium",
+                  "nl": "Middel"
+                }
+              },
+              {
+                "id": "HIGH",
+                "label": {
+                  "en": "High",
+                  "nl": "Hoog"
+                }
+              }
+            ]
+          }
+        ]
+      }

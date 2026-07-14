@@ -54,8 +54,8 @@
     },
     "alarm_chill_disconnected": {
       "title": {
-        "en": "Connection lost",
-        "nl": "Verbinding verbroken"
+        "en": "Connection status",
+        "nl": "Verbinding status"
       },
       "uiQuickAction": true
     }
