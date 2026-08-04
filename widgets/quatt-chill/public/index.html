@@ -2,50 +2,557 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--text:#101217;--muted:rgba(16,18,23,.58);--cool:#68dcff;--cool-soft:#ddf8ff;--heat:#ff9b4a;--heat-soft:#fff0dc;--off:#a9b0bb;--off-soft:#eef0f3;--accent:var(--cool);--accent-soft:var(--cool-soft)}*{margin:0;padding:0;-webkit-tap-highlight-color:transparent}html,body{width:100%;height:100%;overflow:hidden}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:transparent;color:var(--text)}button{font:inherit;color:inherit;border:0;cursor:pointer}.card{--accent:var(--cool);--accent-soft:var(--cool-soft);--accent-rgb:104,220,255;--text:#fff;--muted:rgba(255,255,255,.68);position:relative;width:100%;height:100%;min-height:220px;overflow:hidden;border-radius:2px;padding:18px;background:#12151d;color:var(--text);isolation:isolate;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}.card:before{
-  content:"";
-  position:absolute;
-  inset:-40px;
-  z-index:0;
-  background:url('./assets/Room.png') center/cover no-repeat;
-  filter:blur(4px) saturate(1);
-  transform:scale(1.12);
-  opacity:1;
-}.card:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(circle at 82% 72%,rgba(var(--accent-rgb),.22),transparent 24%),linear-gradient(90deg,rgba(5,7,12,.10) 0%,rgba(5,7,12,.04) 48%,rgba(5,7,12,.12) 100%),linear-gradient(180deg,rgba(255,255,255,.03) 0%,rgba(0,0,0,.08) 100%)}.card.heating{--accent:var(--heat);--accent-soft:var(--heat-soft);--accent-rgb:255,155,74}.card.off{--accent:var(--off);--accent-soft:var(--off-soft);--accent-rgb:169,176,187}
-.top{position:relative;z-index:20;display:flex;align-items:center;justify-content:flex-start}.notice{--notice:#49a7ff;position:absolute;z-index:24;left:18px;right:18px;top:54px;min-height:50px;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:19px;background:linear-gradient(135deg,rgba(16,22,34,.82),rgba(8,10,16,.58));color:#fff;box-shadow:0 18px 42px rgba(0,0,0,.26),inset 0 0 0 1px rgba(255,255,255,.13),inset 0 0 0 1.5px color-mix(in srgb,var(--notice) 58%,transparent);backdrop-filter:blur(18px);overflow:hidden}.notice:before{content:"";position:absolute;inset:-30px -20px auto auto;width:120px;height:95px;border-radius:999px;background:var(--notice);opacity:.16;filter:blur(24px);pointer-events:none}.notice:after{content:"";position:absolute;right:15px;top:50%;width:56px;height:56px;border-radius:999px;border:1px solid var(--notice);opacity:.20;transform:translateY(-50%);pointer-events:none}.notice-icon{position:relative;z-index:1;width:34px;height:34px;min-width:34px;display:grid;place-items:center;border-radius:999px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--notice) 60%,transparent),0 0 22px color-mix(in srgb,var(--notice) 28%,transparent);font-size:18px;color:var(--notice)}.notice-text{position:relative;z-index:1;min-width:0}.notice-title{font-size:14px;font-weight:950;line-height:1.05;letter-spacing:-.02em}.notice-desc{margin-top:3px;font-size:11px;font-weight:650;line-height:1.2;color:rgba(255,255,255,.72)}.notice.disconnected{--notice:#ff5a55}.notice.tank-missing{--notice:#ffad45}.notice.tank-full{--notice:#45aaff}.power{width:50px;height:30px;padding:4px;border-radius:999px;background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}.power:after{content:"";display:block;width:22px;height:22px;border-radius:50%;background:white;box-shadow:0 3px 10px rgba(0,0,0,.22);transform:translateX(0);transition:transform .25s ease}.active .power{background:#4b82ff}.active .power:after{transform:translateX(20px)}.power:disabled,.ctrl-btn:disabled,.chip-btn:disabled,.option:disabled{opacity:.55;cursor:not-allowed}.inactive-controls{opacity:.28;pointer-events:none;filter:saturate(.55)}.inactive-controls .target-control,.inactive-chips .chip-btn{box-shadow:none;background:rgba(255,255,255,.10)}.inactive-chips{opacity:.28;pointer-events:none;filter:saturate(.55)}
-.content{position:relative;z-index:8;max-width:55%;margin-top:22px}.title{font-size:clamp(27px,8.6vw,38px);line-height:.98;font-weight:950;letter-spacing:-.06em;margin-bottom:22px}.temperature{font-size:clamp(48px,14vw,66px);line-height:.86;font-weight:950;letter-spacing:-.085em}.temperature .unit{font-size:.40em;letter-spacing:-.04em;margin-left:2px}.controls{position:relative;z-index:18;max-width:52%;margin-top:14px;display:flex;flex-direction:column;gap:7px}.target-control{width:min(100%,210px);display:flex;align-items:center;justify-content:space-between;gap:7px;padding:6px;border-radius:999px;background:rgba(20,22,28,.48);box-shadow:0 12px 30px rgba(0,0,0,.20),inset 0 0 0 1px rgba(255,255,255,.13);backdrop-filter:blur(14px)}.ctrl-btn{width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.13);color:#fff;font-size:25px;font-weight:950;line-height:1;box-shadow:0 5px 14px rgba(0,0,0,.18),inset 0 0 0 1px rgba(255,255,255,.10)}.target-value{min-width:66px;text-align:center;font-size:19px;font-weight:950;color:rgba(255,255,255,.92)}.control-label{margin-left:7px;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
-.chips{position:absolute;z-index:22;right:16px;bottom:16px;display:flex;flex-direction:row;gap:8px;align-items:center;justify-content:flex-end}.chip-btn{width:42px;height:42px;min-width:42px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:999px;background:rgba(20,22,28,.48);color:#fff;font-size:0;box-shadow:0 12px 28px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.14);backdrop-filter:blur(14px);transition:transform .16s ease,background .16s ease}.chip-btn:active{transform:scale(.94)}.chip-btn.mode-chip{background:rgba(20,22,28,.52);color:var(--accent)}.chip-btn.mode-chip.off-chip{background:rgba(255,255,255,.09);color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.10)}.chip-btn .icon{font-size:20px;line-height:1}.chip-btn .arrow{display:none}.chip-btn.fan-chip{background:rgba(20,22,28,.52);color:#65a2ff}
-.popup{position:absolute;z-index:40;right:15px;bottom:66px;width:150px;padding:9px;border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 18px 42px rgba(0,0,0,.22);backdrop-filter:blur(14px);display:none}.popup.show{display:block}.popup:before{content:"";position:absolute;right:28px;top:100%;border-left:10px solid transparent;border-right:10px solid transparent;border-top:12px solid rgba(255,255,255,.94)}.popup.fan-popup{right:15px}.popup-title{font-size:12px;font-weight:850;color:rgba(0,0,0,.70);margin:3px 6px 7px}.option{width:100%;height:34px;display:flex;align-items:center;gap:8px;padding:0 8px;border-radius:11px;background:transparent;color:#1f242b;font-size:13px;font-weight:650;text-align:left}.option.selected{background:#e4f4ff;color:#1676d2;font-weight:800}.option .check{margin-left:auto;font-size:15px}.product-wrap{position:absolute;z-index:5;right:-4px;bottom:-18px;width:48%;height:78%;pointer-events:none}.product-glow{position:absolute;left:12%;right:7%;bottom:10%;height:26%;border-radius:999px;background:var(--accent);opacity:.28;filter:blur(18px);transform:scaleX(1.05)}.active .product-glow{animation:pulseGlow 2.2s ease-in-out infinite}@keyframes pulseGlow{0%,100%{opacity:.22;transform:scaleX(.95)}50%{opacity:.43;transform:scaleX(1.18)}}.ring{position:absolute;left:14%;right:14%;bottom:14%;height:22%;border:2px solid var(--accent);border-radius:999px;opacity:.20;transform:perspective(180px) rotateX(64deg)}.active .ring{animation:ringPulse 2.4s ease-out infinite}@keyframes ringPulse{0%{transform:perspective(180px) rotateX(64deg) scale(.72);opacity:.30}100%{transform:perspective(180px) rotateX(64deg) scale(1.35);opacity:0}}.product{position:absolute;right:0;bottom:13%;width:95%;height:auto;filter:drop-shadow(0 24px 24px rgba(0,0,0,.40));transform-origin:50% 80%}
-.air{position:absolute;z-index:3;right:32%;bottom:29%;width:42%;height:31%;pointer-events:none;opacity:0}.active .air{opacity:.95}.stream{position:absolute;right:0;height:3px;border-radius:999px;background:linear-gradient(90deg,transparent,var(--accent),transparent);filter:blur(.15px);animation:airflow var(--air-speed,2.2s) linear infinite}.stream.s1{top:10px;width:90%;animation-delay:0s}.stream.s2{top:33px;width:75%;animation-delay:-.65s}.stream.s3{top:56px;width:98%;animation-delay:-1.25s}.fan-low .stream.s2,.fan-low .stream.s3{display:none}.fan-normal .stream.s3{opacity:.58}.fan-high{--air-speed:1.45s}.off .stream{animation:none;opacity:.1}@keyframes airflow{from{transform:translateX(45px);opacity:0}18%{opacity:1}76%{opacity:1}to{transform:translateX(-78px);opacity:0}}.error{height:100%;display:grid;place-items:center;padding:20px;text-align:center;color:rgba(255,255,255,.72);font-weight:700}.busy:after{content:"";position:absolute;inset:0;z-index:30;background:rgba(255,255,255,.12);pointer-events:none}@media(max-width:320px){.chips{right:12px;bottom:12px;gap:6px}.chip-btn{width:38px;height:38px;min-width:38px}.chip-btn .icon{font-size:18px}.popup{right:10px;bottom:58px;width:136px}.content{max-width:52%}.controls{max-width:52%}.title{font-size:26px}}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* Dark mode (default) — same design tokens as the Quatt Status widget */
+  --bg-primary: linear-gradient(135deg, #071413 0%, #0a1f1c 100%);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.5);
+  --text-muted: rgba(255, 255, 255, 0.4);
+  --accent-green: #D9FF5C;
+  --accent-orange: #ff6933;
+  --accent-cool: #7cd8e8;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-hover-bg: rgba(255, 255, 255, 0.08);
+  --popup-bg: #0e2420;
+  --status-idle-bg: rgba(217, 255, 92, 0.1);
+  --status-idle-color: #D9FF5C;
+  --status-heat-bg: rgba(255, 105, 51, 0.15);
+  --status-heat-color: #ff6933;
+  --status-cool-bg: rgba(124, 216, 232, 0.12);
+  --status-cool-color: #7cd8e8;
+  --knob: #071413;
+}
+
+/* Light mode - Quatt natural/wooden aesthetic */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-primary: #ffffff;
+    --text-primary: #2c2418;
+    --text-secondary: #5c4d3a;
+    --text-muted: #8a7a64;
+    --accent-green: #3d7a4a;
+    --accent-orange: #c45a2c;
+    --accent-cool: #2b8ba3;
+    --card-bg: rgba(139, 119, 91, 0.08);
+    --card-border: rgba(139, 119, 91, 0.15);
+    --card-hover-bg: rgba(139, 119, 91, 0.12);
+    --popup-bg: #ffffff;
+    --status-idle-bg: rgba(61, 122, 74, 0.12);
+    --status-idle-color: #3d7a4a;
+    --status-heat-bg: rgba(196, 90, 44, 0.12);
+    --status-heat-color: #c45a2c;
+    --status-cool-bg: rgba(43, 139, 163, 0.12);
+    --status-cool-color: #2b8ba3;
+    --knob: #ffffff;
+  }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: transparent;
+  color: var(--text-primary);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.card {
+  --accent: var(--accent-cool);
+  --status-bg: var(--status-cool-bg);
+  --status-color: var(--status-cool-color);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  overflow: hidden;
+  padding: 16px;
+  background: var(--bg-primary);
+  isolation: isolate;
+}
+
+.card.heating {
+  --accent: var(--accent-orange);
+  --status-bg: var(--status-heat-bg);
+  --status-color: var(--status-heat-color);
+}
+
+.card.off {
+  --accent: var(--text-muted);
+  --status-bg: var(--card-bg);
+  --status-color: var(--text-secondary);
+}
+
+/* Soft accent glow behind the product */
+.card:after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  right: -12%;
+  bottom: -28%;
+  width: 62%;
+  height: 85%;
+  border-radius: 999px;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 65%);
+  opacity: .16;
+  pointer-events: none;
+  transition: opacity .4s ease;
+}
+
+.card.off:after { opacity: .05; }
+
+/* ---- top row: status pill + power toggle ---- */
+.top {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--status-bg);
+  color: var(--status-color);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-color);
+}
+
+.active .status-dot { animation: pulse 2s infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(1.1); }
+}
+
+.power {
+  width: 50px;
+  height: 30px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--card-bg);
+  box-shadow: inset 0 0 0 1px var(--card-border);
+  transition: background .25s ease;
+}
+
+.power:after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  transform: translateX(0);
+  transition: transform .25s ease, background .25s ease;
+}
+
+.active .power { background: var(--status-idle-bg); box-shadow: inset 0 0 0 1px var(--accent-green); }
+.active .power:after { transform: translateX(20px); background: var(--accent-green); }
+
+.power:disabled, .ctrl-btn:disabled, .chip-btn:disabled, .option:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* ---- notices ---- */
+.notice {
+  --notice: var(--accent-cool);
+  position: absolute;
+  z-index: 24;
+  left: 16px;
+  right: 16px;
+  top: 52px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--popup-bg);
+  border: 1px solid color-mix(in srgb, var(--notice) 45%, transparent);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .3);
+  overflow: hidden;
+}
+
+.notice:before {
+  content: "";
+  position: absolute;
+  inset: -30px -20px auto auto;
+  width: 120px;
+  height: 95px;
+  border-radius: 999px;
+  background: var(--notice);
+  opacity: .14;
+  filter: blur(24px);
+  pointer-events: none;
+}
+
+.notice-icon {
+  position: relative;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--card-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--notice) 60%, transparent);
+  color: var(--notice);
+}
+
+.notice-icon svg { width: 18px; height: 18px; }
+.notice-text { position: relative; z-index: 1; min-width: 0; }
+
+.notice-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+}
+
+.notice-desc {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text-secondary);
+}
+
+.notice.disconnected { --notice: #ff5a55; }
+.notice.tank-missing { --notice: var(--accent-orange); }
+.notice.tank-full { --notice: var(--accent-cool); }
+
+/* ---- temperature ---- */
+.content {
+  position: relative;
+  z-index: 8;
+  max-width: 56%;
+  margin-top: 16px;
+}
+
+.main-temp {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.temp-value {
+  font-size: clamp(40px, 12vw, 52px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2px;
+  color: var(--text-primary);
+}
+
+.temp-unit {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--accent);
+  margin-top: 5px;
+}
+
+.temp-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- controls ---- */
+.controls {
+  position: absolute;
+  z-index: 18;
+  left: 16px;
+  bottom: 16px;
+}
+
+.target-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.ctrl-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--card-hover-bg);
+  color: var(--text-primary);
+  transition: background .16s ease, transform .16s ease;
+}
+
+.ctrl-btn svg { width: 16px; height: 16px; }
+
+.ctrl-btn:active { transform: scale(.94); }
+
+.target-value {
+  min-width: 52px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.inactive-controls, .inactive-chips {
+  opacity: .35;
+  pointer-events: none;
+  filter: saturate(.4);
+}
+
+/* ---- chips (mode + fan) ---- */
+.chips {
+  position: absolute;
+  z-index: 22;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.chip-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--popup-bg) 82%, transparent);
+  border: 1px solid var(--card-border);
+  color: var(--accent);
+  backdrop-filter: blur(8px);
+  transition: transform .16s ease, background .16s ease;
+}
+
+.chip-btn:active { transform: scale(.94); }
+.chip-btn svg { width: 20px; height: 20px; }
+.chip-btn.off-chip { color: var(--text-muted); }
+.chip-btn.fan-chip { color: var(--text-primary); }
+
+.fan-chip svg { transition: transform .3s ease; }
+.active .fan-chip svg { animation: spin var(--fan-speed, 2.6s) linear infinite; }
+.fan-high { --fan-speed: 1.1s; }
+.fan-low { --fan-speed: 4s; }
+.off .fan-chip svg { animation: none; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- popups ---- */
+.popup {
+  position: absolute;
+  z-index: 40;
+  right: 14px;
+  bottom: 68px;
+  width: 168px;
+  padding: 8px;
+  border-radius: 14px;
+  background: var(--popup-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .35);
+  display: none;
+}
+
+.popup.show { display: block; }
+
+.popup-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin: 4px 8px 8px;
+}
+
+.option {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 9px;
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.option svg { width: 16px; height: 16px; opacity: .8; }
+
+.option.selected {
+  background: var(--status-idle-bg);
+  color: var(--accent-green);
+  font-weight: 700;
+}
+
+.option .check { margin-left: auto; font-size: 14px; }
+
+/* ---- product visual ---- */
+.product-wrap {
+  position: absolute;
+  z-index: 5;
+  right: -2%;
+  bottom: -8%;
+  width: 46%;
+  height: 82%;
+  pointer-events: none;
+}
+
+.product {
+  position: absolute;
+  right: 0;
+  bottom: 12%;
+  width: 92%;
+  height: auto;
+  filter: drop-shadow(0 20px 22px rgba(0, 0, 0, .35));
+}
+
+.air {
+  position: absolute;
+  z-index: 3;
+  right: 36%;
+  bottom: 28%;
+  width: 24%;
+  height: 31%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+
+.active .air { opacity: .9; }
+
+.stream {
+  position: absolute;
+  right: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: airflow var(--air-speed, 2.2s) linear infinite;
+}
+
+.stream.s1 { top: 10px; width: 90%; animation-delay: 0s; }
+.stream.s2 { top: 33px; width: 75%; animation-delay: -.65s; }
+.stream.s3 { top: 56px; width: 98%; animation-delay: -1.25s; }
+.fan-low .stream.s2, .fan-low .stream.s3 { display: none; }
+.fan-normal .stream.s3 { opacity: .58; }
+.fan-high { --air-speed: 1.45s; }
+.off .stream { animation: none; opacity: 0; }
+
+@keyframes airflow {
+  from { transform: translateX(45px); opacity: 0; }
+  18% { opacity: 1; }
+  76% { opacity: 1; }
+  to { transform: translateX(-78px); opacity: 0; }
+}
+
+.error {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.busy:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: rgba(255, 255, 255, .06);
+  pointer-events: none;
+}
+
+@media (max-width: 320px) {
+  .chips { right: 12px; bottom: 12px; gap: 6px; }
+  .chip-btn { width: 40px; height: 40px; }
+  .content { max-width: 54%; }
+  .popup { right: 10px; bottom: 62px; width: 150px; }
+}
 </style>
 </head>
-<body><div id="content" class="card"><div class="error">Laden...</div></div>
+<body><div id="content" class="card off"><div class="error">Laden...</div></div>
 <script>
 function onHomeyReady(Homey){
  const el=document.getElementById('content');const ids=Homey.getDeviceIds&&Homey.getDeviceIds();const id=ids&&ids[0];Homey.ready({height:240});
  const lang=(navigator.language||'nl').substring(0,2);const nl=lang==='nl';
- const text={target:'',mode:nl?'Modus':'Mode',cool:nl?'Koelen':'Cooling',heat:nl?'Verwarmen':'Heating',off:nl?'Uit':'Off',fan:nl?'Ventilatorsnelheid':'Fan speed',fanLow:nl?'Laag':'Low',fanNormal:nl?'Normaal':'Normal',fanHigh:nl?'Hoog':'High',tankFull:nl?'Waterbak vol':'Water tank full',tankFullDesc:nl?'Leeg de condensbak':'Empty the water tank',tankMissing:nl?'Waterbak ontbreekt':'Water tank missing',tankMissingDesc:nl?'Plaats de condensbak terug':'Place the water tank back',disconnected:nl?'Verbinding verbroken':'Connection lost',disconnectedDesc:nl?'Controleer wifi of voeding':'Check Wi-Fi or power'};
+ const text={room:nl?'Kamertemperatuur':'Room temperature',mode:nl?'Modus':'Mode',cool:nl?'Koelen':'Cooling',heat:nl?'Verwarmen':'Heating',off:nl?'Uit':'Off',fan:nl?'Ventilator':'Fan speed',fanLow:nl?'Laag':'Low',fanNormal:nl?'Normaal':'Normal',fanHigh:nl?'Hoog':'High',tankFull:nl?'Waterbak vol':'Water tank full',tankFullDesc:nl?'Leeg de condensbak':'Empty the water tank',tankMissing:nl?'Waterbak ontbreekt':'Water tank missing',tankMissingDesc:nl?'Plaats de condensbak terug':'Place the water tank back',disconnected:nl?'Verbinding verbroken':'Connection lost',disconnectedDesc:nl?'Controleer wifi of voeding':'Check Wi-Fi or power'};
+ const icons={
+  cool:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2.5v19M12 5.5l-1.8-1.8M12 5.5l1.8-1.8M12 18.5l-1.8 1.8M12 18.5l1.8 1.8"/><path d="M12 2.5v19M12 5.5l-1.8-1.8M12 5.5l1.8-1.8M12 18.5l-1.8 1.8M12 18.5l1.8 1.8" transform="rotate(60 12 12)"/><path d="M12 2.5v19M12 5.5l-1.8-1.8M12 5.5l1.8-1.8M12 18.5l-1.8 1.8M12 18.5l1.8 1.8" transform="rotate(120 12 12)"/></svg>',
+  heat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>',
+  power:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 6.5a8 8 0 1 0 11.4 0"/></svg>',
+  fan:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="2.2"/><path d="M12 9.5c0-3.6 1.6-6 3.5-6 1.6 0 2.7 1.4 2.7 3 0 2.4-2.7 3.8-6.2 3zM14.5 12c3.6 0 6 1.6 6 3.5 0 1.6-1.4 2.7-3 2.7-2.4 0-3.8-2.7-3-6.2zM12 14.5c0 3.6-1.6 6-3.5 6-1.6 0-2.7-1.4-2.7-3 0-2.4 2.7-3.8 6.2-3zM9.5 12c-3.6 0-6-1.6-6-3.5 0-1.6 1.4-2.7 3-2.7 2.4 0 3.8 2.7 3 6.2z"/></svg>',
+  drop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>',
+  minus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  wifi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 9a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor"/></svg>'
+ };
  let state=null,busy=false,pendingTargetTemp=null,pendingTargetUntil=0,openPopup=null;
  const fmt=(v,d=1)=>v===null||v===undefined||Number.isNaN(Number(v))?'--':Number(v).toFixed(d);
  function normMode(v){v=String(v||'').toUpperCase();return v.includes('HEAT')?'heating':v.includes('COOL')?'cooling':'off'}
  function normFan(v){v=String(v||'').toLowerCase();if(v.includes('high')||v.includes('hoog'))return'high';if(v.includes('low')||v.includes('laag'))return'low';return'normal'}
  function modeLabel(m){return m==='heating'?text.heat:m==='cooling'?text.cool:text.off}
  function fanLabel(f){return f==='high'?text.fanHigh:f==='low'?text.fanLow:text.fanNormal}
- function modeIcon(m){return m==='heating'?'☼':m==='cooling'?'❄':'⏻'}
- function noticeInfo(d){const tank=String(d?.waterTankStatus||'').toUpperCase();if(d?.disconnected)return{cls:'disconnected',icon:'⌁',label:text.disconnected,desc:text.disconnectedDesc};if(d?.tankMissing||tank==='MISSING')return{cls:'tank-missing',icon:'▱',label:text.tankMissing,desc:text.tankMissingDesc};if(d?.tankFull||tank==='FULL')return{cls:'tank-full',icon:'◌',label:text.tankFull,desc:text.tankFullDesc};return null}
+ function modeIcon(m){return m==='heating'?icons.heat:m==='cooling'?icons.cool:icons.power}
+ function noticeInfo(d){const tank=String(d?.waterTankStatus||'').toUpperCase();if(d?.disconnected)return{cls:'disconnected',icon:icons.wifi,label:text.disconnected,desc:text.disconnectedDesc};if(d?.tankMissing||tank==='MISSING')return{cls:'tank-missing',icon:icons.drop,label:text.tankMissing,desc:text.tankMissingDesc};if(d?.tankFull||tank==='FULL')return{cls:'tank-full',icon:icons.drop,label:text.tankFull,desc:text.tankFullDesc};return null}
  async function call(method,path,body,opts){if(!id)return;busy=true;render(state);try{await Homey.api(method,path,body||{});if(!opts||!opts.keepLocal){await draw(true)}}catch(e){Homey.alert&&Homey.alert(e.message||String(e));if(!opts||!opts.keepLocal){await draw(true)}}finally{busy=false;render(state)}}
  function render(d){
   if(!d){el.className='card off';el.innerHTML='<div class="error">Laden...</div>';return}
   const active=!!d.isOn;const mode=active?normMode(d.mode):'off';const fan=normFan(d.fanMode);const controlsDisabled=!active||busy;const notice=noticeInfo(d);if(!active)openPopup=null;
   el.className=`card ${mode} ${active?'active':''} fan-${fan} ${busy?'busy':''}`;
-  el.innerHTML=`<div class="top"><button class="power" ${busy?'disabled':''} aria-label="Power"></button></div>${notice?`<div class="notice ${notice.cls}"><span class="notice-icon">${notice.icon}</span><span class="notice-text"><span class="notice-title">${notice.label}</span><span class="notice-desc">${notice.desc}</span></span></div>`:''}
-  <section class="content"><h1 class="title">${d.name||'Quatt Chill'}</h1><div class="temperature"><span>${fmt(d.roomTemp)}</span><span class="unit">°C</span></div></section>
-  <section class="controls ${!active?'inactive-controls':''}"><div class="target-control"><button class="ctrl-btn minus" ${controlsDisabled?'disabled':''}>−</button><div class="target-value">${fmt(d.targetTemp,0)}°</div><button class="ctrl-btn plus" ${controlsDisabled?'disabled':''}>+</button></div><div class="control-label">${text.target}</div></section>
-  <div class="chips ${!active?'inactive-chips':''}"><button class="chip-btn mode-chip ${mode==='off'?'off-chip':''}" title="${modeLabel(mode)}" aria-label="${text.mode}: ${modeLabel(mode)}" ${controlsDisabled?'disabled':''}><span class="icon">${modeIcon(mode)}</span><span class="arrow">›</span></button><button class="chip-btn fan-chip" title="${fanLabel(fan)}" aria-label="${text.fan}: ${fanLabel(fan)}" ${controlsDisabled?'disabled':''}><span class="icon">✤</span><span class="arrow">›</span></button></div>
-  <div class="popup mode-popup ${openPopup==='mode'?'show':''}"><div class="popup-title">${text.mode}</div>${['cooling','heating','off'].map(m=>`<button class="option mode-option ${m===mode?'selected':''}" data-mode="${m}" ${busy?'disabled':''}><span>${modeIcon(m)}</span><span>${modeLabel(m)}</span>${m===mode?'<span class="check">✓</span>':''}</button>`).join('')}</div>
-  <div class="popup fan-popup ${openPopup==='fan'?'show':''}"><div class="popup-title">${text.fan}</div>${['low','normal','high'].map(f=>`<button class="option fan-option ${f===fan?'selected':''}" data-fan="${f}" ${busy?'disabled':''}><span>✤</span><span>${fanLabel(f)}</span>${f===fan?'<span class="check">✓</span>':''}</button>`).join('')}</div>
-  <div class="air"><div class="stream s1"></div><div class="stream s2"></div><div class="stream s3"></div></div><div class="product-wrap"><div class="product-glow"></div><div class="ring"></div><img class="product" src="./assets/chill.png" alt=""></div>`;
+  el.innerHTML=`<div class="top"><div class="status-indicator"><div class="status-dot"></div>${modeLabel(mode)}</div><button class="power" ${busy?'disabled':''} aria-label="Power"></button></div>${notice?`<div class="notice ${notice.cls}"><span class="notice-icon">${notice.icon}</span><span class="notice-text"><span class="notice-title">${notice.label}</span><span class="notice-desc">${notice.desc}</span></span></div>`:''}
+  <section class="content"><div class="main-temp"><span class="temp-value">${fmt(d.roomTemp)}</span><span class="temp-unit">°C</span></div><div class="temp-label">${text.room}</div></section>
+  <section class="controls ${!active?'inactive-controls':''}"><div class="target-control"><button class="ctrl-btn minus" ${controlsDisabled?'disabled':''}>${icons.minus}</button><div class="target-value">${fmt(d.targetTemp,0)}°</div><button class="ctrl-btn plus" ${controlsDisabled?'disabled':''}>${icons.plus}</button></div></section>
+  <div class="chips ${!active?'inactive-chips':''}"><button class="chip-btn mode-chip ${mode==='off'?'off-chip':''}" title="${modeLabel(mode)}" aria-label="${text.mode}: ${modeLabel(mode)}" ${controlsDisabled?'disabled':''}>${modeIcon(mode)}</button><button class="chip-btn fan-chip" title="${fanLabel(fan)}" aria-label="${text.fan}: ${fanLabel(fan)}" ${controlsDisabled?'disabled':''}>${icons.fan}</button></div>
+  <div class="popup mode-popup ${openPopup==='mode'?'show':''}"><div class="popup-title">${text.mode}</div>${['cooling','heating','off'].map(m=>`<button class="option mode-option ${m===mode?'selected':''}" data-mode="${m}" ${busy?'disabled':''}>${modeIcon(m)}<span>${modeLabel(m)}</span>${m===mode?'<span class="check">✓</span>':''}</button>`).join('')}</div>
+  <div class="popup fan-popup ${openPopup==='fan'?'show':''}"><div class="popup-title">${text.fan}</div>${['low','normal','high'].map(f=>`<button class="option fan-option ${f===fan?'selected':''}" data-fan="${f}" ${busy?'disabled':''}>${icons.fan}<span>${fanLabel(f)}</span>${f===fan?'<span class="check">✓</span>':''}</button>`).join('')}</div>
+  <div class="air"><div class="stream s1"></div><div class="stream s2"></div><div class="stream s3"></div></div><div class="product-wrap"><img class="product" src="./assets/chill.png" alt=""></div>`;
   el.querySelector('.power')?.addEventListener('click',()=>{state={...state,isOn:!active};openPopup=null;render(state);call('POST',`/${encodeURIComponent(id)}/onoff`,{on:!active})});
   el.querySelector('.minus')?.addEventListener('click',()=>{const next=Math.round(Number(state?.targetTemp??d.targetTemp??0)-1);pendingTargetTemp=next;pendingTargetUntil=Date.now()+45000;state={...state,targetTemp:next};openPopup=null;render(state);call('POST',`/${encodeURIComponent(id)}/target-temperature`,{targetTemperature:next,value:next,mode:mode},{keepLocal:true})});
   el.querySelector('.plus')?.addEventListener('click',()=>{const next=Math.round(Number(state?.targetTemp??d.targetTemp??0)+1);pendingTargetTemp=next;pendingTargetUntil=Date.now()+45000;state={...state,targetTemp:next};openPopup=null;render(state);call('POST',`/${encodeURIComponent(id)}/target-temperature`,{targetTemperature:next,value:next,mode:mode},{keepLocal:true})});
