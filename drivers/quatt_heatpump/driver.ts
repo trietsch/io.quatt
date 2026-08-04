@@ -147,6 +147,9 @@ class QuattHeatpumpDriver extends Homey.Driver {
                 // Keep the CiC reference so the device knows which credentials are its own.
                 await device.setStoreValue('remoteInstallationId', result.installationId);
                 await device.setStoreValue('remoteCicId', cicId);
+                // Also kept in the device store so that downgrading to a version without the
+                // shared store leaves the CiC with usable credentials.
+                await device.setStoreValue('remoteTokens', result.tokens);
 
                 // Update settings to show remote control is configured
                 await device.setSettings({
