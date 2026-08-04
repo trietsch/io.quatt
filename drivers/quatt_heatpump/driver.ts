@@ -1,7 +1,7 @@
 import Homey from 'homey';
 import PairSession from "homey/lib/PairSession";
 import {QuattLocator} from "../../lib/quatt/locator";
-import {QuattRemoteApiClient, QuattTokens} from "../../lib/quatt";
+import {QuattRemoteApiClient, QuattTokenStore, QuattTokens} from "../../lib/quatt";
 
 class QuattHeatpumpDriver extends Homey.Driver {
     private type: string = '';
@@ -134,8 +134,17 @@ class QuattHeatpumpDriver extends Homey.Driver {
 
                 this.homey.app.log(`[Driver] ${this.id} - Repair: Successfully authenticated and paired with remote API`);
 
-                // Store the remote data in device
-                await device.setStoreValue('remoteTokens', result.tokens);
+                // Credentials are shared by the CiC and every Chill on this installation, so they
+                // go into app-level storage. Writing them here is what makes "Repair" heal the
+                // Chill devices too instead of only the CiC.
+                const tokenStore = new QuattTokenStore(this.homey.settings, this.homey.app.log.bind(this.homey.app));
+                tokenStore.saveCredentials({
+                    cicId,
+                    installationId: result.installationId,
+                    tokens: result.tokens,
+                });
+
+                // Keep the CiC reference so the device knows which credentials are its own.
                 await device.setStoreValue('remoteInstallationId', result.installationId);
                 await device.setStoreValue('remoteCicId', cicId);
 
@@ -144,8 +153,15 @@ class QuattHeatpumpDriver extends Homey.Driver {
                     remoteControlStatus: `✓ Configured (${firstName} ${lastName})`
                 });
 
-                // Initialize the remote client on the device immediately
-                device.remoteClient = remoteClient;
+                // Initialize the remote client on the device immediately. Rebuild it against the
+                // shared store so it refreshes through the same lock as every other device.
+                device.remoteClient = new QuattRemoteApiClient(
+                    this.homey.app.manifest.version,
+                    result.tokens,
+                    cicId,
+                    result.installationId,
+                    tokenStore.sourceFor(cicId)
+                );
 
                 this.homey.app.log(`[Driver] ${this.id} - Repair: Remote data stored and remote client initialized`);
 

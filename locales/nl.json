@@ -22,5 +22,10 @@
     "ipChangeSuspected": "Mogelijke IP-adres wijziging. Controleer de apparaatinstellingen als het apparaat onbeschikbaar blijft.",
     "unableToConnectToDeviceWithManualIP": "Kan geen verbinding maken met Quatt CiC op IP-adres __ipAddress__. Automatische detectie wordt geprobeerd.",
     "unableToAutoDiscoverQuattCiC": "Kan Quatt CiC niet automatisch ontdekken. Zorg ervoor dat het apparaat is ingeschakeld en verbonden is met hetzelfde netwerk als je Homey."
+  },
+  "device": {
+    "chill": {
+      "notLinked": "Quatt Chill is nog niet gekoppeld. Voeg hem opnieuw toe vanuit een Quatt met Remote Control."
+    }
   }
 }

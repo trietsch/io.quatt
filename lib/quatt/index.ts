@@ -3,6 +3,7 @@ import {RestClient} from "typed-rest-client/RestClient";
 import { QuattApiError } from './errors';
 
 export { QuattRemoteApiClient, QuattTokens, QuattRemoteSettings, QuattChill, QuattChillAction, QuattChillFanMode, QuattChillMode } from './remote-api';
+export { QuattTokenStore, QuattCredentials, QuattTokenSource, REMOTE_CREDENTIALS_SETTINGS_KEY } from './token-store';
 
 type OptionalCicStats = CicStats | null;
 

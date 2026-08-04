@@ -1,5 +1,5 @@
 import Homey from 'homey';
-import {QuattChill, QuattRemoteApiClient, QuattTokens} from '../../lib/quatt';
+import {QuattChill, QuattRemoteApiClient, QuattTokenStore, QuattTokens} from '../../lib/quatt';
 
 interface QuattChillDeviceSettings {
     updateInterval: number;
@@ -17,20 +17,39 @@ class QuattChillDevice extends Homey.Device {
         this.log('Initialization device: Quatt Chill');
 
         this.chillUuid = this.getStoreValue('chillUuid') as string | null;
-        const remoteTokens = this.getStoreValue('remoteTokens') as QuattTokens | undefined;
         const remoteCicId = this.getStoreValue('remoteCicId') as string | undefined;
-        const remoteInstallationId = this.getStoreValue('remoteInstallationId') as string | undefined;
 
-        if (!this.chillUuid || !remoteTokens || !remoteCicId || !remoteInstallationId) {
-            await this.setUnavailable('Quatt Chill is nog niet gekoppeld. Voeg hem opnieuw toe vanuit een Quatt met Remote Control.').catch(this.error);
+        // Credentials come from the shared store rather than this device's own copy, so that
+        // repairing the CiC also restores every Chill instead of stranding them on tokens for
+        // an identity that no longer exists.
+        const tokenStore = new QuattTokenStore(this.homey.settings, this.log.bind(this));
+        let credentials = remoteCicId ? tokenStore.getCredentials(remoteCicId) : null;
+
+        if (!credentials && remoteCicId) {
+            // Migrate from the CiC's store in preference to our own: "Repair" only ever wrote to
+            // the CiC, so a Chill's own copy may be older. Falling back to our own copy still
+            // covers the case where the CiC device was removed.
+            const source = this.findCicStoreValues(remoteCicId) ?? {
+                remoteTokens: this.getStoreValue('remoteTokens') as QuattTokens | undefined,
+                remoteInstallationId: this.getStoreValue('remoteInstallationId') as string | undefined,
+            };
+
+            if (source.remoteTokens && source.remoteInstallationId) {
+                credentials = tokenStore.migrateFromDevice(remoteCicId, source.remoteTokens, source.remoteInstallationId);
+            }
+        }
+
+        if (!this.chillUuid || !credentials) {
+            await this.setUnavailable(this.homey.__('device.chill.notLinked')).catch(this.error);
             return;
         }
 
         this.remoteClient = new QuattRemoteApiClient(
             this.homey.app.manifest.version,
-            remoteTokens,
-            remoteCicId,
-            remoteInstallationId
+            credentials.tokens,
+            credentials.cicId,
+            credentials.installationId,
+            tokenStore.sourceFor(credentials.cicId)
         );
 
         await this.migrateCapabilities();
@@ -41,6 +60,34 @@ class QuattChillDevice extends Homey.Device {
         const settings = this.getSettings() as QuattChillDeviceSettings;
         const updateInterval = typeof settings.updateInterval === 'number' ? settings.updateInterval : 30;
         this.setCapabilityValuesInterval(updateInterval);
+    }
+
+    /**
+     * Find the paired CiC device that owns the given CiC id, so its stored credentials can be
+     * used as the migration source.
+     */
+    private findCicStoreValues(cicId: string): { remoteTokens?: QuattTokens; remoteInstallationId?: string } | null {
+        try {
+            const heatpumpDriver = this.homey.drivers.getDriver('quatt_heatpump');
+            const heatpumpDevices = heatpumpDriver ? heatpumpDriver.getDevices() : [];
+
+            for (const heatpumpDevice of heatpumpDevices) {
+                const device = heatpumpDevice as Homey.Device;
+                if (device.getStoreValue('remoteCicId') !== cicId) {
+                    continue;
+                }
+
+                const remoteTokens = device.getStoreValue('remoteTokens') as QuattTokens | undefined;
+                const remoteInstallationId = device.getStoreValue('remoteInstallationId') as string | undefined;
+                if (remoteTokens && remoteInstallationId) {
+                    return {remoteTokens, remoteInstallationId};
+                }
+            }
+        } catch (error) {
+            this.log('Unable to read credentials from the paired Quatt CiC:', error);
+        }
+
+        return null;
     }
 
     async onDeleted() {
@@ -196,7 +243,6 @@ class QuattChillDevice extends Homey.Device {
         }
 
         const ok = await this.remoteClient.updateChillAction(this.chillUuid, action);
-        await this.persistRefreshedTokens();
         if (!ok) {
             throw new Error(errorMessage);
         }
@@ -207,7 +253,6 @@ class QuattChillDevice extends Homey.Device {
 
         try {
             const chills = await this.remoteClient.getChills();
-            await this.persistRefreshedTokens();
             const currentChill = chills.find((chill) => chill.uuid === this.chillUuid);
 
             if (!currentChill) {
@@ -241,13 +286,6 @@ class QuattChillDevice extends Homey.Device {
         } catch (error) {
             this.log('Unable to update Chill capabilities:', error);
             await this.setUnavailable(error instanceof Error ? error.message : String(error)).catch(this.error);
-        }
-    }
-
-    private async persistRefreshedTokens() {
-        const tokens = this.remoteClient?.getTokens();
-        if (tokens) {
-            await this.setStoreValue('remoteTokens', tokens).catch(this.error);
         }
     }
 
