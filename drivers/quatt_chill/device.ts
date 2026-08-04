@@ -10,11 +10,16 @@ interface ChillHistoryPoint {
     v: number;
 }
 
+interface ChillsSharedDriver {
+    getChillsShared(client: QuattRemoteApiClient, installationId: string, options?: {allowCached?: boolean}): Promise<QuattChill[]>;
+}
+
 class QuattChillDevice extends Homey.Device {
     private static readonly HISTORY_BUCKET_MS = 5 * 60 * 1000;
     private static readonly HISTORY_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
     private remoteClient: QuattRemoteApiClient | null = null;
+    private remoteInstallationId: string | null = null;
     private onPollInterval: NodeJS.Timer | null = null;
     private chillUuid: string | null = null;
     private chillStatusChangedTrigger: any = null;
@@ -40,11 +45,12 @@ class QuattChillDevice extends Homey.Device {
             remoteCicId,
             remoteInstallationId
         );
+        this.remoteInstallationId = remoteInstallationId;
 
         await this.migrateCapabilities();
         await this.registerCapabilityListeners();
         await this.registerFlowActions();
-        await this.updateChillCapabilities();
+        await this.updateChillCapabilities({allowCached: true});
 
         const settings = this.getSettings() as QuattChillDeviceSettings;
         const updateInterval = typeof settings.updateInterval === 'number' ? settings.updateInterval : 30;
@@ -100,7 +106,7 @@ class QuattChillDevice extends Homey.Device {
         }
 
         this.onPollInterval = this.homey.setInterval(async () => {
-            await this.updateChillCapabilities();
+            await this.updateChillCapabilities({allowCached: true});
         }, updateIntervalSeconds * 1000);
     }
 
@@ -210,11 +216,17 @@ class QuattChillDevice extends Homey.Device {
         }
     }
 
-    private async updateChillCapabilities() {
+    // Fetches via the driver's shared per-installation cache: interval polls of
+    // multiple Chill devices coalesce into one API call, while direct commands
+    // (allowCached omitted) always fetch fresh data.
+    private async updateChillCapabilities(options: {allowCached?: boolean} = {}) {
         if (!this.remoteClient || !this.chillUuid) return;
 
         try {
-            const chills = await this.remoteClient.getChills();
+            const driver = this.driver as unknown as ChillsSharedDriver;
+            const chills = this.remoteInstallationId && typeof driver.getChillsShared === 'function'
+                ? await driver.getChillsShared(this.remoteClient, this.remoteInstallationId, options)
+                : await this.remoteClient.getChills();
             await this.persistRefreshedTokens();
             const currentChill = chills.find((chill) => chill.uuid === this.chillUuid);
 
