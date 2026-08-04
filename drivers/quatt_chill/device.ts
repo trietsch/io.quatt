@@ -62,7 +62,7 @@ class QuattChillDevice extends Homey.Device {
     }
 
     private async migrateCapabilities() {
-        const requiredCapabilities = ['measure_temperature', 'target_temperature', 'chill_water_tank_status', 'alarm_chill_disconnected'];
+        const requiredCapabilities = ['measure_temperature', 'target_temperature', 'chill_water_tank_status', 'alarm_chill_disconnected', 'measure_chill_update_state'];
         for (const capability of requiredCapabilities) {
             if (!this.hasCapability(capability)) {
                 await this.addCapability(capability).catch(this.error);
@@ -222,6 +222,8 @@ class QuattChillDevice extends Homey.Device {
 
             const normalizedStatus = String(currentChill.status || '').toUpperCase();
 
+            await this.applyTargetTemperatureRange(currentChill);
+
             await Promise.all([
                 this.safeSetCapabilityValue('measure_temperature', currentChill.ambientTemperature),
                 this.safeSetCapabilityValue('target_temperature', targetTemperature),
@@ -232,6 +234,7 @@ class QuattChillDevice extends Homey.Device {
                 this.safeSetCapabilityValue('onoff', this.getChillIsOn(currentChill)),
                 this.safeSetCapabilityValue('chill_water_tank_status', this.getWaterTankStatus(normalizedStatus)),
                 this.safeSetCapabilityValue('alarm_chill_disconnected', normalizedStatus === 'WARNING_DISCONNECTED'),
+                this.safeSetCapabilityValue('measure_chill_update_state', currentChill.updateState),
             ]);
 
             await this.triggerChillStatusChanged(currentChill.status);
@@ -241,6 +244,22 @@ class QuattChillDevice extends Homey.Device {
         } catch (error) {
             this.log('Unable to update Chill capabilities:', error);
             await this.setUnavailable(error instanceof Error ? error.message : String(error)).catch(this.error);
+        }
+    }
+
+    private async applyTargetTemperatureRange(chill: QuattChill): Promise<void> {
+        const min = typeof chill.minTargetTemperature === 'number' ? chill.minTargetTemperature : undefined;
+        const max = typeof chill.maxTargetTemperature === 'number' ? chill.maxTargetTemperature : undefined;
+        if (min === undefined || max === undefined || min >= max) return;
+
+        try {
+            const options = this.getCapabilityOptions('target_temperature') || {};
+            if (options.min === min && options.max === max) return;
+
+            await this.setCapabilityOptions('target_temperature', {...options, min, max});
+            this.log(`Updated target temperature range to ${min}-${max}`);
+        } catch (error) {
+            this.log('Unable to update target temperature range:', error);
         }
     }
 

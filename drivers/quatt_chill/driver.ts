@@ -17,6 +17,14 @@ class QuattChillDriver extends Homey.Driver {
         const heatpumpDevices = heatpumpDriver ? heatpumpDriver.getDevices() : [];
         const results: any[] = [];
 
+        if (heatpumpDevices.length === 0) {
+            throw new Error(this.homey.__('pair.chill.noHeatpump'));
+        }
+
+        let devicesWithRemoteControl = 0;
+        let installationHasChills = false;
+        let apiErrorOccurred = false;
+
         for (const heatpumpDevice of heatpumpDevices) {
             const device = heatpumpDevice as Homey.Device;
             const remoteTokens = device.getStoreValue('remoteTokens') as QuattTokens | undefined;
@@ -26,6 +34,7 @@ class QuattChillDriver extends Homey.Driver {
             if (!remoteTokens || !remoteCicId || !remoteInstallationId) {
                 continue;
             }
+            devicesWithRemoteControl++;
 
             try {
                 const remoteClient = new QuattRemoteApiClient(
@@ -34,6 +43,11 @@ class QuattChillDriver extends Homey.Driver {
                     remoteCicId,
                     remoteInstallationId
                 );
+
+                if (await remoteClient.hasChills().catch(() => false)) {
+                    installationHasChills = true;
+                }
+
                 const chills = await remoteClient.getChills();
 
                 for (const chill of chills) {
@@ -54,8 +68,19 @@ class QuattChillDriver extends Homey.Driver {
                     });
                 }
             } catch (error) {
+                apiErrorOccurred = true;
                 this.error('Unable to fetch Quatt Chill devices:', error);
             }
+        }
+
+        if (results.length === 0) {
+            if (devicesWithRemoteControl === 0) {
+                throw new Error(this.homey.__('pair.chill.noRemoteControl'));
+            }
+            if (apiErrorOccurred || installationHasChills) {
+                throw new Error(this.homey.__('pair.chill.apiError'));
+            }
+            throw new Error(this.homey.__('pair.chill.noChills'));
         }
 
         return results;

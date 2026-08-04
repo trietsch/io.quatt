@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Firmware update status",
+    "nl": "Firmware update status"
+  },
+  "description": "Firmware update state reported by Quatt Chill.",
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "assets/icons/thermostat-cooling.svg"
+}

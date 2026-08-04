@@ -74,6 +74,10 @@ export interface QuattChill {
     ambientTemperature?: number;
     coolingTargetTemperature?: number;
     heatingTargetTemperature?: number;
+    minTargetTemperature?: number;
+    maxTargetTemperature?: number;
+    updateState?: string;
+    lastUpdatedAt?: string;
     isOn?: { value?: boolean } | boolean;
     [key: string]: unknown;
 }
@@ -251,6 +255,16 @@ export class QuattRemoteApiClient {
         if (Date.now() >= this.tokens.expiresAt) {
             await this._refreshToken();
         }
+    }
+
+    /**
+     * Whether the installation behind this CIC has Quatt Chill devices,
+     * according to the CIC data from the remote API.
+     */
+    async hasChills(): Promise<boolean> {
+        const body = await this.getCicData();
+        const result = body?.result ?? body;
+        return Boolean(result?.hasChills);
     }
 
     /**
