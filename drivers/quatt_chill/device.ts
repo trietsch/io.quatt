@@ -5,7 +5,15 @@ interface QuattChillDeviceSettings {
     updateInterval: number;
 }
 
+interface ChillHistoryPoint {
+    t: number;
+    v: number;
+}
+
 class QuattChillDevice extends Homey.Device {
+    private static readonly HISTORY_BUCKET_MS = 5 * 60 * 1000;
+    private static readonly HISTORY_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
     private remoteClient: QuattRemoteApiClient | null = null;
     private onPollInterval: NodeJS.Timer | null = null;
     private chillUuid: string | null = null;
@@ -223,6 +231,7 @@ class QuattChillDevice extends Homey.Device {
             const normalizedStatus = String(currentChill.status || '').toUpperCase();
 
             await this.applyTargetTemperatureRange(currentChill);
+            await this.recordTemperatureHistory(currentChill.ambientTemperature);
 
             await Promise.all([
                 this.safeSetCapabilityValue('measure_temperature', currentChill.ambientTemperature),
@@ -260,6 +269,29 @@ class QuattChillDevice extends Homey.Device {
             this.log(`Updated target temperature range to ${min}-${max}`);
         } catch (error) {
             this.log('Unable to update target temperature range:', error);
+        }
+    }
+
+    // Keep a compact rolling room temperature history (5-minute buckets, max 24h)
+    // in the device store, so the widget can render a sparkline. Homey Insights
+    // capability logs are not readable from the app SDK without the heavy
+    // homey:manager:api permission.
+    private async recordTemperatureHistory(value: unknown): Promise<void> {
+        if (typeof value !== 'number' || Number.isNaN(value)) return;
+
+        try {
+            const now = Date.now();
+            const stored = this.getStoreValue('tempHistory') as ChillHistoryPoint[] | null;
+            const history = Array.isArray(stored) ? stored : [];
+            const last = history[history.length - 1];
+
+            if (last && now - last.t < QuattChillDevice.HISTORY_BUCKET_MS) return;
+
+            const pruned = history.filter((point) => now - point.t <= QuattChillDevice.HISTORY_MAX_AGE_MS);
+            pruned.push({t: now, v: Math.round(value * 10) / 10});
+            await this.setStoreValue('tempHistory', pruned);
+        } catch (error) {
+            this.log('Unable to record temperature history:', error);
         }
     }
 

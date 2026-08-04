@@ -18,6 +18,25 @@ interface ChillStatusResponse {
   tankFull: boolean;
   tankMissing: boolean;
   disconnected: boolean;
+  history: Array<{ t: number; v: number }>;
+}
+
+function getTemperatureHistory(device: any, roomTemp: number | null): Array<{ t: number; v: number }> {
+  let history: Array<{ t: number; v: number }> = [];
+  try {
+    const stored = device.getStoreValue?.('tempHistory');
+    if (Array.isArray(stored)) {
+      history = stored.slice(-72);
+    }
+  } catch (_) {
+    // History is a nice-to-have; never fail the status call over it.
+  }
+
+  if (typeof roomTemp === 'number' && !Number.isNaN(roomTemp)) {
+    history = [...history, { t: Date.now(), v: roomTemp }];
+  }
+
+  return history;
 }
 
 function normalizeFanMode(value: string): string {
@@ -225,10 +244,11 @@ module.exports = {
   async getStatus({ homey, params }: ApiRequest): Promise<ChillStatusResponse> {
     try {
       const device = await getChillDevice(homey, params.deviceId);
+      const roomTemp = device.hasCapability('measure_temperature') ? device.getCapabilityValue('measure_temperature') : null;
 
       return {
         name: device.getName(),
-        roomTemp: device.hasCapability('measure_temperature') ? device.getCapabilityValue('measure_temperature') : null,
+        roomTemp,
         targetTemp: device.hasCapability('target_temperature')
           ? device.getCapabilityValue('target_temperature')
           : device.hasCapability('target_temperature.chill_cooling')
@@ -248,6 +268,7 @@ module.exports = {
           ? String(device.getCapabilityValue('chill_water_tank_status') || '').toUpperCase() === 'MISSING'
           : device.hasCapability('alarm_chill_tank_missing') ? !!device.getCapabilityValue('alarm_chill_tank_missing') : false,
         disconnected: device.hasCapability('alarm_chill_disconnected') ? !!device.getCapabilityValue('alarm_chill_disconnected') : false,
+        history: getTemperatureHistory(device, roomTemp),
       };
     } catch (error: any) {
       throw new Error(`Chill widget API error: ${error.message}`);

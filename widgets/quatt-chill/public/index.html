@@ -311,8 +311,9 @@ button {
   gap: 6px;
   padding: 5px;
   border-radius: 999px;
-  background: var(--card-bg);
+  background: color-mix(in srgb, var(--popup-bg) 82%, transparent);
   border: 1px solid var(--card-border);
+  backdrop-filter: blur(8px);
 }
 
 .ctrl-btn {
@@ -490,6 +491,36 @@ button {
   to { transform: translateX(-78px); opacity: 0; }
 }
 
+/* ---- subtle temperature history sparkline ---- */
+.spark {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 58px;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 72%, transparent 94%);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 72%, transparent 94%);
+  transition: opacity .4s ease;
+}
+
+.spark-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  opacity: .45;
+}
+
+.spark-fill {
+  fill: var(--accent);
+  opacity: .09;
+}
+
+.off .spark { opacity: .45; }
+
 .error {
   height: 100%;
   display: grid;
@@ -540,6 +571,23 @@ function onHomeyReady(Homey){
  function modeLabel(m){return m==='heating'?text.heat:m==='cooling'?text.cool:text.off}
  function fanLabel(f){return f==='high'?text.fanHigh:f==='low'?text.fanLow:text.fanNormal}
  function modeIcon(m){return m==='heating'?icons.heat:m==='cooling'?icons.cool:icons.power}
+ function sparkline(hist){
+  if(!Array.isArray(hist)||hist.length<4)return'';
+  const W=372,H=58,PT=8,PB=3;
+  const pts_v=hist.map(p=>Number(p.v)).filter(v=>!Number.isNaN(v));
+  if(pts_v.length<4)return'';
+  let min=Math.min(...pts_v),max=Math.max(...pts_v);
+  if(max-min<1){const m=(max+min)/2;min=m-.5;max=m+.5}
+  const t0=Number(hist[0].t),t1=Number(hist[hist.length-1].t);
+  const tr=Math.max(1,t1-t0);
+  const pts=hist.map(p=>{
+   const x=((Number(p.t)-t0)/tr)*W;
+   const y=PT+(1-(Number(p.v)-min)/(max-min))*(H-PT-PB);
+   return[x,y];
+  });
+  const line=pts.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join('');
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><path class="spark-fill" d="${line}L${W} ${H}L0 ${H}Z"/><path class="spark-line" d="${line}"/></svg>`;
+ }
  function noticeInfo(d){const tank=String(d?.waterTankStatus||'').toUpperCase();if(d?.disconnected)return{cls:'disconnected',icon:icons.wifi,label:text.disconnected,desc:text.disconnectedDesc};if(d?.tankMissing||tank==='MISSING')return{cls:'tank-missing',icon:icons.drop,label:text.tankMissing,desc:text.tankMissingDesc};if(d?.tankFull||tank==='FULL')return{cls:'tank-full',icon:icons.drop,label:text.tankFull,desc:text.tankFullDesc};return null}
  async function call(method,path,body,opts){if(!id)return;busy=true;render(state);try{await Homey.api(method,path,body||{});if(!opts||!opts.keepLocal){await draw(true)}}catch(e){Homey.alert&&Homey.alert(e.message||String(e));if(!opts||!opts.keepLocal){await draw(true)}}finally{busy=false;render(state)}}
  function render(d){
@@ -552,7 +600,7 @@ function onHomeyReady(Homey){
   <div class="chips ${!active?'inactive-chips':''}"><button class="chip-btn mode-chip ${mode==='off'?'off-chip':''}" title="${modeLabel(mode)}" aria-label="${text.mode}: ${modeLabel(mode)}" ${controlsDisabled?'disabled':''}>${modeIcon(mode)}</button><button class="chip-btn fan-chip" title="${fanLabel(fan)}" aria-label="${text.fan}: ${fanLabel(fan)}" ${controlsDisabled?'disabled':''}>${icons.fan}</button></div>
   <div class="popup mode-popup ${openPopup==='mode'?'show':''}"><div class="popup-title">${text.mode}</div>${['cooling','heating','off'].map(m=>`<button class="option mode-option ${m===mode?'selected':''}" data-mode="${m}" ${busy?'disabled':''}>${modeIcon(m)}<span>${modeLabel(m)}</span>${m===mode?'<span class="check">✓</span>':''}</button>`).join('')}</div>
   <div class="popup fan-popup ${openPopup==='fan'?'show':''}"><div class="popup-title">${text.fan}</div>${['low','normal','high'].map(f=>`<button class="option fan-option ${f===fan?'selected':''}" data-fan="${f}" ${busy?'disabled':''}>${icons.fan}<span>${fanLabel(f)}</span>${f===fan?'<span class="check">✓</span>':''}</button>`).join('')}</div>
-  <div class="air"><div class="stream s1"></div><div class="stream s2"></div><div class="stream s3"></div></div><div class="product-wrap"><img class="product" src="./assets/chill.png" alt=""></div>`;
+  ${sparkline(d.history)}<div class="air"><div class="stream s1"></div><div class="stream s2"></div><div class="stream s3"></div></div><div class="product-wrap"><img class="product" src="./assets/chill.png" alt=""></div>`;
   el.querySelector('.power')?.addEventListener('click',()=>{state={...state,isOn:!active};openPopup=null;render(state);call('POST',`/${encodeURIComponent(id)}/onoff`,{on:!active})});
   el.querySelector('.minus')?.addEventListener('click',()=>{const next=Math.round(Number(state?.targetTemp??d.targetTemp??0)-1);pendingTargetTemp=next;pendingTargetUntil=Date.now()+45000;state={...state,targetTemp:next};openPopup=null;render(state);call('POST',`/${encodeURIComponent(id)}/target-temperature`,{targetTemperature:next,value:next,mode:mode},{keepLocal:true})});
   el.querySelector('.plus')?.addEventListener('click',()=>{const next=Math.round(Number(state?.targetTemp??d.targetTemp??0)+1);pendingTargetTemp=next;pendingTargetUntil=Date.now()+45000;state={...state,targetTemp:next};openPopup=null;render(state);call('POST',`/${encodeURIComponent(id)}/target-temperature`,{targetTemperature:next,value:next,mode:mode},{keepLocal:true})});
