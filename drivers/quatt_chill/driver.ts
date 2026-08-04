@@ -1,5 +1,5 @@
 import Homey from 'homey';
-import {QuattRemoteApiClient, QuattTokens} from '../../lib/quatt';
+import {QuattRemoteApiClient, QuattTokenStore, QuattTokens} from '../../lib/quatt';
 
 class QuattChillDriver extends Homey.Driver {
     async onInit() {
@@ -17,22 +17,34 @@ class QuattChillDriver extends Homey.Driver {
         const heatpumpDevices = heatpumpDriver ? heatpumpDriver.getDevices() : [];
         const results: any[] = [];
 
+        const tokenStore = new QuattTokenStore(this.homey.settings, this.log.bind(this));
+
         for (const heatpumpDevice of heatpumpDevices) {
             const device = heatpumpDevice as Homey.Device;
-            const remoteTokens = device.getStoreValue('remoteTokens') as QuattTokens | undefined;
             const remoteCicId = device.getStoreValue('remoteCicId') as string | undefined;
-            const remoteInstallationId = device.getStoreValue('remoteInstallationId') as string | undefined;
 
-            if (!remoteTokens || !remoteCicId || !remoteInstallationId) {
+            if (!remoteCicId) {
                 continue;
+            }
+
+            let credentials = tokenStore.getCredentials(remoteCicId);
+
+            if (!credentials) {
+                const remoteTokens = device.getStoreValue('remoteTokens') as QuattTokens | undefined;
+                const remoteInstallationId = device.getStoreValue('remoteInstallationId') as string | undefined;
+                if (!remoteTokens || !remoteInstallationId) {
+                    continue;
+                }
+                credentials = tokenStore.migrateFromDevice(remoteCicId, remoteTokens, remoteInstallationId);
             }
 
             try {
                 const remoteClient = new QuattRemoteApiClient(
                     this.homey.app.manifest.version,
-                    remoteTokens,
-                    remoteCicId,
-                    remoteInstallationId
+                    credentials.tokens,
+                    credentials.cicId,
+                    credentials.installationId,
+                    tokenStore.sourceFor(credentials.cicId)
                 );
                 const chills = await remoteClient.getChills();
 
@@ -42,14 +54,15 @@ class QuattChillDriver extends Homey.Driver {
                         data: {
                             id: chill.uuid,
                             uuid: chill.uuid,
-                            cicId: remoteCicId,
-                            installationId: remoteInstallationId,
+                            cicId: credentials.cicId,
+                            installationId: credentials.installationId,
                         },
+                        // Only the CiC reference is stored; the credentials themselves stay in
+                        // the shared store so a Repair on the CiC keeps this device working.
                         store: {
                             chillUuid: chill.uuid,
-                            remoteTokens,
-                            remoteCicId,
-                            remoteInstallationId,
+                            remoteCicId: credentials.cicId,
+                            remoteInstallationId: credentials.installationId,
                         },
                     });
                 }
