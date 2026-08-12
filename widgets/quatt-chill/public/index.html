@@ -574,15 +574,15 @@ function onHomeyReady(Homey){
  function sparkline(hist){
   if(!Array.isArray(hist)||hist.length<4)return'';
   const W=372,H=58,PT=8,PB=3;
-  const pts_v=hist.map(p=>Number(p.v)).filter(v=>!Number.isNaN(v));
+  const pts_v=hist.map(p=>Number(p.temperature)).filter(v=>!Number.isNaN(v));
   if(pts_v.length<4)return'';
   let min=Math.min(...pts_v),max=Math.max(...pts_v);
   if(max-min<1){const m=(max+min)/2;min=m-.5;max=m+.5}
-  const t0=Number(hist[0].t),t1=Number(hist[hist.length-1].t);
+  const t0=Number(hist[0].timestamp),t1=Number(hist[hist.length-1].timestamp);
   const tr=Math.max(1,t1-t0);
   const pts=hist.map(p=>{
-   const x=((Number(p.t)-t0)/tr)*W;
-   const y=PT+(1-(Number(p.v)-min)/(max-min))*(H-PT-PB);
+   const x=((Number(p.timestamp)-t0)/tr)*W;
+   const y=PT+(1-(Number(p.temperature)-min)/(max-min))*(H-PT-PB);
    return[x,y];
   });
   const line=pts.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join('');

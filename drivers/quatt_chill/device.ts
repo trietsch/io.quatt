@@ -5,13 +5,27 @@ interface QuattChillDeviceSettings {
     updateInterval: number;
 }
 
+/**
+ * One sample in the rolling room temperature history that feeds the widget
+ * sparkline. Samples are recorded from the regular status polls in 5-minute
+ * buckets and pruned after 24 hours.
+ */
 interface ChillHistoryPoint {
-    t: number;
-    v: number;
+    /** Unix epoch in milliseconds at which the temperature was measured. */
+    timestamp: number;
+    /** Measured room temperature in °C, rounded to one decimal. */
+    temperature: number;
 }
 
-interface ChillsSharedDriver {
-    getChillsShared(client: QuattRemoteApiClient, installationId: string, options?: {allowCached?: boolean}): Promise<QuattChill[]>;
+/**
+ * The methods of QuattChillDriver that devices use. The driver owns one remote
+ * API client and one chills cache per installation; devices delegate their
+ * data fetching to it. (The driver class itself is not importable as a type
+ * because it is exposed via module.exports.)
+ */
+interface ChillDriver {
+    getRemoteApiClient(installationId: string, config: {tokens: QuattTokens; cicId: string}): QuattRemoteApiClient;
+    getChills(installationId: string, options?: {allowCached?: boolean}): Promise<QuattChill[]>;
 }
 
 class QuattChillDevice extends Homey.Device {
@@ -20,6 +34,10 @@ class QuattChillDevice extends Homey.Device {
 
     private remoteClient: QuattRemoteApiClient | null = null;
     private remoteInstallationId: string | null = null;
+
+    private get chillDriver(): ChillDriver {
+        return this.driver as unknown as ChillDriver;
+    }
     private onPollInterval: NodeJS.Timer | null = null;
     private chillUuid: string | null = null;
     private chillStatusChangedTrigger: any = null;
@@ -39,12 +57,10 @@ class QuattChillDevice extends Homey.Device {
             return;
         }
 
-        this.remoteClient = new QuattRemoteApiClient(
-            this.homey.app.manifest.version,
-            remoteTokens,
-            remoteCicId,
-            remoteInstallationId
-        );
+        this.remoteClient = this.chillDriver.getRemoteApiClient(remoteInstallationId, {
+            tokens: remoteTokens,
+            cicId: remoteCicId,
+        });
         this.remoteInstallationId = remoteInstallationId;
 
         await this.migrateCapabilities();
@@ -216,17 +232,14 @@ class QuattChillDevice extends Homey.Device {
         }
     }
 
-    // Fetches via the driver's shared per-installation cache: interval polls of
+    // Fetches via the driver's per-installation cache: interval polls of
     // multiple Chill devices coalesce into one API call, while direct commands
     // (allowCached omitted) always fetch fresh data.
     private async updateChillCapabilities(options: {allowCached?: boolean} = {}) {
-        if (!this.remoteClient || !this.chillUuid) return;
+        if (!this.remoteClient || !this.chillUuid || !this.remoteInstallationId) return;
 
         try {
-            const driver = this.driver as unknown as ChillsSharedDriver;
-            const chills = this.remoteInstallationId && typeof driver.getChillsShared === 'function'
-                ? await driver.getChillsShared(this.remoteClient, this.remoteInstallationId, options)
-                : await this.remoteClient.getChills();
+            const chills = await this.chillDriver.getChills(this.remoteInstallationId, options);
             await this.persistRefreshedTokens();
             const currentChill = chills.find((chill) => chill.uuid === this.chillUuid);
 
@@ -293,18 +306,31 @@ class QuattChillDevice extends Homey.Device {
 
         try {
             const now = Date.now();
-            const stored = this.getStoreValue('tempHistory') as ChillHistoryPoint[] | null;
-            const history = Array.isArray(stored) ? stored : [];
+            const stored = this.getStoreValue('tempHistory');
+            const history = Array.isArray(stored)
+                ? stored.map(QuattChillDevice.normalizeHistoryPoint).filter((point): point is ChillHistoryPoint => point !== null)
+                : [];
             const last = history[history.length - 1];
 
-            if (last && now - last.t < QuattChillDevice.HISTORY_BUCKET_MS) return;
+            if (last && now - last.timestamp < QuattChillDevice.HISTORY_BUCKET_MS) return;
 
-            const pruned = history.filter((point) => now - point.t <= QuattChillDevice.HISTORY_MAX_AGE_MS);
-            pruned.push({t: now, v: Math.round(value * 10) / 10});
+            const pruned = history.filter((point) => now - point.timestamp <= QuattChillDevice.HISTORY_MAX_AGE_MS);
+            pruned.push({timestamp: now, temperature: Math.round(value * 10) / 10});
             await this.setStoreValue('tempHistory', pruned);
         } catch (error) {
             this.log('Unable to record temperature history:', error);
         }
+    }
+
+    // Accepts both the current {timestamp, temperature} shape and the legacy
+    // {t, v} shape from earlier beta builds, so existing history survives.
+    private static normalizeHistoryPoint(point: unknown): ChillHistoryPoint | null {
+        if (!point || typeof point !== 'object') return null;
+        const record = point as {timestamp?: unknown; temperature?: unknown; t?: unknown; v?: unknown};
+        const timestamp = typeof record.timestamp === 'number' ? record.timestamp : record.t;
+        const temperature = typeof record.temperature === 'number' ? record.temperature : record.v;
+        if (typeof timestamp !== 'number' || typeof temperature !== 'number') return null;
+        return {timestamp, temperature};
     }
 
     private async persistRefreshedTokens() {
