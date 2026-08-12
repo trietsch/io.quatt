@@ -18,22 +18,39 @@ interface ChillStatusResponse {
   tankFull: boolean;
   tankMissing: boolean;
   disconnected: boolean;
-  history: Array<{ t: number; v: number }>;
+  history: HistoryPoint[];
 }
 
-function getTemperatureHistory(device: any, roomTemp: number | null): Array<{ t: number; v: number }> {
-  let history: Array<{ t: number; v: number }> = [];
+// One sample of the room temperature history recorded by the Chill device
+// (epoch millis + °C). Mirrors ChillHistoryPoint in the chill driver.
+interface HistoryPoint {
+  timestamp: number;
+  temperature: number;
+}
+
+function toHistoryPoint(point: any): HistoryPoint | null {
+  const timestamp = typeof point?.timestamp === 'number' ? point.timestamp : point?.t;
+  const temperature = typeof point?.temperature === 'number' ? point.temperature : point?.v;
+  if (typeof timestamp !== 'number' || typeof temperature !== 'number') return null;
+  return { timestamp, temperature };
+}
+
+function getTemperatureHistory(device: any, roomTemp: number | null): HistoryPoint[] {
+  let history: HistoryPoint[] = [];
   try {
     const stored = device.getStoreValue?.('tempHistory');
     if (Array.isArray(stored)) {
-      history = stored.slice(-72);
+      history = stored
+        .map(toHistoryPoint)
+        .filter((point): point is HistoryPoint => point !== null)
+        .slice(-72);
     }
   } catch (_) {
     // History is a nice-to-have; never fail the status call over it.
   }
 
   if (typeof roomTemp === 'number' && !Number.isNaN(roomTemp)) {
-    history = [...history, { t: Date.now(), v: roomTemp }];
+    history = [...history, { timestamp: Date.now(), temperature: roomTemp }];
   }
 
   return history;
