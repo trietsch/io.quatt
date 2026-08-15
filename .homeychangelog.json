@@ -76,5 +76,8 @@
   },
   "1.9.0": {
     "en": "Added Quatt Chill as a separate device, including a dedicated widget for the Chill"
+  },
+  "1.10.0": {
+    "en": "Quatt Chill improvements (Clear pairing feedback, Dynamic target temperature range, Firmware update status, Shared polling for multiple Chills) + widget redesign in Quatt style"
   }
 }
