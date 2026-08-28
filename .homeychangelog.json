@@ -79,5 +79,8 @@
   },
   "1.10.0": {
     "en": "Quatt Chill improvements (Clear pairing feedback, Dynamic target temperature range, Firmware update status, Shared polling for multiple Chills) + widget redesign in Quatt style"
+  },
+  "1.10.1": {
+    "en": "Widget previews redrawn as simple shapes to meet the Homey App Store guidelines"
   }
 }
