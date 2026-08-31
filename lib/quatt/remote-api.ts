@@ -1,5 +1,6 @@
 import {RestClient, IRestResponse} from "typed-rest-client/RestClient";
 import { QuattApiError } from './errors';
+import { QuattTokenSource } from './token-store';
 
 // Firebase Configuration
 const FIREBASE_API_KEY = "AIzaSyDM4PIXYDS9x53WUj-tDjOVAb6xKgzxX9Y";
@@ -98,8 +99,9 @@ export class QuattRemoteApiClient {
     private tokens: QuattTokens | null = null;
     private cicId: string | null = null;
     private installationId: string | null = null;
+    private tokenSource: QuattTokenSource | null = null;
 
-    constructor(appVersion: string, tokens?: QuattTokens, cicId?: string, installationId?: string) {
+    constructor(appVersion: string, tokens?: QuattTokens, cicId?: string, installationId?: string, tokenSource?: QuattTokenSource) {
         this.appVersion = appVersion;
         this.client = new RestClient(`Homey Quatt App/${this.appVersion}`);
         if (tokens) {
@@ -110,6 +112,11 @@ export class QuattRemoteApiClient {
         }
         if (installationId) {
             this.installationId = installationId;
+        }
+        if (tokenSource) {
+            this.tokenSource = tokenSource;
+            // Prefer whatever the shared store already holds over the snapshot we were constructed with.
+            this.tokens = tokenSource.getTokens() ?? this.tokens;
         }
     }
 
@@ -175,43 +182,26 @@ export class QuattRemoteApiClient {
      * Update CIC settings (sound levels, pricing limits)
      */
     async updateCicSettings(settings: QuattRemoteSettings): Promise<boolean> {
-        if (!this.tokens || !this.cicId) {
+        if (!this.cicId) {
             throw new QuattApiError('Not authenticated or CIC not paired');
         }
 
-        // Refresh token if expired
-        if (Date.now() >= this.tokens.expiresAt) {
-            await this._refreshToken();
-        }
-
         try {
-            const response = await this.client.replace<any>(
+            const response = await this._authorizedRequest<any>((idToken) => this.client.replace<any>(
                 `${QUATT_API_BASE_URL}/me/cic/${this.cicId}`,
                 settings,
                 {
                     additionalHeaders: {
-                        'Authorization': `Bearer ${this.tokens.idToken}`,
+                        'Authorization': `Bearer ${idToken}`,
                         'Content-Type': 'application/json'
                     }
                 }
-            );
+            ));
 
             return response.statusCode === 200;
         } catch (error) {
-            // If token refresh fails, try one more time
-            if (error instanceof Error && error.message.includes('401')) {
-                await this._refreshToken();
-                const response = await this.client.replace<any>(
-                    `${QUATT_API_BASE_URL}/me/cic/${this.cicId}`,
-                    settings,
-                    {
-                        additionalHeaders: {
-                            'Authorization': `Bearer ${this.tokens!.idToken}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
-                );
-                return response.statusCode === 200;
+            if (error instanceof QuattApiError) {
+                throw error;
             }
             throw new QuattApiError(`Failed to update settings: ${error}`);
         }
@@ -221,23 +211,18 @@ export class QuattRemoteApiClient {
      * Get current CIC data from remote API
      */
     async getCicData(): Promise<any> {
-        if (!this.tokens || !this.cicId) {
+        if (!this.cicId) {
             throw new QuattApiError('Not authenticated or CIC not paired');
         }
 
-        // Refresh token if expired
-        if (Date.now() >= this.tokens.expiresAt) {
-            await this._refreshToken();
-        }
-
-        const response = await this.client.get<any>(
+        const response = await this._authorizedRequest<any>((idToken) => this.client.get<any>(
             `${QUATT_API_BASE_URL}/me/cic/${this.cicId}`,
             {
                 additionalHeaders: {
-                    'Authorization': `Bearer ${this.tokens.idToken}`
+                    'Authorization': `Bearer ${idToken}`
                 }
             }
-        );
+        ));
 
         if (response.statusCode !== 200) {
             throw new QuattApiError(`Failed to get CIC data: Status ${response.statusCode}`);
@@ -248,6 +233,9 @@ export class QuattRemoteApiClient {
 
 
     private async _ensureAuthenticated(): Promise<void> {
+        // Another device sharing these credentials may have refreshed them since our last call.
+        this._syncTokensFromSource();
+
         if (!this.tokens) {
             throw new QuattApiError('Not authenticated');
         }
@@ -255,6 +243,55 @@ export class QuattRemoteApiClient {
         if (Date.now() >= this.tokens.expiresAt) {
             await this._refreshToken();
         }
+    }
+
+    private _syncTokensFromSource(): void {
+        if (!this.tokenSource) {
+            return;
+        }
+
+        const shared = this.tokenSource.getTokens();
+        if (shared) {
+            this.tokens = shared;
+        }
+
+        const installationId = this.tokenSource.getInstallationId();
+        if (installationId) {
+            this.installationId = installationId;
+        }
+    }
+
+    /**
+     * Run an authenticated request, refreshing the token up front when it is known to be
+     * expired and once more if the API rejects it anyway.
+     *
+     * The retry matters because expiry is only tracked locally: after a re-pair the previous
+     * identity is gone server-side while our stored expiresAt still looks valid, so without
+     * this the device would 401 forever and never recover.
+     */
+    private async _authorizedRequest<T>(request: (idToken: string) => Promise<IRestResponse<T>>): Promise<IRestResponse<T>> {
+        await this._ensureAuthenticated();
+
+        const rejectedIdToken = this.tokens!.idToken;
+        try {
+            return await request(rejectedIdToken);
+        } catch (error) {
+            if (!QuattRemoteApiClient._isUnauthorized(error)) {
+                throw error;
+            }
+
+            await this._refreshToken(rejectedIdToken);
+            return await request(this.tokens!.idToken);
+        }
+    }
+
+    /**
+     * typed-rest-client rejects any response over 299 with an Error carrying a statusCode
+     * property, so the status has to be read from there rather than from a response object.
+     */
+    private static _isUnauthorized(error: unknown): boolean {
+        const statusCode = (error as { statusCode?: number } | null)?.statusCode;
+        return statusCode === 401 || statusCode === 403;
     }
 
     /**
@@ -275,16 +312,14 @@ export class QuattRemoteApiClient {
             throw new QuattApiError('No installation ID available');
         }
 
-        await this._ensureAuthenticated();
-
-        const response = await this.client.get<any>(
+        const response = await this._authorizedRequest<any>((idToken) => this.client.get<any>(
             `${QUATT_API_BASE_URL}/me/installation/${this.installationId}/devices/chills`,
             {
                 additionalHeaders: {
-                    'Authorization': `Bearer ${this.tokens!.idToken}`
+                    'Authorization': `Bearer ${idToken}`
                 }
             }
-        );
+        ));
 
         if (response.statusCode !== 200 || !response.result) {
             throw new QuattApiError(`Failed to get Quatt Chill devices: Status ${response.statusCode}`);
@@ -306,18 +341,16 @@ export class QuattRemoteApiClient {
             throw new QuattApiError('No installation ID available');
         }
 
-        await this._ensureAuthenticated();
-
-        const response = await this.client.create<any>(
+        const response = await this._authorizedRequest<any>((idToken) => this.client.create<any>(
             `${QUATT_API_BASE_URL}/me/installation/${this.installationId}/devices/chills/${chillUuid}/actions`,
             action,
             {
                 additionalHeaders: {
-                    'Authorization': `Bearer ${this.tokens!.idToken}`,
+                    'Authorization': `Bearer ${idToken}`,
                     'Content-Type': 'application/json'
                 }
             }
-        );
+        ));
 
         return response.statusCode === 200 || response.statusCode === 201 || response.statusCode === 204;
     }
@@ -569,16 +602,56 @@ export class QuattRemoteApiClient {
         };
     }
 
-    private async _refreshToken(): Promise<void> {
+    /**
+     * @param rejectedIdToken the id token the API just rejected, when the refresh is driven
+     *                        by a 401/403 rather than by local expiry. Expiry alone cannot
+     *                        decide it there: after a re-pair the stored expiresAt still
+     *                        looks valid while the identity behind it is gone.
+     */
+    private async _refreshToken(rejectedIdToken?: string): Promise<void> {
         if (!this.tokens) {
             throw new QuattApiError('No tokens to refresh');
         }
 
+        if (!this.tokenSource) {
+            this.tokens = await this._requestFreshTokens(this.tokens);
+            return;
+        }
+
+        // Serialise refreshes so that the CiC and every Chill do not each burn the same
+        // refresh token concurrently and then persist conflicting results.
+        await this.tokenSource.runExclusive(async () => {
+            const shared = this.tokenSource!.getTokens() ?? this.tokens!;
+
+            // Somebody else may have refreshed while we waited for the lock. Two devices
+            // hit by the same 401 both arrive here, so what settles it is whether the token
+            // we were rejected on is still the one on record: if it has been replaced, that
+            // refresh is ours to adopt, and refreshing again would only burn a refresh token
+            // that has already been spent.
+            if (QuattRemoteApiClient._alreadyRefreshed(shared, rejectedIdToken)) {
+                this.tokens = shared;
+                return;
+            }
+
+            const refreshed = await this._requestFreshTokens(shared);
+            this.tokens = refreshed;
+            this.tokenSource!.setTokens(refreshed);
+        });
+    }
+
+    private static _alreadyRefreshed(shared: QuattTokens, rejectedIdToken?: string): boolean {
+        if (rejectedIdToken) {
+            return shared.idToken !== rejectedIdToken;
+        }
+        return Date.now() < shared.expiresAt;
+    }
+
+    private async _requestFreshTokens(current: QuattTokens): Promise<QuattTokens> {
         const response = await this.client.create<FirebaseTokenRefreshResponse>(
             `${FIREBASE_TOKEN_URL}?key=${FIREBASE_API_KEY}`,
             {
                 grant_type: 'refresh_token',
-                refresh_token: this.tokens.refreshToken
+                refresh_token: current.refreshToken
             }
         );
 
@@ -586,7 +659,7 @@ export class QuattRemoteApiClient {
             throw new QuattApiError('Failed to refresh token');
         }
 
-        this.tokens = {
+        return {
             idToken: response.result.id_token,
             refreshToken: response.result.refresh_token,
             expiresAt: Date.now() + (parseInt(response.result.expires_in) * 1000)

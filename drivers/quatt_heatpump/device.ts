@@ -1,5 +1,5 @@
 import Homey, {FlowCardTrigger} from 'homey';
-import {QuattClient, QuattRemoteApiClient, QuattTokens} from "../../lib/quatt";
+import {QuattClient, QuattRemoteApiClient, QuattTokenStore, QuattTokens} from "../../lib/quatt";
 import {CicHeatpump, CicStats} from "../../lib/quatt/cic-stats";
 import {QuattApiError} from "../../lib/quatt/errors"; // DeviceUnavailableError was unused
 import {QuattLocator} from "../../lib/quatt/locator";
@@ -86,17 +86,27 @@ class QuattHeatpump extends Homey.Device {
         this.quattClient = new QuattClient(this.homey.app.manifest.version, deviceAddress);
 
         // Initialize remote API client if tokens are available
-        const remoteTokens = this.getStoreValue("remoteTokens") as QuattTokens | undefined;
+        const tokenStore = new QuattTokenStore(this.homey.settings, this.log.bind(this));
         const remoteCicId = this.getStoreValue("remoteCicId") as string | undefined;
-        const remoteInstallationId = this.getStoreValue("remoteInstallationId") as string | undefined;
+        let credentials = remoteCicId ? tokenStore.getCredentials(remoteCicId) : null;
 
-        if (remoteTokens && remoteCicId && remoteInstallationId) {
+        if (!credentials && remoteCicId) {
+            // Pre-1.9.1 installations kept their own copy of the credentials in device.store.
+            const remoteTokens = this.getStoreValue("remoteTokens") as QuattTokens | undefined;
+            const remoteInstallationId = this.getStoreValue("remoteInstallationId") as string | undefined;
+            if (remoteTokens && remoteInstallationId) {
+                credentials = tokenStore.migrateFromDevice(remoteCicId, remoteTokens, remoteInstallationId);
+            }
+        }
+
+        if (credentials) {
             this.log('Initializing remote API client');
             this.remoteClient = new QuattRemoteApiClient(
                 this.homey.app.manifest.version,
-                remoteTokens,
-                remoteCicId,
-                remoteInstallationId
+                credentials.tokens,
+                credentials.cicId,
+                credentials.installationId,
+                tokenStore.sourceFor(credentials.cicId)
             );
 
             // Update settings to show remote is configured (if not already set)
@@ -518,12 +528,6 @@ class QuattHeatpump extends Homey.Device {
 
                 this.log(`[Action] Successfully set day sound level to ${args.level}`);
 
-                // Update stored tokens in case they were refreshed
-                const tokens = this.remoteClient.getTokens();
-                if (tokens) {
-                    await this.setStoreValue('remoteTokens', tokens);
-                }
-
                 return true;
             } catch (error) {
                 this.error('[Action] Error setting day sound level:', error);
@@ -550,12 +554,6 @@ class QuattHeatpump extends Homey.Device {
                 }
 
                 this.log(`[Action] Successfully set night sound level to ${args.level}`);
-
-                // Update stored tokens in case they were refreshed
-                const tokens = this.remoteClient.getTokens();
-                if (tokens) {
-                    await this.setStoreValue('remoteTokens', tokens);
-                }
 
                 return true;
             } catch (error) {
@@ -584,12 +582,6 @@ class QuattHeatpump extends Homey.Device {
                 }
 
                 this.log(`[Action] Successfully set pricing limit to ${enabled}`);
-
-                // Update stored tokens in case they were refreshed
-                const tokens = this.remoteClient.getTokens();
-                if (tokens) {
-                    await this.setStoreValue('remoteTokens', tokens);
-                }
 
                 return true;
             } catch (error) {
