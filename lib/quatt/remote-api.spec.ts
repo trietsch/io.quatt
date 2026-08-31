@@ -247,6 +247,26 @@ describe('QuattRemoteApiClient', () => {
       expect(authHeaderOf(mockGet.mock.calls[1])).toBe('Bearer refreshed-after-401');
     });
 
+    it('lets a client the driver keeps alive adopt what a repair wrote', async () => {
+      // QuattChillDriver caches one client per installation for the life of the app, so
+      // the client that survives a Repair has to notice the new identity rather than keep
+      // using the tokens it was constructed with.
+      const client = clientFor('CIC-1', validTokens());
+
+      store.saveCredentials({
+        cicId: 'CIC-1',
+        installationId: 'inst-after-repair',
+        tokens: {idToken: 'repaired-id-token', refreshToken: 'repaired-refresh-token', expiresAt: Date.now() + 3_600_000},
+      });
+      mockGet.mockResolvedValue(chillsResponse);
+
+      await client.getChills();
+
+      expect(mockCreate).not.toHaveBeenCalled();
+      expect(mockGet.mock.calls[0][0]).toContain('/me/installation/inst-after-repair/devices/chills');
+      expect(authHeaderOf(mockGet.mock.calls[0])).toBe('Bearer repaired-id-token');
+    });
+
     it('still works without a shared store, for the pairing flow', async () => {
       const client = new QuattRemoteApiClient('1.0.0', expiredTokens(), 'CIC-1', 'inst-1');
 

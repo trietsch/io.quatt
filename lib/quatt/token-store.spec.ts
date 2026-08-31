@@ -175,6 +175,19 @@ describe('QuattTokenStore', () => {
       expect(order).toEqual(['cic-start', 'cic-end', 'chill-start', 'chill-end']);
     });
 
+    it('releases the shared lock when a store instance fails inside it', async () => {
+      // The lock outlives any one store instance now, so a failure in one device's
+      // refresh must not wedge every other device for the rest of the app's life.
+      const cicStore = new QuattTokenStore(settings);
+      const chillStore = new QuattTokenStore(settings);
+
+      await expect(cicStore.sourceFor('CIC-1').runExclusive(async () => {
+        throw new Error('refresh failed');
+      })).rejects.toThrow('refresh failed');
+
+      await expect(chillStore.sourceFor('CIC-1').runExclusive(async () => 'recovered')).resolves.toBe('recovered');
+    });
+
     it('does not block work for a different CiC', async () => {
       let releaseFirst: () => void = () => undefined;
       const blocked = new Promise<void>((resolve) => {
