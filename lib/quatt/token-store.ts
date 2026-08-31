@@ -10,6 +10,14 @@ export interface QuattSettingsStorage {
     set(key: string, value: any): void;
 }
 
+export interface QuattTokenStoreOptions {
+    /**
+     * How long a device waits behind another device's refresh before giving up on the lock
+     * and refreshing itself. Defaults to 20 seconds.
+     */
+    refreshLockTimeoutMs?: number;
+}
+
 export interface QuattCredentials {
     tokens: QuattTokens;
     cicId: string;
@@ -54,6 +62,7 @@ export interface QuattTokenSource {
 export class QuattTokenStore {
     private readonly settings: QuattSettingsStorage;
     private readonly logger: (...args: any[]) => void;
+    private readonly refreshLockTimeoutMs: number;
     /**
      * Keyed by CiC and shared by every store instance: each device builds its own
      * QuattTokenStore in its own onInit, so a per-instance map would hand the CiC and
@@ -61,10 +70,13 @@ export class QuattTokenStore {
      */
     private static readonly refreshLocks = new Map<string, Promise<unknown>>();
 
+    private static readonly DEFAULT_REFRESH_LOCK_TIMEOUT_MS = 20_000;
+
     constructor(settings: QuattSettingsStorage, logger: (...args: any[]) => void = () => {
-    }) {
+    }, options: QuattTokenStoreOptions = {}) {
         this.settings = settings;
         this.logger = logger;
+        this.refreshLockTimeoutMs = options.refreshLockTimeoutMs ?? QuattTokenStore.DEFAULT_REFRESH_LOCK_TIMEOUT_MS;
     }
 
     private readAll(): Record<string, QuattCredentials> {
@@ -133,8 +145,7 @@ export class QuattTokenStore {
     private async runExclusive<T>(cicId: string, fn: () => Promise<T>): Promise<T> {
         const locks = QuattTokenStore.refreshLocks;
         const previous = locks.get(cicId) ?? Promise.resolve();
-        // A failed refresh must not poison the queue for whoever comes next.
-        const current = previous.then(() => fn(), () => fn());
+        const current = this.awaitTurn(previous).then(() => fn());
         const guard = current.then(() => undefined, () => undefined);
         locks.set(cicId, guard);
 
@@ -143,6 +154,38 @@ export class QuattTokenStore {
         } finally {
             if (locks.get(cicId) === guard) {
                 locks.delete(cicId);
+            }
+        }
+    }
+
+    /**
+     * Wait for whoever holds the lock, but not indefinitely.
+     *
+     * The Homey app is one process that runs for months, and this lock is now shared by
+     * every device rather than held per store instance, so a refresh that stalls no longer
+     * delays one device: it delays all of them, in series. Giving up after a wait longer
+     * than any healthy refresh takes degrades to the unserialised behaviour we had before
+     * the lock was shared, which costs an extra refresh call. Queueing behind a stalled
+     * device instead would cost every Chill its updates for as long as the stall lasts.
+     *
+     * A failed refresh must not poison the queue for whoever comes next either, so the
+     * wait ignores how the previous holder finished.
+     */
+    private async awaitTurn(previous: Promise<unknown>): Promise<void> {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const ceiling = new Promise<void>((resolve) => {
+            timer = setTimeout(resolve, this.refreshLockTimeoutMs);
+            // Never keep the app's event loop alive just to police the lock.
+            if (typeof timer.unref === 'function') {
+                timer.unref();
+            }
+        });
+
+        try {
+            await Promise.race([previous.then(() => undefined, () => undefined), ceiling]);
+        } finally {
+            if (timer) {
+                clearTimeout(timer);
             }
         }
     }

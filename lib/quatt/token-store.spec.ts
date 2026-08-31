@@ -188,6 +188,39 @@ describe('QuattTokenStore', () => {
       await expect(chillStore.sourceFor('CIC-1').runExclusive(async () => 'recovered')).resolves.toBe('recovered');
     });
 
+    it('gives up on the lock when the device holding it never comes back', async () => {
+      // The Homey app is one process that runs for months and the lock is shared by every
+      // device now, so a stalled refresh must not take the whole CiC down with it. Falling
+      // back to an unserialised refresh costs one extra call; queueing behind the stall
+      // would cost every Chill its updates for as long as it lasts.
+      const cicStore = new QuattTokenStore(settings, undefined, {refreshLockTimeoutMs: 10});
+      const chillStore = new QuattTokenStore(settings, undefined, {refreshLockTimeoutMs: 10});
+
+      // Never settles, the way a refresh sitting on a dead socket would.
+      void cicStore.sourceFor('CIC-1').runExclusive(() => new Promise<never>(() => undefined));
+
+      await expect(chillStore.sourceFor('CIC-1').runExclusive(async () => 'ran')).resolves.toBe('ran');
+    });
+
+    it('still serialises when the holder finishes well within the ceiling', async () => {
+      const cicStore = new QuattTokenStore(settings, undefined, {refreshLockTimeoutMs: 5_000});
+      const chillStore = new QuattTokenStore(settings, undefined, {refreshLockTimeoutMs: 5_000});
+      const order: string[] = [];
+
+      const task = (source: ReturnType<QuattTokenStore['sourceFor']>, name: string) => source.runExclusive(async () => {
+        order.push(`${name}-start`);
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        order.push(`${name}-end`);
+      });
+
+      await Promise.all([
+        task(cicStore.sourceFor('CIC-1'), 'cic'),
+        task(chillStore.sourceFor('CIC-1'), 'chill'),
+      ]);
+
+      expect(order).toEqual(['cic-start', 'cic-end', 'chill-start', 'chill-end']);
+    });
+
     it('does not block work for a different CiC', async () => {
       let releaseFirst: () => void = () => undefined;
       const blocked = new Promise<void>((resolve) => {
