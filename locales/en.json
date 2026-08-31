@@ -12,6 +12,12 @@
     "errorPage": {
       "title": "Error while manual pairing",
       "message": "We couldn't complete the pairing."
+    },
+    "chill": {
+      "noHeatpump": "No Quatt heatpump found in Homey. Add your Quatt CiC first, then try adding the Chill again.",
+      "noRemoteControl": "Remote Control is not configured on your Quatt CiC. Open the CiC device, start 'Repair' and follow the steps (press the button on the CiC), then try again.",
+      "noChills": "No Quatt Chill found on your installation. Check in the Quatt app whether your Chill is linked to the same installation as your CiC.",
+      "apiError": "The Quatt Chill could not be retrieved from the Quatt API. Try again later, or run 'Repair' on your Quatt CiC to renew the connection."
     }
   },
   "error": {

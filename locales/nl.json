@@ -12,6 +12,12 @@
     "errorPage": {
       "title": "Fout tijdens handmatig koppelen",
       "message": "We konden het koppelen niet voltooien."
+    },
+    "chill": {
+      "noHeatpump": "Geen Quatt warmtepomp gevonden in Homey. Voeg eerst je Quatt CiC toe en probeer daarna opnieuw de Chill toe te voegen.",
+      "noRemoteControl": "Remote Control is niet geconfigureerd op je Quatt CiC. Open het CiC-apparaat, start 'Repareren' en volg de stappen (druk op de knop op de CiC), en probeer het daarna opnieuw.",
+      "noChills": "Geen Quatt Chill gevonden op je installatie. Controleer in de Quatt-app of je Chill aan dezelfde installatie gekoppeld is als je CiC.",
+      "apiError": "De Quatt Chill kon niet worden opgehaald via de Quatt API. Probeer het later opnieuw, of start 'Repareren' op je Quatt CiC om de verbinding te vernieuwen."
     }
   },
   "error": {

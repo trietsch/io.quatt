@@ -5,8 +5,40 @@ interface QuattChillDeviceSettings {
     updateInterval: number;
 }
 
+/**
+ * One sample in the rolling room temperature history that feeds the widget
+ * sparkline. Samples are recorded from the regular status polls in 5-minute
+ * buckets and pruned after 24 hours.
+ */
+interface ChillHistoryPoint {
+    /** Unix epoch in milliseconds at which the temperature was measured. */
+    timestamp: number;
+    /** Measured room temperature in °C, rounded to one decimal. */
+    temperature: number;
+}
+
+/**
+ * The methods of QuattChillDriver that devices use. The driver owns one remote
+ * API client and one chills cache per installation; devices delegate their
+ * data fetching to it. (The driver class itself is not importable as a type
+ * because it is exposed via module.exports.)
+ */
+interface ChillDriver {
+    readonly tokenStore: QuattTokenStore;
+    getRemoteApiClient(installationId: string, config: {tokens: QuattTokens; cicId: string}): QuattRemoteApiClient;
+    getChills(installationId: string, options?: {allowCached?: boolean}): Promise<QuattChill[]>;
+}
+
 class QuattChillDevice extends Homey.Device {
+    private static readonly HISTORY_BUCKET_MS = 5 * 60 * 1000;
+    private static readonly HISTORY_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
     private remoteClient: QuattRemoteApiClient | null = null;
+    private remoteInstallationId: string | null = null;
+
+    private get chillDriver(): ChillDriver {
+        return this.driver as unknown as ChillDriver;
+    }
     private onPollInterval: NodeJS.Timer | null = null;
     private chillUuid: string | null = null;
     private chillStatusChangedTrigger: any = null;
@@ -22,7 +54,7 @@ class QuattChillDevice extends Homey.Device {
         // Credentials come from the shared store rather than this device's own copy, so that
         // repairing the CiC also restores every Chill instead of stranding them on tokens for
         // an identity that no longer exists.
-        const tokenStore = new QuattTokenStore(this.homey.settings, this.log.bind(this));
+        const tokenStore = this.chillDriver.tokenStore;
         let credentials = remoteCicId ? tokenStore.getCredentials(remoteCicId) : null;
 
         if (!credentials && remoteCicId) {
@@ -44,18 +76,16 @@ class QuattChillDevice extends Homey.Device {
             return;
         }
 
-        this.remoteClient = new QuattRemoteApiClient(
-            this.homey.app.manifest.version,
-            credentials.tokens,
-            credentials.cicId,
-            credentials.installationId,
-            tokenStore.sourceFor(credentials.cicId)
-        );
+        this.remoteClient = this.chillDriver.getRemoteApiClient(credentials.installationId, {
+            tokens: credentials.tokens,
+            cicId: credentials.cicId,
+        });
+        this.remoteInstallationId = credentials.installationId;
 
         await this.migrateCapabilities();
         await this.registerCapabilityListeners();
         await this.registerFlowActions();
-        await this.updateChillCapabilities();
+        await this.updateChillCapabilities({allowCached: true});
 
         const settings = this.getSettings() as QuattChillDeviceSettings;
         const updateInterval = typeof settings.updateInterval === 'number' ? settings.updateInterval : 30;
@@ -109,7 +139,7 @@ class QuattChillDevice extends Homey.Device {
     }
 
     private async migrateCapabilities() {
-        const requiredCapabilities = ['measure_temperature', 'target_temperature', 'chill_water_tank_status', 'alarm_chill_disconnected'];
+        const requiredCapabilities = ['measure_temperature', 'target_temperature', 'chill_water_tank_status', 'alarm_chill_disconnected', 'measure_chill_update_state'];
         for (const capability of requiredCapabilities) {
             if (!this.hasCapability(capability)) {
                 await this.addCapability(capability).catch(this.error);
@@ -139,7 +169,7 @@ class QuattChillDevice extends Homey.Device {
         }
 
         this.onPollInterval = this.homey.setInterval(async () => {
-            await this.updateChillCapabilities();
+            await this.updateChillCapabilities({allowCached: true});
         }, updateIntervalSeconds * 1000);
     }
 
@@ -248,11 +278,14 @@ class QuattChillDevice extends Homey.Device {
         }
     }
 
-    private async updateChillCapabilities() {
-        if (!this.remoteClient || !this.chillUuid) return;
+    // Fetches via the driver's per-installation cache: interval polls of
+    // multiple Chill devices coalesce into one API call, while direct commands
+    // (allowCached omitted) always fetch fresh data.
+    private async updateChillCapabilities(options: {allowCached?: boolean} = {}) {
+        if (!this.remoteClient || !this.chillUuid || !this.remoteInstallationId) return;
 
         try {
-            const chills = await this.remoteClient.getChills();
+            const chills = await this.chillDriver.getChills(this.remoteInstallationId, options);
             const currentChill = chills.find((chill) => chill.uuid === this.chillUuid);
 
             if (!currentChill) {
@@ -267,6 +300,9 @@ class QuattChillDevice extends Homey.Device {
 
             const normalizedStatus = String(currentChill.status || '').toUpperCase();
 
+            await this.applyTargetTemperatureRange(currentChill);
+            await this.recordTemperatureHistory(currentChill.ambientTemperature);
+
             await Promise.all([
                 this.safeSetCapabilityValue('measure_temperature', currentChill.ambientTemperature),
                 this.safeSetCapabilityValue('target_temperature', targetTemperature),
@@ -277,6 +313,7 @@ class QuattChillDevice extends Homey.Device {
                 this.safeSetCapabilityValue('onoff', this.getChillIsOn(currentChill)),
                 this.safeSetCapabilityValue('chill_water_tank_status', this.getWaterTankStatus(normalizedStatus)),
                 this.safeSetCapabilityValue('alarm_chill_disconnected', normalizedStatus === 'WARNING_DISCONNECTED'),
+                this.safeSetCapabilityValue('measure_chill_update_state', currentChill.updateState),
             ]);
 
             await this.triggerChillStatusChanged(currentChill.status);
@@ -287,6 +324,58 @@ class QuattChillDevice extends Homey.Device {
             this.log('Unable to update Chill capabilities:', error);
             await this.setUnavailable(error instanceof Error ? error.message : String(error)).catch(this.error);
         }
+    }
+
+    private async applyTargetTemperatureRange(chill: QuattChill): Promise<void> {
+        const min = typeof chill.minTargetTemperature === 'number' ? chill.minTargetTemperature : undefined;
+        const max = typeof chill.maxTargetTemperature === 'number' ? chill.maxTargetTemperature : undefined;
+        if (min === undefined || max === undefined || min >= max) return;
+
+        try {
+            const options = this.getCapabilityOptions('target_temperature') || {};
+            if (options.min === min && options.max === max) return;
+
+            await this.setCapabilityOptions('target_temperature', {...options, min, max});
+            this.log(`Updated target temperature range to ${min}-${max}`);
+        } catch (error) {
+            this.log('Unable to update target temperature range:', error);
+        }
+    }
+
+    // Keep a compact rolling room temperature history (5-minute buckets, max 24h)
+    // in the device store, so the widget can render a sparkline. Homey Insights
+    // capability logs are not readable from the app SDK without the heavy
+    // homey:manager:api permission.
+    private async recordTemperatureHistory(value: unknown): Promise<void> {
+        if (typeof value !== 'number' || Number.isNaN(value)) return;
+
+        try {
+            const now = Date.now();
+            const stored = this.getStoreValue('tempHistory');
+            const history = Array.isArray(stored)
+                ? stored.map(QuattChillDevice.normalizeHistoryPoint).filter((point): point is ChillHistoryPoint => point !== null)
+                : [];
+            const last = history[history.length - 1];
+
+            if (last && now - last.timestamp < QuattChillDevice.HISTORY_BUCKET_MS) return;
+
+            const pruned = history.filter((point) => now - point.timestamp <= QuattChillDevice.HISTORY_MAX_AGE_MS);
+            pruned.push({timestamp: now, temperature: Math.round(value * 10) / 10});
+            await this.setStoreValue('tempHistory', pruned);
+        } catch (error) {
+            this.log('Unable to record temperature history:', error);
+        }
+    }
+
+    // Accepts both the current {timestamp, temperature} shape and the legacy
+    // {t, v} shape from earlier beta builds, so existing history survives.
+    private static normalizeHistoryPoint(point: unknown): ChillHistoryPoint | null {
+        if (!point || typeof point !== 'object') return null;
+        const record = point as {timestamp?: unknown; temperature?: unknown; t?: unknown; v?: unknown};
+        const timestamp = typeof record.timestamp === 'number' ? record.timestamp : record.t;
+        const temperature = typeof record.temperature === 'number' ? record.temperature : record.v;
+        if (typeof timestamp !== 'number' || typeof temperature !== 'number') return null;
+        return {timestamp, temperature};
     }
 
     private getChillIsOn(chill: QuattChill): boolean {

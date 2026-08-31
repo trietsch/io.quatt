@@ -14,7 +14,8 @@
     "measure_chill_mode",
     "measure_chill_status",
     "chill_water_tank_status",
-    "alarm_chill_disconnected"
+    "alarm_chill_disconnected",
+    "measure_chill_update_state"
   ],
   "capabilitiesOptions": {
     "onoff": {
