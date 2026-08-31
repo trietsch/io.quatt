@@ -187,6 +187,66 @@ describe('QuattRemoteApiClient', () => {
       expect(mockGet.mock.calls[0][0]).toContain('/me/installation/inst-after-repair/devices/chills');
     });
 
+    it('refreshes only once when devices build their own stores over one settings object', async () => {
+      // How the drivers actually wire it: quatt_heatpump/device.ts and quatt_chill/device.ts
+      // each construct `new QuattTokenStore(this.homey.settings, ...)` in their own onInit,
+      // so the CiC and every Chill hold a different store instance backed by the same settings.
+      store.saveCredentials({cicId: 'CIC-1', installationId: 'inst-1', tokens: expiredTokens()});
+
+      const cicStore = new QuattTokenStore(settings);
+      const chillStore = new QuattTokenStore(settings);
+      const cic = new QuattRemoteApiClient('1.0.0', expiredTokens(), 'CIC-1', 'inst-1', cicStore.sourceFor('CIC-1'));
+      const chill = new QuattRemoteApiClient('1.0.0', expiredTokens(), 'CIC-1', 'inst-1', chillStore.sourceFor('CIC-1'));
+
+      mockCreate.mockResolvedValue(refreshResponse('single-refresh'));
+      mockGet.mockResolvedValue(chillsResponse);
+
+      await Promise.all([cic.getChills(), chill.getChills()]);
+
+      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(authHeaderOf(mockGet.mock.calls[0])).toBe('Bearer single-refresh');
+      expect(authHeaderOf(mockGet.mock.calls[1])).toBe('Bearer single-refresh');
+    });
+
+    it('burns the refresh token only once when two devices are rejected at the same time', async () => {
+      // Both devices hold a token that looks valid locally but the API rejects, which is
+      // exactly the post-repair state. The second device must adopt what the first
+      // refreshed instead of spending the (now already used) refresh token again.
+      store.saveCredentials({cicId: 'CIC-1', installationId: 'inst-1', tokens: validTokens()});
+
+      const cic = new QuattRemoteApiClient('1.0.0', validTokens(), 'CIC-1', 'inst-1', new QuattTokenStore(settings).sourceFor('CIC-1'));
+      const chill = new QuattRemoteApiClient('1.0.0', validTokens(), 'CIC-1', 'inst-1', new QuattTokenStore(settings).sourceFor('CIC-1'));
+
+      mockGet
+        .mockRejectedValueOnce(httpError(401))
+        .mockRejectedValueOnce(httpError(401))
+        .mockResolvedValue(chillsResponse);
+      mockCreate.mockResolvedValue(refreshResponse('recovered-once'));
+
+      await Promise.all([cic.getChills(), chill.getChills()]);
+
+      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(authHeaderOf(mockGet.mock.calls[2])).toBe('Bearer recovered-once');
+      expect(authHeaderOf(mockGet.mock.calls[3])).toBe('Bearer recovered-once');
+      expect(store.getCredentials('CIC-1')?.tokens.idToken).toBe('recovered-once');
+    });
+
+    it('still refreshes when the rejected token is the one the store holds', async () => {
+      // The collapse above must not swallow a genuine rejection: with nobody else
+      // refreshing, a 401 has to reach the refresh endpoint.
+      const client = clientFor('CIC-1', validTokens());
+
+      mockGet
+        .mockRejectedValueOnce(httpError(401))
+        .mockResolvedValueOnce(chillsResponse);
+      mockCreate.mockResolvedValueOnce(refreshResponse('refreshed-after-401'));
+
+      await client.getChills();
+
+      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(authHeaderOf(mockGet.mock.calls[1])).toBe('Bearer refreshed-after-401');
+    });
+
     it('still works without a shared store, for the pairing flow', async () => {
       const client = new QuattRemoteApiClient('1.0.0', expiredTokens(), 'CIC-1', 'inst-1');
 

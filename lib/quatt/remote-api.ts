@@ -268,14 +268,15 @@ export class QuattRemoteApiClient {
     private async _authorizedRequest<T>(request: (idToken: string) => Promise<IRestResponse<T>>): Promise<IRestResponse<T>> {
         await this._ensureAuthenticated();
 
+        const rejectedIdToken = this.tokens!.idToken;
         try {
-            return await request(this.tokens!.idToken);
+            return await request(rejectedIdToken);
         } catch (error) {
             if (!QuattRemoteApiClient._isUnauthorized(error)) {
                 throw error;
             }
 
-            await this._refreshToken(true);
+            await this._refreshToken(rejectedIdToken);
             return await request(this.tokens!.idToken);
         }
     }
@@ -588,10 +589,12 @@ export class QuattRemoteApiClient {
     }
 
     /**
-     * @param force refresh even when the current token has not expired locally, used after
-     *              the API rejected it.
+     * @param rejectedIdToken the id token the API just rejected, when the refresh is driven
+     *                        by a 401/403 rather than by local expiry. Expiry alone cannot
+     *                        decide it there: after a re-pair the stored expiresAt still
+     *                        looks valid while the identity behind it is gone.
      */
-    private async _refreshToken(force: boolean = false): Promise<void> {
+    private async _refreshToken(rejectedIdToken?: string): Promise<void> {
         if (!this.tokens) {
             throw new QuattApiError('No tokens to refresh');
         }
@@ -606,8 +609,12 @@ export class QuattRemoteApiClient {
         await this.tokenSource.runExclusive(async () => {
             const shared = this.tokenSource!.getTokens() ?? this.tokens!;
 
-            // Somebody else may have refreshed while we waited for the lock.
-            if (!force && Date.now() < shared.expiresAt) {
+            // Somebody else may have refreshed while we waited for the lock. Two devices
+            // hit by the same 401 both arrive here, so what settles it is whether the token
+            // we were rejected on is still the one on record: if it has been replaced, that
+            // refresh is ours to adopt, and refreshing again would only burn a refresh token
+            // that has already been spent.
+            if (QuattRemoteApiClient._alreadyRefreshed(shared, rejectedIdToken)) {
                 this.tokens = shared;
                 return;
             }
@@ -616,6 +623,13 @@ export class QuattRemoteApiClient {
             this.tokens = refreshed;
             this.tokenSource!.setTokens(refreshed);
         });
+    }
+
+    private static _alreadyRefreshed(shared: QuattTokens, rejectedIdToken?: string): boolean {
+        if (rejectedIdToken) {
+            return shared.idToken !== rejectedIdToken;
+        }
+        return Date.now() < shared.expiresAt;
     }
 
     private async _requestFreshTokens(current: QuattTokens): Promise<QuattTokens> {

@@ -154,6 +154,27 @@ describe('QuattTokenStore', () => {
       await expect(source.runExclusive(async () => 'recovered')).resolves.toBe('recovered');
     });
 
+    it('serialises work across the separate stores each device builds', async () => {
+      // Every device builds its own QuattTokenStore in onInit over the same Homey
+      // settings, so a per-instance lock would leave the CiC and each Chill unguarded.
+      const cicStore = new QuattTokenStore(settings);
+      const chillStore = new QuattTokenStore(settings);
+      const order: string[] = [];
+
+      const task = (source: ReturnType<QuattTokenStore['sourceFor']>, name: string) => source.runExclusive(async () => {
+        order.push(`${name}-start`);
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        order.push(`${name}-end`);
+      });
+
+      await Promise.all([
+        task(cicStore.sourceFor('CIC-1'), 'cic'),
+        task(chillStore.sourceFor('CIC-1'), 'chill'),
+      ]);
+
+      expect(order).toEqual(['cic-start', 'cic-end', 'chill-start', 'chill-end']);
+    });
+
     it('does not block work for a different CiC', async () => {
       let releaseFirst: () => void = () => undefined;
       const blocked = new Promise<void>((resolve) => {

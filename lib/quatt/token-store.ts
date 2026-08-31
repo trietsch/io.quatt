@@ -54,7 +54,12 @@ export interface QuattTokenSource {
 export class QuattTokenStore {
     private readonly settings: QuattSettingsStorage;
     private readonly logger: (...args: any[]) => void;
-    private readonly refreshLocks = new Map<string, Promise<unknown>>();
+    /**
+     * Keyed by CiC and shared by every store instance: each device builds its own
+     * QuattTokenStore in its own onInit, so a per-instance map would hand the CiC and
+     * every Chill a lock of their own and serialise nothing between them.
+     */
+    private static readonly refreshLocks = new Map<string, Promise<unknown>>();
 
     constructor(settings: QuattSettingsStorage, logger: (...args: any[]) => void = () => {
     }) {
@@ -112,8 +117,9 @@ export class QuattTokenStore {
     }
 
     /**
-     * A token source bound to one CiC. All sources for the same CiC share this store's
-     * settings and refresh lock, so every device sees the same tokens.
+     * A token source bound to one CiC. Every source for that CiC reads the same settings
+     * and takes the same refresh lock, whichever store instance handed it out, so all
+     * devices see the same tokens and refresh one at a time.
      */
     sourceFor(cicId: string): QuattTokenSource {
         return {
@@ -125,17 +131,18 @@ export class QuattTokenStore {
     }
 
     private async runExclusive<T>(cicId: string, fn: () => Promise<T>): Promise<T> {
-        const previous = this.refreshLocks.get(cicId) ?? Promise.resolve();
+        const locks = QuattTokenStore.refreshLocks;
+        const previous = locks.get(cicId) ?? Promise.resolve();
         // A failed refresh must not poison the queue for whoever comes next.
         const current = previous.then(() => fn(), () => fn());
         const guard = current.then(() => undefined, () => undefined);
-        this.refreshLocks.set(cicId, guard);
+        locks.set(cicId, guard);
 
         try {
             return await current;
         } finally {
-            if (this.refreshLocks.get(cicId) === guard) {
-                this.refreshLocks.delete(cicId);
+            if (locks.get(cicId) === guard) {
+                locks.delete(cicId);
             }
         }
     }
